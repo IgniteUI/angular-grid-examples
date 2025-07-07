@@ -1,42 +1,150 @@
 <div class="demo-container">
-  <div class="tab-container ">
-    <div class="tab-item-container" routerLink="inventory" routerLinkActive #tab1="routerLinkActive"  >
-      <ng-container [ngTemplateOutlet]="tabItemTemplate" [ngTemplateOutletContext]="{ enabled: tab1.isActive, tabName: 'inventory' }"></ng-container>
+  <div class="tabs-info-wrapper-element">
+    <div class="tab-container">
+      <div
+        class="tab-item-container"
+        routerLink="inventory"
+        routerLinkActive
+        #tab1="routerLinkActive"
+      >
+        <ng-container
+          [ngTemplateOutlet]="tabItemTemplate"
+          [ngTemplateOutletContext]="{
+            enabled: tab1.isActive,
+            tabName: 'inventory'
+          }"
+        ></ng-container>
+      </div>
+      <div
+        class="tab-item-container"
+        routerLink="hr-portal"
+        routerLinkActive
+        #tab2="routerLinkActive"
+      >
+        <ng-container
+          [ngTemplateOutlet]="tabItemTemplate"
+          [ngTemplateOutletContext]="{
+            enabled: tab2.isActive,
+            tabName: 'hr-portal'
+          }"
+        ></ng-container>
+      </div>
+      <div
+        class="tab-item-container"
+        routerLink="finance"
+        routerLinkActive
+        #tab3="routerLinkActive"
+      >
+        <ng-container
+          [ngTemplateOutlet]="tabItemTemplate"
+          [ngTemplateOutletContext]="{
+            enabled: tab3.isActive,
+            tabName: 'finance'
+          }"
+        ></ng-container>
+      </div>
+      <div
+        class="tab-item-container"
+        routerLink="sales"
+        routerLinkActive
+        #tab4="routerLinkActive"
+      >
+        <ng-container
+          [ngTemplateOutlet]="tabItemTemplate"
+          [ngTemplateOutletContext]="{ enabled: tab4.isActive, tabName: 'sales' }"
+        ></ng-container>
+      </div>
+      <div
+        class="tab-item-container"
+        routerLink="fleet"
+        routerLinkActive
+        #tab5="routerLinkActive"
+      >
+        <ng-container
+          [ngTemplateOutlet]="tabItemTemplate"
+          [ngTemplateOutletContext]="{ enabled: tab5.isActive, tabName: 'fleet' }"
+        ></ng-container>
+      </div>
     </div>
-    <div class="tab-item-container" routerLink="hr-portal" routerLinkActive #tab2="routerLinkActive"  >
-      <ng-container [ngTemplateOutlet]="tabItemTemplate" [ngTemplateOutletContext]="{ enabled: tab2.isActive, tabName: 'hr-portal' }"></ng-container>
-    </div>
-    <div class="tab-item-container" routerLink="finance" routerLinkActive #tab3="routerLinkActive"  >
-      <ng-container [ngTemplateOutlet]="tabItemTemplate" [ngTemplateOutletContext]="{ enabled: tab3.isActive, tabName: 'finance' }"></ng-container>
-    </div>
-    <div class="tab-item-container" routerLink="sales" routerLinkActive #tab4="routerLinkActive"  >
-      <ng-container [ngTemplateOutlet]="tabItemTemplate" [ngTemplateOutletContext]="{ enabled: tab4.isActive, tabName: 'sales' }"></ng-container>
-    </div>
-    <div class="tab-item-container" routerLink="fleet" routerLinkActive #tab5="routerLinkActive"  >
-      <ng-container [ngTemplateOutlet]="tabItemTemplate" [ngTemplateOutletContext]="{ enabled: tab5.isActive, tabName: 'fleet' }"></ng-container>
+
+    <div class="current-tab-info-wrapper">
+      <ng-container
+        [ngTemplateOutlet]="tabItemInfoTemplate"
+        *ngIf="tab1.isActive"
+        [ngTemplateOutletContext]="{ tabName: 'inventory' }"
+      ></ng-container>
+      <ng-container
+        [ngTemplateOutlet]="tabItemInfoTemplate"
+        *ngIf="tab2.isActive"
+        [ngTemplateOutletContext]="{ tabName: 'hr-portal' }"
+      ></ng-container>
+      <ng-container
+        [ngTemplateOutlet]="tabItemInfoTemplate"
+        *ngIf="tab3.isActive"
+        [ngTemplateOutletContext]="{ tabName: 'finance' }"
+      ></ng-container>
+      <ng-container
+        [ngTemplateOutlet]="tabItemInfoTemplate"
+        *ngIf="tab4.isActive"
+        [ngTemplateOutletContext]="{ tabName: 'sales' }"
+      ></ng-container>
+      <ng-container
+        [ngTemplateOutlet]="tabItemInfoTemplate"
+        *ngIf="tab5.isActive"
+        [ngTemplateOutletContext]="{ tabName: 'fleet' }"
+      ></ng-container>
     </div>
   </div>
+
   <div class="router-container">
     <router-outlet></router-outlet>
   </div>
 </div>
 
-<ng-template #tabItemTemplate let-enabled="enabled" let-tabName="tabName">
-  <div #tabItem class="tab-item" [ngClass]="{'tab-item--selected': enabled}">
-    <div class="tab-header" [ngClass]="{'tab-header--disabled': !enabled}">
-      {{ tabInfo.get(tabName)?.title }}
-      <igx-chip [disabled]="!enabled">{{ tabInfo.get(tabName)?.theme }}</igx-chip>
+<ng-template #tabItemInfoTemplate let-tabName="tabName">
+  <div #tabItemInfo class="current-tab-info">
+    <div class="sample-info">
+      <div class="tab-header">{{ tabInfo.get(tabName)?.title }}</div>
+      <div class="tab-description">{{ tabInfo.get(tabName)?.content }}</div>
     </div>
-    <div class="tab-content" [ngClass]="{'tab-content--disabled': !enabled}">
-      <span>{{ tabInfo.get(tabName)?.content }}</span>
-    </div>
-    <div class="tab-actions">
-      <a class="learn-text" href="{{ tabInfo.get(tabName)?.moreLink }}" (click)="onLinkClick($event)" [ngClass]="{'link--disabled': !enabled}">Learn more</a>
-      <button igxRipple [igxIconButton]="'contained'" [ngClass]="{'button--disabled': !enabled}" (click)="onDownloadClick($event, tabName)" [igxTooltipTarget]="tooltipRef"><igx-icon name="file_download" family="internal_indigo"></igx-icon></button>
+
+    <div class="sample-actions">
+      <div class="theme-info">Theme: {{ tabInfo.get(tabName)?.theme }}</div>
+      <div class="theme-info">Mode: {{ tabInfo.get(tabName)?.themeMode }}</div>
+      <div>
+        <button
+          igxButton="outlined"
+          class="custom-button"
+          style="margin-right: 8px"
+          (click)="onDownloadClick($event, tabName)"
+        >
+        <igx-icon family="custom" name="file_download"></igx-icon>
+          Download
+        </button>
+
+        <button
+          igxButton="outlined"
+          class="custom-button"
+          style="margin-right: 8px"
+          (click)="onViewMoreClick($event, tabName)"
+        >
+          <igx-icon family="custom" name="view_more"></igx-icon>
+          View More
+        </button>
+
+        <button igxButton="outlined" class="custom-button" (click)="onFullscreenClick()">
+          <igx-icon family="custom" name="fullscreen"></igx-icon>
+          Fullscreen
+        </button>
+      </div>
     </div>
   </div>
 </ng-template>
 
-<div #tooltipRef="tooltip" igxTooltip>
-  Download sample.
-</div>
+<ng-template #tabItemTemplate let-enabled="enabled" let-tabName="tabName">
+  <div #tabItem class="tab-item" [ngClass]="{ 'tab-item--selected': enabled }">
+    <div class="tab-header" [ngClass]="{ 'tab-header--disabled': !enabled }">
+      {{ tabInfo.get(tabName)?.title?.toUpperCase() }}
+    </div>
+  </div>
+</ng-template>
