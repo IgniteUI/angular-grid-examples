@@ -129,7 +129,6 @@ export class HomeComponent {
   public onFullscreenClick() {
     const fullPath = this.router.url;
     const trimmedPath = '/' + fullPath.split('/').slice(2).join('/');
-    console.log(trimmedPath);
     window.open(trimmedPath, '_blank');
   }
 }
