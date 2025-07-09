@@ -1,8 +1,8 @@
 <div class="wrapper">
     <igx-hierarchical-grid
         #hierarchicalGrid
-        width="100%"
-        height="100%"
+        [width]="null"
+        [height]="null"
         rowHeight="32px"
         [data]="data$ | async"
         [isLoading]="isLoading"
@@ -23,11 +23,11 @@
             </igx-grid-toolbar-actions>
         </igx-grid-toolbar>
 
-        <igx-column field="sku" header="SKU" [sortable]="true" dataType="string"></igx-column>
+        <igx-column field="sku" header="SKU" [sortable]="true" dataType="string" width="198px"></igx-column>
         <igx-column
             field="imageUrl"
             header="Image"
-            width="5%"
+            width="95px"
             [filterable]="false"
             [dataType]="'image'"
             [cellClasses]="{'product-img': true}">
@@ -42,29 +42,29 @@
                     (mouseleave)="onImageLeave($event, imageDialog)"/>
             </ng-template>
         </igx-column>
-        <igx-column field="productName" header="Product Name" dataType="string" [sortable]="true" width="12%"></igx-column>
-        <igx-column field="category" header="Category" dataType="string" [sortable]="true"></igx-column>
+        <igx-column field="productName" header="Product Name" dataType="string" [sortable]="true" width="228px"></igx-column>
+        <igx-column field="category" header="Category" dataType="string" [sortable]="true" width="199px"></igx-column>
         <igx-column
             field="rating"
             header="Rating"
-            minWidth="165px"
+            width="199px"
             [dataType]="'number'"
             [sortable]="true">
             <ng-template igxCell let-cell="cell" let-val>
                 <igc-rating [value]="val" readonly="true" min="0" max="5"></igc-rating>
             </ng-template>
         </igx-column>
-        <igx-column field="unitsSold" header="Sold Units Last Month" dataType="number" width="10%" [sortable]="true"></igx-column>
-        <igx-column field="salesTrendData" header="Monthly Sales Trends" filterable="false" width="15%">
+        <igx-column field="unitsSold" header="Sold Units Last Month" dataType="number" width="190px" [sortable]="true"></igx-column>
+        <igx-column field="salesTrendData" header="Monthly Sales Trends" filterable="false" width="286px">
             <ng-template igxCell let-cell="cell" let-val>
                 @defer {
                   <sales-trends-chart [dataSource]="cell.value"></sales-trends-chart>
                 }
             </ng-template>
         </igx-column>
-        <igx-column field="grossPrice" header="Gross Price" dataType="currency" width="7%" [sortable]="true"></igx-column>
-        <igx-column field="netPrice" header="Net Price" dataType="currency" width="7%" [sortable]="true"></igx-column>
-        <igx-column field="totalNetProfit" header="Net Profit" dataType="currency" width="7%" [sortable]="true"></igx-column>
+        <igx-column field="grossPrice" header="Gross Price" dataType="currency" width="133px" [sortable]="true"></igx-column>
+        <igx-column field="netPrice" header="Net Price" dataType="currency" width="133px" [sortable]="true"></igx-column>
+        <igx-column field="totalNetProfit" header="Net Profit" dataType="currency" width="133px" [sortable]="true"></igx-column>
 
         <igx-row-island
             #rowisland
