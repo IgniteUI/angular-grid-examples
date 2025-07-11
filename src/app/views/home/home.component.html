@@ -1,6 +1,6 @@
-<div class="demo-container">
+<div class="demo-container" #fullscreenElement [class.is-fullscreen]="isFullscreen">
   <div class="tabs-info-wrapper-element">
-    <div class="tab-container">
+    <div class="tab-container" [class.hidden]="isFullscreen">
       <div
         class="tab-item-container"
         routerLink="inventory"
@@ -51,7 +51,10 @@
       >
         <ng-container
           [ngTemplateOutlet]="tabItemTemplate"
-          [ngTemplateOutletContext]="{ enabled: tab4.isActive, tabName: 'sales' }"
+          [ngTemplateOutletContext]="{
+            enabled: tab4.isActive,
+            tabName: 'sales'
+          }"
         ></ng-container>
       </div>
       <div
@@ -62,7 +65,10 @@
       >
         <ng-container
           [ngTemplateOutlet]="tabItemTemplate"
-          [ngTemplateOutletContext]="{ enabled: tab5.isActive, tabName: 'fleet' }"
+          [ngTemplateOutletContext]="{
+            enabled: tab5.isActive,
+            tabName: 'fleet'
+          }"
         ></ng-container>
       </div>
     </div>
@@ -118,7 +124,7 @@
           style="margin-right: 8px"
           (click)="onDownloadClick($event, tabName)"
         >
-        <igx-icon family="custom" name="file_download"></igx-icon>
+          <igx-icon family="custom" name="file_download"></igx-icon>
           Download
         </button>
 
@@ -132,9 +138,13 @@
           View More
         </button>
 
-        <button igxButton="outlined" class="custom-button" (click)="onFullscreenClick()">
-          <igx-icon family="custom" name="fullscreen"></igx-icon>
-          Fullscreen
+        <button
+          igxButton="outlined"
+          class="custom-button"
+          (click)="onToggleFullscreen()"
+        >
+          <igx-icon family="custom" [name]="isFullscreen ? 'exit_fullscreen' : 'fullscreen'"></igx-icon>
+          <span>{{ isFullscreen ? 'Exit Fullscreen' : 'Fullscreen' }}</span>
         </button>
       </div>
     </div>

@@ -26,6 +26,7 @@ $custom-icon-button-theme: icon-button-theme(
 }
 
 .router-container {
+  height: 100%;
   width: 100%;
   overflow: hidden;
   display: flex;
@@ -220,4 +221,22 @@ $custom-icon-button-theme: icon-button-theme(
     gap: 0.5rem;
     align-items: center;
   }
+}
+
+:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+  display: block;
+}
+
+:-webkit-full-screen {
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+  background: white;
+}
+
+:fullscreen .fullscreen-only-hide {
+  display: none;
 }

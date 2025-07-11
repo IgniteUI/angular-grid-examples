@@ -1,8 +1,7 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLinkActive, RouterModule } from '@angular/router';
-import { IgxChipComponent, IgxButtonDirective, IgxIconButtonDirective, IgxIconComponent, IgxRippleDirective, IgxTabsModule, IgxTooltipModule, THEME_TOKEN, ThemeToken, IgxIconService } from 'igniteui-angular';
-
+import { RouterLinkActive, RouterModule } from '@angular/router';
+import { IgxChipComponent, IgxButtonDirective, IgxIconButtonDirective, IgxIconComponent, IgxRippleDirective, IgxTabsModule, IgxTooltipModule, IgxIconService } from 'igniteui-angular';
 
 interface TabInfo {
   title: string;
@@ -39,6 +38,26 @@ const fullScreenIcon = `
 </svg>
 `;
 
+const exitFullScreenIcon = `
+<svg width="24" height="24" viewBox="0 0 20 20" fill="none"
+     stroke="black" stroke-width="2" stroke-linecap="butt" stroke-linejoin="miter"
+     xmlns="http://www.w3.org/2000/svg">
+  <!-- Top-left corner -->
+  <line x1="5.5" y1="2" x2="5.5" y2="6.5" />
+  <line x1="5.5" y1="6.5" x2="1" y2="6.5" />
+  <!-- Top-right corner -->
+  <line x1="14.5" y1="2" x2="14.5" y2="6.5" />
+  <line x1="14.5" y1="6.5" x2="19" y2="6.5" />
+  <!-- Bottom-left corner -->
+  <line x1="5.5" y1="17" x2="5.5" y2="12.5" />
+  <line x1="5.5" y1="12.5" x2="1" y2="12.5" />
+  <!-- Bottom-right corner -->
+  <line x1="14.5" y1="17" x2="14.5" y2="12.5" />
+  <line x1="14.5" y1="12.5" x2="19" y2="12.5" />
+</svg>
+`;
+
+
 @Component({
   standalone: true,
   selector: 'home-view',
@@ -50,14 +69,37 @@ const fullScreenIcon = `
 })
 export class HomeComponent {
 
+  @ViewChild('fullscreenElement') fullscreenElement!: ElementRef;
+  public isFullscreen: boolean = false;
+
   constructor(
-    private router: Router,
-    private iconService: IgxIconService
+    private iconService: IgxIconService,
+    private cdr: ChangeDetectorRef
   ) {
       this.iconService.addSvgIconFromText('file_download', fileDownloadIcon, 'custom');
       this.iconService.addSvgIconFromText('view_more', viewMoreIcon, 'custom');
       this.iconService.addSvgIconFromText('fullscreen', fullScreenIcon, 'custom');
+      this.iconService.addSvgIconFromText('exit_fullscreen', exitFullScreenIcon, 'custom');
   }
+
+  ngOnInit() {
+    // Escaping fullscreen via the ESC button
+    document.addEventListener('fullscreenchange', () => {
+      this.isFullscreen = !!document.fullscreenElement;
+      this.cdr.detectChanges();
+    });
+
+    // Entering and escaping fullscreen via F11 button
+    window.addEventListener('resize', () => {
+      const isFullscreen = window.innerWidth === screen.width && window.innerHeight === screen.height;
+      if (this.isFullscreen !== isFullscreen) {
+        this.isFullscreen = isFullscreen;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+
 
   public tabInfo = new Map<string, TabInfo>([
     ['inventory', {
@@ -102,14 +144,6 @@ export class HomeComponent {
     }],
   ]);
 
-  public onLinkClick(event: MouseEvent) {
-    const targetHTML = event.currentTarget as HTMLAnchorElement;
-    window.open(targetHTML.href, '_blank')?.focus();
-
-    event.preventDefault();
-    event.stopPropagation();
-  }
-
   public onDownloadClick(event: MouseEvent, tabName: string) {
     const downloadLink = this.tabInfo.get(tabName)?.downloadLink;
     window.open(downloadLink, '_blank')?.focus();
@@ -126,9 +160,15 @@ export class HomeComponent {
     event.stopPropagation();
   }
 
-  public onFullscreenClick() {
-    const fullPath = this.router.url;
-    const trimmedPath = '/' + fullPath.split('/').slice(2).join('/');
-    window.open(trimmedPath, '_blank');
+  public onToggleFullscreen(): void {
+    const el = this.fullscreenElement.nativeElement;
+
+    if (!document.fullscreenElement) {
+      el.requestFullscreen?.();
+      this.isFullscreen = true;
+    } else {
+      document.exitFullscreen?.();
+      this.isFullscreen = false;
+    }
   }
 }
