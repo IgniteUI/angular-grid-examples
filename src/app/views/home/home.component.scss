@@ -237,6 +237,6 @@ $custom-icon-button-theme: icon-button-theme(
   background: white;
 }
 
-:fullscreen .fullscreen-only-hide {
-  display: none;
+.hidden {
+  display: none !important;
 }
