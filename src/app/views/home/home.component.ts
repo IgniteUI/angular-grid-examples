@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, ElementRef, ViewChild, ViewEncapsulation,
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLinkActive, RouterModule, Router } from '@angular/router';
 import { IgxButtonDirective, IgxIconComponent, IgxTabsModule, IgxTooltipModule, IgxIconService } from 'igniteui-angular';
-import { exitFullScreenIcon, fileDownloadIcon, fullScreenIcon, viewMoreIcon } from 'src/app/data/icons';
+import { exitFullScreenIcon, fileDownloadIcon, fullScreenIcon, viewMoreIcon } from '../../data/icons';
 
 interface TabInfo {
   title: string;
@@ -45,23 +45,18 @@ export class HomeComponent {
       this.iconService.addSvgIconFromText('exit_fullscreen', exitFullScreenIcon, 'custom');
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
 
-    // Escaping fullscreen via the ESC button
-    document.addEventListener('fullscreenchange', () => {
-      this.isFullscreen = !!document.fullscreenElement;
-      this.cdr.detectChanges();
-    });
+    document.addEventListener('fullscreenchange', this.onFullscreenChange);
+    window.addEventListener('resize', this.onResize);
+  }
 
-    // Entering and escaping fullscreen via F11 button
-    window.addEventListener('resize', () => {
-      const isFullscreen = window.innerWidth === screen.width && window.innerHeight === screen.height;
-      if (this.isFullscreen !== isFullscreen) {
-        this.isFullscreen = isFullscreen;
-        this.cdr.detectChanges();
-      }
-    });
+  ngOnDestroy(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    document.removeEventListener('fullscreenchange', this.onFullscreenChange);
+    window.removeEventListener('resize', this.onResize);
   }
 
   public tabInfo = new Map<string, TabInfo>([
@@ -142,4 +137,19 @@ export class HomeComponent {
       this.isFullscreen = false;
     }
   }
+
+  // Escaping fullscreen via the ESC button
+  private onFullscreenChange = () => {
+    this.isFullscreen = !!document.fullscreenElement;
+    this.cdr.detectChanges();
+  };
+
+  // Entering and escaping fullscreen via F11 button
+  private onResize = () => {
+    const isFullscreen = window.innerWidth === screen.width && window.innerHeight === screen.height;
+    if (this.isFullscreen !== isFullscreen) {
+      this.isFullscreen = isFullscreen;
+      this.cdr.detectChanges();
+    }
+  };
 }
