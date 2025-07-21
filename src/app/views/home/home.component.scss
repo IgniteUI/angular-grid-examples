@@ -46,7 +46,7 @@ $custom-icon-button-theme: icon-button-theme(
 
 .tab-item-container {
   width: 100%;
-  height: 100%;
+  height: 72px;
   display: inline-flex;
 }
 
@@ -56,19 +56,24 @@ $custom-icon-button-theme: icon-button-theme(
   display: flex;
   flex-grow: 1;
   flex-basis: 0;
-  flex-direction: column;
-  justify-content: space-between;
+  flex-direction: row;
+  justify-content: center;
   gap: 8px;
   padding: 12px;
   cursor: pointer;
   user-select: none;
+  color: var(--ig-gray-900);
 
   &--selected {
     border-bottom: 3px solid var(--ig-primary-500);
+    color: var(--ig-primary-500);
   }
 
   &:hover {
-    background: hsl(from var(--ig-gray-100) h s l/0.5);
+    background-color: #e6f2ff;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.15);
+    transition: all 0.5s ease;
+    transform: translateY(-2px); // slight lift
   }
 }
 
@@ -76,10 +81,9 @@ $custom-icon-button-theme: icon-button-theme(
   display: flex;
   flex-direction: row;
   gap: 8px;
-  color: var(--ig-gray-900);
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 600;
-  line-height: 24px;
+  line-height: 20px;
   letter-spacing: 0.15px;
   --ig-size: var(--ig-size-medium);
 
