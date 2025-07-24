@@ -1,0 +1,14 @@
+@use "igniteui-angular/theming" as *;
+
+@include core();
+@include typography($font-family: $indigo-typeface, $type-scale: $indigo-type-scale);
+@include indigo-light-theme($light-indigo-palette);
+
+html,
+body {
+  max-height: 1000px;
+}
+
+.outer-wrapper {
+  height: 100%;
+}

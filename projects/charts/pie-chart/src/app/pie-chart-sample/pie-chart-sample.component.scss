@@ -1,0 +1,47 @@
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+  padding: 35px 16px 75px 16px;
+}
+
+.charts-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.charts-container,
+.chart-wrapper,
+.chart1,
+igx-pie-chart {
+  height: 100%;
+  width: 100%;
+}
+
+.legend,
+.legend-title {
+  display: flex;
+  justify-content: center;
+}
+
+.pie-chart-variant {
+  display: flex;
+  justify-content: center;
+  font-size: large;
+  font-weight: bold;
+  text-transform: capitalize;
+  margin-bottom: 3%;
+}
+
+.chart2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+
+  igx-pie-chart {
+    height: 80%;
+    width: 80%;
+  }
+}
