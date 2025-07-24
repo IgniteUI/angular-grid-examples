@@ -1,0 +1,12 @@
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+  padding: 35px 16px 75px 16px;
+}
+
+.polar-chart-container,
+.chart-wrapper,
+igx-data-chart {
+  height: 100%;
+}
