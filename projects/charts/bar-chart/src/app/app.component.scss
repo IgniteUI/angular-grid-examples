@@ -1,0 +1,17 @@
+@use "igniteui-angular/theming" as *;
+
+@include core();
+@include typography(
+  $font-family: $fluent-typeface,
+  $type-scale: $fluent-type-scale
+);
+@include theme($palette: $light-fluent-palette, $schema: $light-fluent-schema);
+
+html,
+body {
+  max-height: 1000px;
+}
+
+.outer-wrapper {
+  height: 100%;
+}
