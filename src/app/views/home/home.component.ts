@@ -118,7 +118,7 @@ export class HomeComponent {
       title: "Column Chart",
       theme: "Material",
       themeMode: 'Light',
-      content: "This chart emphasizes the amount of change over a period of time or compares multiple items.",
+      content: "Render a collection of data points connected by a straight line to emphasize the amount of change over a period of time",
       moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/column-chart",
       downloadLink: ""
     }],
@@ -126,7 +126,7 @@ export class HomeComponent {
       title: "Bar Chart",
       theme: "Fluent",
       themeMode: 'Light',
-      content: "Bar Chart Sample",
+      content: "Quickly compare frequency, count, total, or average of data in different categories",
       moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/bar-chart",
       downloadLink: ""
     }],
@@ -134,7 +134,7 @@ export class HomeComponent {
       title: "Line Chart",
       theme: "Bootstrap",
       themeMode: 'Light',
-      content: "Line Chart Sample",
+      content: "Show trends and perform comparative analysis of one or more quantities over a period of time",
       moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/line-chart",
       downloadLink: ""
     }],
@@ -142,7 +142,7 @@ export class HomeComponent {
       title: "Pie Chart",
       theme: "Indigo",
       themeMode: 'Light',
-      content: "Pie Chart Sample",
+      content: "Part-to-whole chart that shows how categories (parts) of a data set add up to a total (whole) value.",
       moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/pie-chart",
       downloadLink: ""
     }],
@@ -158,7 +158,7 @@ export class HomeComponent {
       title: "Polar Chart",
       theme: "Fluent",
       themeMode: 'Light',
-      content: "Polar Chart Sample",
+      content: "Emphasizes the amount of change over a period of time or compares multiple items at once.",
       moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/polar-chart",
       downloadLink: ""
     }],
