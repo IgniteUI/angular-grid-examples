@@ -150,7 +150,7 @@ export class HomeComponent {
       title: "Step Chart",
       theme: "Material",
       themeMode: 'Light',
-      content: "Step Chart Sample",
+      content: "Emphasizes the amount of change over a period of time or compares multiple items at once.",
       moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/step-chart",
       downloadLink: ""
     }],

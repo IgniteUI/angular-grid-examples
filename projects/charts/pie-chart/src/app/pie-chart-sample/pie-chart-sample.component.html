@@ -1,41 +1,43 @@
-<div class="charts-container">
-  <div class="chart-wrapper">
-    <div class="pie-chart-variant">PIE CHART</div>
-    <div class="legend-title">Global Electricity Demand by Energy Use</div>
-    <div class="legend">
-      <igx-item-legend name="legend" #legend orientation="Horizontal">
-      </igx-item-legend>
+@defer {
+  <div class="charts-container">
+    <div class="chart-wrapper">
+      <div class="pie-chart-variant">PIE CHART</div>
+      <div class="legend-title">Global Electricity Demand by Energy Use</div>
+      <div class="legend">
+        <igx-item-legend name="legend" #legend orientation="Horizontal">
+        </igx-item-legend>
+      </div>
+      <div class="chart1">
+        <igx-pie-chart
+          name="chart"
+          #chart
+          legendLabelMemberPath="category"
+          labelMemberPath="summary"
+          labelsPosition="BestFit"
+          valueMemberPath="value"
+          radiusFactor="0.7"
+          [dataSource]="energyGlobalDemand"
+          [legend]="legend"
+        >
+        </igx-pie-chart>
+      </div>
     </div>
-    <div class="chart1">
-      <igx-pie-chart
-        name="chart"
-        #chart
-        legendLabelMemberPath="category"
-        labelMemberPath="summary"
-        labelsPosition="BestFit"
-        valueMemberPath="value"
-        radiusFactor="0.7"
-        [dataSource]="energyGlobalDemand"
-        [legend]="legend"
-      >
-      </igx-pie-chart>
-    </div>
-  </div>
 
-  <div class="chart-wrapper">
-    <div class="pie-chart-variant">PIE CHART EXPLOSION</div>
-    <div class="chart2">
-      <igx-pie-chart
-        #chart2
-        [dataSource]="secondChartData"
-        labelMemberPath="Summary"
-        legendLabelMemberPath="Company"
-        valueMemberPath="MarketShare"
-        (sliceClick)="pieSliceClickEvent($event)"
-        labelsPosition="OutsideEnd"
-        labelExtent="30"
-      >
-      </igx-pie-chart>
+    <div class="chart-wrapper">
+      <div class="pie-chart-variant">PIE CHART EXPLOSION</div>
+      <div class="chart2">
+        <igx-pie-chart
+          #chart2
+          [dataSource]="secondChartData"
+          labelMemberPath="Summary"
+          legendLabelMemberPath="Company"
+          valueMemberPath="MarketShare"
+          (sliceClick)="pieSliceClickEvent($event)"
+          labelsPosition="OutsideEnd"
+          labelExtent="30"
+        >
+        </igx-pie-chart>
+      </div>
     </div>
   </div>
-</div>
+}
