@@ -18,6 +18,8 @@
           radiusFactor="0.7"
           [dataSource]="energyGlobalDemand"
           [legend]="legend"
+          [brushes]="['#C5E0FF', '#FFB5C2', '#FFD8A8', '#B2E5B2', '#D6CCFF']"
+          [outlines]="['#C5E0FF', '#FFB5C2', '#FFD8A8', '#B2E5B2', '#D6CCFF']"
         >
         </igx-pie-chart>
       </div>
@@ -35,6 +37,8 @@
           (sliceClick)="pieSliceClickEvent($event)"
           labelsPosition="OutsideEnd"
           labelExtent="30"
+          [brushes]="['#C5E0FF', '#FFB5C2', '#FFD8A8', '#B2E5B2', '#D6CCFF']"
+          [outlines]="['#C5E0FF', '#FFB5C2', '#FFD8A8', '#B2E5B2', '#D6CCFF']"
         >
         </igx-pie-chart>
       </div>
