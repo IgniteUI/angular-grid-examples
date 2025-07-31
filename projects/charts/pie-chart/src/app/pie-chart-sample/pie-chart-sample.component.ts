@@ -53,8 +53,8 @@ export class PieChartDemoComponent {
     e.args.isExploded = !e.args.isExploded;
   }
 
-  public ngAfterViewInit(): void {
-    if (this.chart && this.chart.explodedSlices) {
+  public onChartLoaded() {
+    if (this.chart2 && this.chart2.explodedSlices) {
       this.chart2.explodedSlices.add(3);
     }
   }
