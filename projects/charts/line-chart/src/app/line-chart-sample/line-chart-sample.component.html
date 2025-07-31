@@ -15,8 +15,8 @@
         name="chart"
         #chart
         chartType="Line"
-        isHorizontalZoomEnabled="false"
-        isVerticalZoomEnabled="false"
+        [isHorizontalZoomEnabled]="false"
+        [isVerticalZoomEnabled]="false"
         [dataSource]="countryRenewableElectricity"
         includedProperties="year, europe, china, america"
         [legend]="legend"
@@ -25,9 +25,6 @@
         yAxisTitleRightMargin="5"
         yAxisLabelLeftMargin="0"
         computedPlotAreaMarginMode="Series"
-        [brushes]="['#C5E0FF', '#FFB5C2', '#B2E5B2']"
-        [markerBrushes]="['#C5E0FF', '#FFB5C2', '#B2E5B2']"
-        [markerOutlines]="['#C5E0FF', '#FFB5C2', '#B2E5B2']"
         >
         </igx-category-chart>
     </div>
