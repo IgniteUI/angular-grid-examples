@@ -271,9 +271,11 @@
       <span class="overlay-text">Mileage: {{ vehicleDetails.mileage }}</span>
     </igx-card-header>
     <igx-card-content class="overlay-location-content">
-      <igx-geographic-map #map [width]="'100%'" [height]="'100%'" zoomable="false" draggable="false"
+      @if (isBrowserOnly) {
+        <igx-geographic-map #map [width]="'100%'" [height]="'100%'" zoomable="false" draggable="false"
         [dataSource]="vehicleDetails.markerLocations" latitudeMemberPath="latitude" longitudeMemberPath="longitude">
-      </igx-geographic-map>
+        </igx-geographic-map>
+      }
     </igx-card-content>
     <igx-card-actions class="overlay-location-actions">
       <button igxButton="flat" (click)="closeLocationOverlay()">Close</button>

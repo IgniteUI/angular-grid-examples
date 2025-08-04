@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { check, delivery, gitIssue, wrench } from '@igniteui/material-icons-extended';
 import { CloseScrollStrategy, DefaultSortingStrategy, IgxAvatarComponent, IgxBadgeComponent, IgxButtonDirective, IgxButtonModule, IgxCardActionsComponent, IgxCardComponent, IgxCardContentDirective, IgxCardHeaderComponent, IgxCarouselComponent, IgxCellTemplateDirective, IgxColumnComponent, IgxDividerDirective, IgxGridComponent, IgxGridDetailTemplateDirective, IgxGridToolbarActionsComponent, IgxGridToolbarAdvancedFilteringComponent, IgxGridToolbarComponent, IgxGridToolbarHidingComponent, IgxGridToolbarPinningComponent, IgxGridToolbarTitleComponent, IgxIconComponent, IgxIconService, IgxLabelDirective, IgxOverlayService, IgxSelectComponent, IgxSelectItemComponent, IgxSlideComponent, IgxTabContentComponent, IgxTabHeaderComponent, IgxTabItemComponent, IgxTabsComponent, RelativePosition, RelativePositionStrategy, SortingDirection, THEME_TOKEN, ThemeToken } from 'igniteui-angular';
 import { IgxCategoryChartModule, IgxDataChartInteractivityModule, IgxLegendDynamicModule, IgxPieChartModule } from 'igniteui-angular-charts';
@@ -75,7 +75,7 @@ export class FleetManagementGridComponent implements OnInit {
   @ViewChild('grid', { static: true }) protected grid!: IgxGridComponent;
   @ViewChild(`locationOverlay`) private locationOverlay!: ElementRef;
   @ViewChild(`driverOverlay`) private driverOverlay!: ElementRef;
-  @ViewChild("map", { static: true }) protected map!: IgxGeographicMapComponent;
+  @ViewChild("map", { static: false }) protected map!: IgxGeographicMapComponent;
 
   //overlay IDs
   private locationOverlayId: string | null = null;
@@ -124,7 +124,8 @@ export class FleetManagementGridComponent implements OnInit {
     @Inject(IgxIconService) private iconService: IgxIconService,
     @Inject(IgxOverlayService) private overlayService: IgxOverlayService,
     protected dataService: DataService,
-    @Inject(ElementRef) private hostRef: ElementRef) { }
+    @Inject(ElementRef) private hostRef: ElementRef,
+    @Inject(PLATFORM_ID) private platformId: string) { }
 
   public ngOnInit(): void {
     this.iconService.addSvgIconFromText(check.name, check.value, 'imx-icons');
@@ -158,6 +159,10 @@ export class FleetManagementGridComponent implements OnInit {
       this.overlayService.detach(this.driverOverlayId);
       this.driverOverlayId = null;
     }
+  }
+
+  protected get isBrowserOnly(): boolean {
+    return isPlatformBrowser(this.platformId);
   }
 
   //handling for chart periods
@@ -368,7 +373,7 @@ export class FleetManagementGridComponent implements OnInit {
         };
       }
     } as IgDataTemplate;
-    this.map.series.add(symbolSeries);
+    this.map!.series.add(symbolSeries);
   }
 
   protected rightAlignedCellStyles = {
