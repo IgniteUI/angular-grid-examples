@@ -132,6 +132,8 @@ export class ErpHGridSampleComponent implements OnInit, AfterViewInit {
     // data
     this.erpDataService.getProducts();
     this.data$ = this.erpDataService.records;
+    console.log('ERP data', this.erpDataService.records);
+
     this.data$.subscribe((data) => {
       if (data.length !== 0) {
         this.isLoading = false;

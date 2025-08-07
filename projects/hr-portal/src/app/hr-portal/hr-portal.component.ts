@@ -67,6 +67,7 @@ export class HrPortalComponent implements OnInit {
   ngOnInit() {
     this.dataService.getData();
     this.data$ = this.dataService.records;
+    console.log('HR data', this.dataService.records);
     this.data$.subscribe((data) => {
       if (data.length !== 0) {
         this.isLoading = false;

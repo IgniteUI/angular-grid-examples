@@ -52,11 +52,5 @@ export class PieChartDemoComponent {
   public pieSliceClickEvent(e: any): void {
     e.args.isExploded = !e.args.isExploded;
   }
-
-  public onChartLoaded() {
-    if (this.chart2 && this.chart2.explodedSlices) {
-      this.chart2.explodedSlices.add(3);
-    }
-  }
 }
 
