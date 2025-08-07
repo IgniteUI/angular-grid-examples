@@ -1,19 +1,14 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { THEME_TOKEN, ThemeToken } from 'igniteui-angular';
 import {
   IgxCategoryChartModule,
   IgxDataChartAnnotationModule,
-  IgxDataChartComponent,
   IgxDataChartCoreModule,
   IgxDataChartInteractivityModule,
   IgxDataChartPolarCoreModule,
   IgxDataChartPolarModule,
-  IgxLegendComponent,
-  IgxLegendModule,
-  IgxNumericAngleAxisComponent,
-  IgxNumericRadiusAxisComponent,
-  IgxPolarAreaSeriesComponent
+  IgxLegendModule
 } from 'igniteui-angular-charts';
 
 @Component({
@@ -42,18 +37,6 @@ import {
   styleUrl: './polar-chart-sample.component.scss'
 })
 export class PolarChartDemoComponent {
-  @ViewChild("legend", { static: true })
-  public legend!: IgxLegendComponent;
-  @ViewChild("chart", { static: true })
-  public chart!: IgxDataChartComponent;
-  @ViewChild("angleAxis", { static: true })
-  public angleAxis!: IgxNumericAngleAxisComponent;
-  @ViewChild("radiusAxis", { static: true })
-  public radiusAxis!: IgxNumericRadiusAxisComponent;
-  @ViewChild("polarAreaSeries1", { static: true })
-  public polarAreaSeries1!: IgxPolarAreaSeriesComponent;
-  @ViewChild("polarAreaSeries2", { static: true })
-  public polarAreaSeries2!: IgxPolarAreaSeriesComponent;
 
   public boatSailingData = [
     { direction: 0, boatSpeed: 70, windSpeed: 90 },

@@ -1,7 +1,7 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { THEME_TOKEN, ThemeToken } from 'igniteui-angular';
-import { IgxBarSeriesComponent, IgxBarSeriesModule, IgxCategoryHighlightLayerComponent, IgxCategoryHighlightLayerModule, IgxCategoryYAxisComponent, IgxCategoryYAxisModule, IgxDataChartAnnotationModule, IgxDataChartCategoryCoreModule, IgxDataChartCategoryModule, IgxDataChartComponent, IgxDataChartCoreModule, IgxDataChartInteractivityModule, IgxDataChartVerticalCategoryModule, IgxDataToolTipLayerComponent, IgxDataToolTipLayerModule, IgxLegendComponent, IgxLegendModule, IgxNumericXAxisComponent, IgxNumericXAxisModule } from 'igniteui-angular-charts';
+import { IgxBarSeriesModule, IgxCategoryHighlightLayerModule, IgxCategoryYAxisModule, IgxDataChartAnnotationModule, IgxDataChartCategoryCoreModule, IgxDataChartCategoryModule, IgxDataChartCoreModule, IgxDataChartInteractivityModule, IgxDataChartVerticalCategoryModule, IgxDataToolTipLayerModule, IgxLegendModule, IgxNumericXAxisModule } from 'igniteui-angular-charts';
 
 @Component({
   selector: 'app-bar-chart-sample',
@@ -34,22 +34,6 @@ import { IgxBarSeriesComponent, IgxBarSeriesModule, IgxCategoryHighlightLayerCom
   styleUrl: './bar-chart-sample.component.scss'
 })
 export class BarChartDemoComponent {
-  @ViewChild("legend", { static: true })
-  public legend!: IgxLegendComponent;
-  @ViewChild("chart", { static: true })
-  public chart!: IgxDataChartComponent;
-  @ViewChild("yAxis", { static: true })
-  public yAxis!: IgxCategoryYAxisComponent;
-  @ViewChild("xAxis", { static: true })
-  public xAxis!: IgxNumericXAxisComponent;
-  @ViewChild("categoryHighlightLayer", { static: true })
-  public categoryHighlightLayer!: IgxCategoryHighlightLayerComponent;
-  @ViewChild("barSeries1", { static: true })
-  public barSeries1!: IgxBarSeriesComponent;
-  @ViewChild("barSeries2", { static: true })
-  public barSeries2!: IgxBarSeriesComponent;
-  @ViewChild("tooltips", { static: true })
-  public tooltips!: IgxDataToolTipLayerComponent;
 
   public highestGrossingMovies = [
     { franchise: 'Marvel Universe', totalRevenue: 22.55, highestGrossing: 2.8 },

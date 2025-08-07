@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { THEME_TOKEN, ThemeToken } from 'igniteui-angular';
-import { IgxCategoryChartComponent, IgxCategoryChartModule, IgxLegendComponent, IgxLegendModule } from 'igniteui-angular-charts';
+import { IgxCategoryChartModule, IgxLegendModule } from 'igniteui-angular-charts';
 
 @Component({
   selector: 'app-line-chart-sample',
@@ -25,10 +25,6 @@ import { IgxCategoryChartComponent, IgxCategoryChartModule, IgxLegendComponent, 
   styleUrl: './line-chart-sample.component.scss'
 })
 export class LineChartDemoComponent {
-  @ViewChild("legend", { static: true })
-  public legend!: IgxLegendComponent;
-  @ViewChild("chart", { static: true })
-  public chart!: IgxCategoryChartComponent;
 
   public countryRenewableElectricity = [
     { year: '2009', europe: 34, china: 21, america: 19 },

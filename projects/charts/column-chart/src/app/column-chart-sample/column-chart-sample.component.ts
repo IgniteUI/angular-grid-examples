@@ -1,7 +1,7 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { THEME_TOKEN, ThemeToken } from 'igniteui-angular';
-import { IgxCategoryChartComponent, IgxCategoryChartModule } from 'igniteui-angular-charts';
+import { IgxCategoryChartModule } from 'igniteui-angular-charts';
 
 @Component({
   selector: 'app-column-chart-sample',
@@ -23,8 +23,6 @@ import { IgxCategoryChartComponent, IgxCategoryChartModule } from 'igniteui-angu
   styleUrl: './column-chart-sample.component.scss'
 })
 export class ColumnChartDemoComponent {
-  @ViewChild("chart", { static: true })
-  public chart!: IgxCategoryChartComponent;
 
   public chartData = [
     { month: 'January', temperature: 3 },

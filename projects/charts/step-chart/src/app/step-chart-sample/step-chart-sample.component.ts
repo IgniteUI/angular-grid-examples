@@ -1,7 +1,7 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { THEME_TOKEN, ThemeToken } from 'igniteui-angular';
-import { IgxCategoryChartComponent, IgxCategoryChartModule, IgxDataChartInteractivityModule, IgxLegendComponent, IgxLegendModule} from 'igniteui-angular-charts';
+import { IgxCategoryChartModule, IgxDataChartInteractivityModule, IgxLegendModule} from 'igniteui-angular-charts';
 
 @Component({
   selector: 'app-step-chart-sample',
@@ -26,10 +26,6 @@ import { IgxCategoryChartComponent, IgxCategoryChartModule, IgxDataChartInteract
   styleUrl: './step-chart-sample.component.scss'
 })
 export class StepChartDemoComponent {
-  @ViewChild("chart", { static: true })
-  public chart!: IgxCategoryChartComponent;
-  @ViewChild("legend", { static: true } )
-  public legend!: IgxLegendComponent;
 
   public countryRenewableElectricity = [
     { year: '2009', europe: 34, china: 21, america: 19 },

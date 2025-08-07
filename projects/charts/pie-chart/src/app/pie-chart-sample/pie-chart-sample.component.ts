@@ -1,7 +1,7 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { THEME_TOKEN, ThemeToken } from 'igniteui-angular';
-import { IgxCategoryChartModule, IgxItemLegendComponent, IgxItemLegendModule, IgxPieChartComponent, IgxPieChartModule } from 'igniteui-angular-charts';
+import { IgxCategoryChartModule, IgxItemLegendModule, IgxPieChartModule } from 'igniteui-angular-charts';
 
 @Component({
   selector: 'app-pie-chart-sample',
@@ -25,13 +25,6 @@ import { IgxCategoryChartModule, IgxItemLegendComponent, IgxItemLegendModule, Ig
   styleUrl: './pie-chart-sample.component.scss'
 })
 export class PieChartDemoComponent {
-  @ViewChild("legend", { static: true })
-  public legend!: IgxItemLegendComponent;
-  @ViewChild("chart", { static: true })
-  public chart!: IgxPieChartComponent;
-
-  @ViewChild("chart2", { static: true })
-  public chart2!: IgxPieChartComponent;
 
   public energyGlobalDemand = [
     { value: 37, category: 'Cooling', summary: 'Cooling 37%' },
