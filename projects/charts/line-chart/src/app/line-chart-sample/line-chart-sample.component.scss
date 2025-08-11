@@ -1,0 +1,12 @@
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+  padding: 35px 16px 105px 16px;
+}
+
+.container,
+.chart-wrapper,
+igx-category-chart {
+  height: 100%;
+}

@@ -3,8 +3,8 @@
     <div class="tab-container" [class.hidden]="isFullscreen">
       <div
         class="tab-item-container"
-        *ngFor="let tab of tabs"
-        [routerLink]="tab.key"
+        *ngFor="let tab of activeTabs"
+        [routerLink]="isChartsSection ? ['charts', tab.key] : [tab.key]"
         routerLinkActive
         #rla="routerLinkActive"
       >
@@ -12,18 +12,18 @@
           [ngTemplateOutlet]="tabItemTemplate"
           [ngTemplateOutletContext]="{
             enabled: rla.isActive,
-            tabName: tab.key
+            tabName: isChartsSection ? 'charts/' + tab.key : tab.key
           }"
         ></ng-container>
       </div>
     </div>
 
 
-    <ng-container *ngFor="let tab of tabs">
+    <ng-container *ngFor="let tab of activeTabs">
       <ng-container
         *ngIf="router.url.includes(tab.key)"
         [ngTemplateOutlet]="tabItemInfoTemplate"
-        [ngTemplateOutletContext]="{ tabName: tab.key }"
+        [ngTemplateOutletContext]="{ tabName: isChartsSection ? 'charts/' + tab.key : tab.key }"
       ></ng-container>
     </ng-container>
 
