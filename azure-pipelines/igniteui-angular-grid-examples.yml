@@ -43,41 +43,37 @@ stages:
         inputs:
           targetType: 'inline'
           script: |
-            # Define the root path where projects are located
-            rootPath="$(Build.SourcesDirectory)/projects"
-            
-            # Get all first-level subdirectories in the specified root path
-            subdirectories=$(find "$rootPath" -mindepth 1 -maxdepth 1 -type d)
-            
-            for subdirectory in $subdirectories; do
-                # Extract the directory name from the path
-                dirName=$(basename "$subdirectory")
+            create_zips() {
+              local rootPath="$1"
+              if [ -d "$rootPath" ]; then
+                subdirectories=$(find "$rootPath" -mindepth 1 -maxdepth 1 -type d)
+                for subdirectory in $subdirectories; do
+                  dirName=$(basename "$subdirectory")
 
-                # Give each sample a version in its package.json file - for traceability
-                cd "$subdirectory"
-                echo "Calling npm version command"
-                npm version $(Build.BuildNumber) --no-git-tag-version
+                  cd "$subdirectory"
+                  echo "Calling npm version command for $dirName"
+                  npm version $(Build.BuildNumber) --no-git-tag-version
 
-                # Check if the directory name is already camel-case
-                if [[ "$dirName" =~ ^[A-Z]+[a-z]+([A-Z][a-z]*)*$ ]]; then
-                    # If already camel-case, print it as is
-                    echo "$dirName"
-                else
-                    # Convert to camel-case (capitalize first letters and remove hyphens)
-                    dirName=$(echo "$dirName" | sed -E 's/(^|-)([a-z])/\U\2/g')
+                  if [[ "$dirName" =~ ^[A-Z]+[a-z]+([A-Z][a-z]*)*$ ]]; then
+                      echo "$dirName"
+                  else
+                      dirName=$(echo "$dirName" | sed -E 's/(^|-)([a-z])/\U\2/g')
+                  fi
+                  
+                  echo "Processing directory: $dirName"
+                  zipName="$(Build.ArtifactStagingDirectory)/IgniteUI_Angular_ApplicationSample_${dirName}_Source.zip"
+                  echo "Creating ZIP: $zipName"
+                  (cd "$subdirectory" && zip -r "$zipName" .)
+                done
+              fi
+            }
 
-                fi
-                
-                echo "Processing directory: $dirName"
-                
-                # Define the name for the zip file
-                zipName="$(Build.ArtifactStagingDirectory)/IgniteUI_Angular_ApplicationSample_${dirName}_Source.zip"
-                echo "Creating ZIP: $zipName"
-                
-                # Compress the directory into a ZIP file
-                (cd "$subdirectory" && zip -r "$zipName" .)
-            done
-            
+            # Pass 1: All first-level directories in projects/
+            create_zips "$(Build.SourcesDirectory)/projects"
+
+            # Pass 2: All first-level directories in projects/charts/
+            create_zips "$(Build.SourcesDirectory)/projects/charts"
+
             echo "All sample projects have been compressed and saved to the artifacts directory."
 
       - task: PublishPipelineArtifact@1
