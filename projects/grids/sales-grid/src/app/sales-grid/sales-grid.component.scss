@@ -1,0 +1,70 @@
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.rootSample {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    --ig-size: var(--ig-size-small);
+}
+
+.pivotToolbar {
+    display: flex;
+    justify-content: space-between;
+    min-height: 40px;
+    border: solid 1px hsl(from var(--ig-gray-400) h s l / 1);
+    background: var(--igx-grid-header-background, hsl(from var(--ig-surface-500) h s l/1));
+}
+
+.pivotRow {
+    display: flex;
+    flex-direction: row;
+    height: calc(100% - 40px);
+}
+
+.pivotContainer {
+    width: 100%;
+    border: solid 1px hsl(from var(--ig-gray-400) h s l / 1);
+    border-top: none;
+    border-right: none;
+    overflow: auto;
+}
+
+.selectorContainer {
+    height: 100%;
+    min-width: 180px;
+    overflow-y: auto;
+}
+
+.countryHeader {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    // justify-content: center;
+}
+
+.countryImage {
+    height: 14px;
+    margin-right: 4px;
+}
+
+
+igx-pivot-data-selector {
+    border: solid 1px hsl(from var(--ig-gray-400) h s l / 1);
+    border-top: none;
+    height: 100%;
+
+    ::ng-deep {
+        .igx-list__item-content {
+            padding: 0 8px !important;
+
+            span {
+                margin-inline-start: initial;
+            }
+        }
+    }
+}
