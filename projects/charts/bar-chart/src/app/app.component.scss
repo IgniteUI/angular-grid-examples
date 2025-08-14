@@ -5,7 +5,7 @@
   $font-family: $fluent-typeface,
   $type-scale: $fluent-type-scale
 );
-@include theme($palette: $light-fluent-palette, $schema: $light-fluent-schema);
+@include theme($palette: $light-material-palette, $schema: $light-material-schema);
 
 html,
 body {

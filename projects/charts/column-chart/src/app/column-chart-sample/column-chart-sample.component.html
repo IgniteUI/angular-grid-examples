@@ -1,9 +1,14 @@
-@defer {
+<div class="container">
+  <div class="legend-title">Highest Grossing Movie Franchises</div>
+  <div class="legend">
+    <igx-legend name="legend" #legend orientation="Horizontal"> </igx-legend>
+  </div>
   <igx-category-chart
     name="chart"
     #chart
     width="100%"
     height="100%"
+    [legend]="legend"
     [dataSource]="chartData"
     chartType="column"
     yAxisTitle="Temperature in °C"
@@ -16,4 +21,5 @@
     [isVerticalZoomEnabled]="false"
   >
   </igx-category-chart>
-}
+</div>
+

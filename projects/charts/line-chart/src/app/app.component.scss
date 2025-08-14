@@ -5,10 +5,8 @@
   $font-family: $bootstrap-typeface,
   $type-scale: $bootstrap-type-scale
 );
-@include theme(
-  $palette: $light-bootstrap-palette,
-  $schema: $light-bootstrap-schema
-);
+
+@include theme($palette: $light-material-palette, $schema: $light-material-schema);
 
 html,
 body {
