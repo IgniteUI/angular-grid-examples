@@ -1,0 +1,20 @@
+{
+  "detailsCategories": [
+    { "label": "Make", "key": "make" },
+    { "label": "Generation", "key": "details.generation" },
+    { "label": "Year of Manufacture", "key": "details.yearOfManufacture" },
+    { "label": "Fuel Type", "key": "details.fuelType" },
+    { "label": "Doors", "key": "details.doors" },
+    { "label": "Seats", "key": "details.seats" },
+    { "label": "Transmission", "key": "details.transmission" }
+  ],
+  "engineCategories": [
+    { "label": "Engine", "key": "details.engine" },
+    { "label": "Power", "key": "details.power" },
+    { "label": "Mileage", "key": "details.mileage" },
+    { "label": "Cubature", "key": "details.cubature" },
+    { "label": "Color", "key": "details.color" },
+    { "label": "MSRP", "key": "details.msrp" },
+    { "label": "Toll Pass ID", "key": "details.tollPassId" }
+  ]
+}

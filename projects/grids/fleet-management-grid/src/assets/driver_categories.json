@@ -1,0 +1,9 @@
+{
+  "driverCategories": [
+    { "label": "Driver's License", "key": "license" },
+    { "label": "Address", "key": "address" },
+    { "label": "City", "key": "city" },
+    { "label": "Phone", "key": "phone" },
+    { "label": "Email", "key": "email" }
+  ]
+}

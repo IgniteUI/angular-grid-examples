@@ -1,0 +1,14 @@
+@use "igniteui-angular/theming" as *;
+
+@include core();
+@include typography();
+@include theme(
+  $palette: $dark-material-palette,
+  $schema: $dark-material-schema
+);
+
+.overlay igx-card {
+  border: 0px;
+  border-radius: 4px;
+  box-shadow: var(--ig-elevation-24);
+}
