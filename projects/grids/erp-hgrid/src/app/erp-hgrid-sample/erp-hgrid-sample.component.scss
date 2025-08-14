@@ -1,0 +1,81 @@
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.wrapper {
+  --ig-size: var(--ig-size-medium);
+  height: 100%;
+
+  .igx-badge {
+    background-color: var(--ig-primary-50);
+  }
+
+  .igx-badge--warning {
+    background-color: var(--ig-warn-100);
+  }
+
+  .igx-badge--error {
+    background-color: var(--ig-error-50);
+  }
+
+  .igx-badge--success {
+    background-color: var(--ig-success-100);
+  }
+}
+
+
+.custom-icon {
+  --size: 12px;
+  color:  black;
+}
+
+.country-cell {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  padding: 0px 4px;
+  gap: 8px;
+
+  img {
+    font-size: 16px;
+    width: 18px;
+    height: 14px;
+    margin-top: 2px;
+    box-shadow: var(--ig-elevation-1);
+  }
+}
+
+.status-cell {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  padding: 0px 4px;
+  gap: 8px;
+}
+
+// Overridden styles for design purposes
+::ng-deep {
+
+  // Setting background color of the element containing the child gird
+  .igx-grid__tr-container {
+    background-color: white;
+  }
+
+  // Setting background color of each row in the grids
+  .igx-grid__tr {
+    --row-odd-background: white;
+    --row-even-background: white;
+  }
+
+  .product-img {
+    display: flex;
+    justify-content: center;
+
+    img {
+      height: 22px;
+      border-radius: 4px;
+    }
+  }
+}
