@@ -71,7 +71,7 @@ export class HomeComponent {
   }
 
   public tabInfoGrids = new Map<string, TabInfo>([
-    ['inventory', {
+    ['grids/inventory', {
       title: "ERP/Inventory",
       theme: "Material",
       themeMode: 'Light',
@@ -79,7 +79,7 @@ export class HomeComponent {
       moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/hierarchicalgrid/hierarchical-grid",
       downloadLink: "https://www.infragistics.com/resources/sample-applications/erp-inventory-sample-app"
     }],
-    ['hr-portal', {
+    ['grids/hr-portal', {
       title: "Org Chart/HR Portal",
       theme: "Fluent",
       themeMode: 'Light',
@@ -87,7 +87,7 @@ export class HomeComponent {
       moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/treegrid/tree-grid",
       downloadLink: "https://www.infragistics.com/resources/sample-applications/org-charthr-portal-sample-app"
     }],
-    ['finance', {
+    ['grids/finance', {
       title: "Financial Portfolio",
       theme: "Bootstrap",
       themeMode: 'Light',
@@ -95,7 +95,7 @@ export class HomeComponent {
       moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/grid/grid",
       downloadLink: "https://www.infragistics.com/resources/sample-applications/financial-portfolio-sample-app"
     }],
-    ['sales', {
+    ['grids/sales', {
       title: "Sales Dashboard",
       theme: "Indigo",
       themeMode: 'Light',
@@ -103,7 +103,7 @@ export class HomeComponent {
       moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/pivotGrid/pivot-grid",
       downloadLink: "https://www.infragistics.com/resources/sample-applications/sales-grid-sample-app"
     }],
-    ['fleet', {
+    ['grids/fleet', {
       title: "Fleet Management",
       theme: "Material",
       themeMode: 'Dark',

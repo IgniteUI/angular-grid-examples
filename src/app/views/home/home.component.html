@@ -4,7 +4,7 @@
       <div
         class="tab-item-container"
         *ngFor="let tab of activeTabs"
-        [routerLink]="isChartsSection ? ['charts', tab.key] : [tab.key]"
+        [routerLink]="isChartsSection ? ['charts', tab.key] : ['grids', tab.key]"
         routerLinkActive
         #rla="routerLinkActive"
       >
@@ -12,21 +12,21 @@
           [ngTemplateOutlet]="tabItemTemplate"
           [ngTemplateOutletContext]="{
             enabled: rla.isActive,
-            tabName: isChartsSection ? 'charts/' + tab.key : tab.key
+            tabName: (isChartsSection ? 'charts/' : 'grids/') + tab.key
           }"
         ></ng-container>
       </div>
     </div>
 
-
     <ng-container *ngFor="let tab of activeTabs">
       <ng-container
         *ngIf="router.url.includes(tab.key)"
         [ngTemplateOutlet]="tabItemInfoTemplate"
-        [ngTemplateOutletContext]="{ tabName: isChartsSection ? 'charts/' + tab.key : tab.key }"
+        [ngTemplateOutletContext]="{
+          tabName: (isChartsSection ? 'charts/' : 'grids/') + tab.key
+        }"
       ></ng-container>
     </ng-container>
-
   </div>
 
   <div class="router-container">
