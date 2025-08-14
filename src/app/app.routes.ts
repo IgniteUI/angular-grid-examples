@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { SalesViewComponent } from './views/sales/sales-view.component';
-import { HrPortalViewComponent } from './views/hr-portal/hr-portal-view.component';
-import { FinanceViewComponent } from './views/finance/finance-view.component';
-import { ErpHGridViewComponent } from './views/erp-hgrid/erp-hgrid-view.component';
-import { FleetManagementViewComponent } from './views/fleet-management/fleet-management-view.component';
+import { SalesViewComponent } from './views/grids/sales/sales-view.component';
+import { HrPortalViewComponent } from './views/grids/hr-portal/hr-portal-view.component';
+import { FinanceViewComponent } from './views/grids/finance/finance-view.component';
+import { ErpHGridViewComponent } from './views/grids/erp-hgrid/erp-hgrid-view.component';
+import { FleetManagementViewComponent } from './views/grids/fleet-management/fleet-management-view.component';
 import { HomeComponent } from './views/home/home.component';
 import { ColumnChartViewComponent } from './views/charts/column-chart/column-chart-view.component';
 import { BarChartViewComponent } from './views/charts/bar-chart/bar-chart-view.component';
@@ -20,41 +20,53 @@ export const routes: Routes = [
   },
   {
     path: 'home',
-    title: "home",
+    title: 'home',
     component: HomeComponent,
     children: [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'inventory'
+        redirectTo: 'grids/inventory'
       },
       {
-        path: 'inventory',
-        title: "Inventory",
-        component: ErpHGridViewComponent
-      },
-      {
-        path: 'hr-portal',
-        title: "HR Portal",
-        component: HrPortalViewComponent
-      },
-      {
-        path: 'finance',
-        title: "Finance",
-        component: FinanceViewComponent
-      },
-      {
-        path: 'sales',
-        title: "Sales",
-        component: SalesViewComponent
-      },
-      {
-        path: 'fleet',
-        title: "Fleet Management",
-        component: FleetManagementViewComponent
+        path: 'grids',
+        title: 'Grids',
+        children: [
+          {
+            path: 'inventory',
+            title: 'Inventory',
+            component: ErpHGridViewComponent
+          },
+          {
+            path: 'hr-portal',
+            title: 'HR Portal',
+            component: HrPortalViewComponent
+          },
+          {
+            path: 'finance',
+            title: 'Finance',
+            component: FinanceViewComponent
+          },
+          {
+            path: 'sales',
+            title: 'Sales',
+            component: SalesViewComponent
+          },
+          {
+            path: 'fleet',
+            title: 'Fleet Management',
+            component: FleetManagementViewComponent
+          },
+          {
+            path: '',
+            redirectTo: 'inventory',
+            pathMatch: 'full'
+          }
+        ]
       },
       {
         path: 'charts',
+        title: 'Charts',
         children: [
           {
             path: 'column-chart',
@@ -96,33 +108,44 @@ export const routes: Routes = [
     ]
   },
   {
-    path: 'inventory',
-    title: "Inventory",
-    component: ErpHGridViewComponent
-  },
-  {
-    path: 'hr-portal',
-    title: "HR Portal",
-    component: HrPortalViewComponent
-  },
-  {
-    path: 'finance',
-    title: "Finance",
-    component: FinanceViewComponent
-  },
-  {
-    path: 'sales',
-    title: "Sales",
-    component: SalesViewComponent
-  },
-  {
-    path: 'fleet',
-    title: "Fleet Management",
-    component: FleetManagementViewComponent
+    path: 'grids',
+    title: 'Grids',
+    children: [
+      {
+        path: 'inventory',
+        title: 'Inventory',
+        component: ErpHGridViewComponent
+      },
+      {
+        path: 'hr-portal',
+        title: 'HR Portal',
+        component: HrPortalViewComponent
+      },
+      {
+        path: 'finance',
+        title: 'Finance',
+        component: FinanceViewComponent
+      },
+      {
+        path: 'sales',
+        title: 'Sales',
+        component: SalesViewComponent
+      },
+      {
+        path: 'fleet',
+        title: 'Fleet Management',
+        component: FleetManagementViewComponent
+      },
+      {
+        path: '',
+        redirectTo: 'inventory',
+        pathMatch: 'full'
+      }
+    ]
   },
   {
     path: 'charts',
-    title: 'charts',
+    title: 'Charts',
     children: [
       {
         path: 'column-chart',
@@ -162,3 +185,4 @@ export const routes: Routes = [
     ]
   }
 ];
+
