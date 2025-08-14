@@ -1,0 +1,49 @@
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.flex-container {
+  display: block;
+  margin: 0 auto;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+igx-tree-grid {
+  --ig-size: var(--ig-size-medium);
+  --row-even-background: #ffffff;
+}
+
+.center-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+}
+
+.employeeDiv {
+  display: flex;
+  align-items: center;
+  --igx-avatar-size: 28px;
+  gap: 8px;
+}
+
+.flagDiv {
+  gap: 8px;
+  align-items: center;
+  display: flex;
+  & igx-icon {
+    height: 14px;
+    width: 18px;
+    border-radius: 1px;
+    box-shadow: var(--ig-elevation-1);
+    display: block;
+    overflow: hidden;
+  }
+}
