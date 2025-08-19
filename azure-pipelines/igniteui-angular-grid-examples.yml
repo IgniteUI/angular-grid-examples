@@ -71,7 +71,7 @@ stages:
                   zipName="$(Build.ArtifactStagingDirectory)/IgniteUI_Angular_ApplicationSample_${dirName}_Source.zip"
                   echo "Creating ZIP: $zipName"
 
-                  # Compress the directory into a ZIP fil
+                  # Compress the directory into a ZIP file
                   (cd "$subdirectory" && zip -r "$zipName" .)
                 done
               fi
