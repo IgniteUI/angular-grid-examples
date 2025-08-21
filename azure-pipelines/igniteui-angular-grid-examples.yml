@@ -77,7 +77,7 @@ stages:
               fi
             }
 
-            # Pass 1: All first-level directories in projects/grids
+            # Pass 1: All first-level directories in projects/grids/
             create_zips "$(Build.SourcesDirectory)/projects/grids"
 
             # Pass 2: All first-level directories in projects/charts/
