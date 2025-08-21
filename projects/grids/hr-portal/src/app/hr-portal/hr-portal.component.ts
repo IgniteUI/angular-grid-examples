@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import {
   IgxTreeGridComponent,
   IgxColumnComponent,
@@ -20,7 +20,7 @@ import {
   THEME_TOKEN,
   ThemeToken,
 } from 'igniteui-angular';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
 import { DataService } from '../services/data.service';
 @Component({
@@ -61,6 +61,7 @@ export class HrPortalComponent implements OnInit {
   public isLoading = true;
   @ViewChild('treeGrid', { read: IgxTreeGridComponent, static: true })
   public treeGrid!: IgxTreeGridComponent;
+  private platformId = inject(PLATFORM_ID);
 
   constructor(private iconService: IgxIconService, private dataService: DataService) {}
 
@@ -75,63 +76,65 @@ export class HrPortalComponent implements OnInit {
     const icons = [
       {
         name: 'linkedIn',
-        path: '/images/others/linkedin.svg',
+        path: 'images/others/linkedin.svg',
         category: 'hr-icons',
       },
       {
         name: 'USA',
-        path: '/images/countries/United States.svg',
+        path: 'images/countries/United States.svg',
         category: 'country-icons',
       },
       {
         name: 'CAN',
-        path: '/images/countries/Canada.svg',
+        path: 'images/countries/Canada.svg',
         category: 'country-icons',
       },
       {
         name: 'GBR',
-        path: '/images/countries/United Kingdom.svg',
+        path: 'images/countries/United Kingdom.svg',
         category: 'country-icons',
       },
       {
         name: 'DEU',
-        path: '/images/countries/Germany.svg',
+        path: 'images/countries/Germany.svg',
         category: 'country-icons',
       },
       {
         name: 'FRA',
-        path: '/images/countries/France.svg',
+        path: 'images/countries/France.svg',
         category: 'country-icons',
       },
       {
         name: 'ESP',
-        path: '/images/countries/Spain.svg',
+        path: 'images/countries/Spain.svg',
         category: 'country-icons',
       },
       {
         name: 'ITA',
-        path: '/images/countries/Italy.svg',
+        path: 'images/countries/Italy.svg',
         category: 'country-icons',
       },
       {
         name: 'AUS',
-        path: '/images/countries/Australia.svg',
+        path: 'images/countries/Australia.svg',
         category: 'country-icons',
       },
       {
         name: 'JPN',
-        path: '/images/countries/Japan.svg',
+        path: 'images/countries/Japan.svg',
         category: 'country-icons',
       },
       {
         name: 'ARE',
-        path: '/images/countries/uae.svg',
+        path: 'images/countries/uae.svg',
         category: 'country-icons',
       },
     ];
 
-    icons.forEach((icon) => {
-      this.iconService.addSvgIcon(icon.name, icon.path, icon.category);
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      icons.forEach((icon) => {
+        this.iconService.addSvgIcon(icon.name, icon.path, icon.category);
+      });
+    }
   }
 }
