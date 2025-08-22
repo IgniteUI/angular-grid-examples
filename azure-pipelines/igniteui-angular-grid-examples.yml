@@ -105,7 +105,6 @@ stages:
           workingDir: '$(Build.SourcesDirectory)'
           customCommand: 'install -g @angular/cli'
 
-
       - task: Npm@1
         displayName: 'Register licensed npm registry in .npmrc'
         inputs:
