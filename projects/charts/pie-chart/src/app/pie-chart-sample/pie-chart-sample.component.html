@@ -25,6 +25,11 @@
 
     <div class="chart-wrapper">
       <div class="pie-chart-variant">PIE CHART EXPLOSION</div>
+      <div class="legend-title">Global Electricity Demand by Energy Use</div>
+      <div class="legend">
+        <igx-item-legend name="legend2" #legend2 orientation="Horizontal">
+        </igx-item-legend>
+      </div>
       <div class="chart2">
         <igx-pie-chart
           #chart2
@@ -36,6 +41,7 @@
           labelsPosition="OutsideEnd"
           labelExtent="30"
           explodedSlices="3"
+          [legend]="legend2"
         >
         </igx-pie-chart>
       </div>

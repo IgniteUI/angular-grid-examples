@@ -1,6 +1,6 @@
 {
   "name": "erp-hgrid",
-  "homepage": "https://github.com/IgniteUI/grid-demos/tree/master/projects/erp-grid",
+  "homepage": "https://github.com/IgniteUI/grid-demos/tree/master/projects/grids/erp-grid",
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",

@@ -77,8 +77,8 @@ stages:
               fi
             }
 
-            # Pass 1: All first-level directories in projects/
-            create_zips "$(Build.SourcesDirectory)/projects"
+            # Pass 1: All first-level directories in projects/grids/
+            create_zips "$(Build.SourcesDirectory)/projects/grids"
 
             # Pass 2: All first-level directories in projects/charts/
             create_zips "$(Build.SourcesDirectory)/projects/charts"
@@ -104,7 +104,6 @@ stages:
           command: custom
           workingDir: '$(Build.SourcesDirectory)'
           customCommand: 'install -g @angular/cli'
-
 
       - task: Npm@1
         displayName: 'Register licensed npm registry in .npmrc'

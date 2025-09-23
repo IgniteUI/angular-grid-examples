@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AppComponent } from 'projects/sales-grid/src/app/app.component';
+import { AppComponent } from 'projects/grids/sales-grid/src/app/app.component';
 
 @Component({
   standalone: true,

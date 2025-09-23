@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AppComponent } from 'projects/erp-hgrid/src/app/app.component';
+import { AppComponent } from 'projects/grids/erp-hgrid/src/app/app.component';
 
 @Component({
   standalone: true,

@@ -37,23 +37,23 @@
               },
               {
                 "glob": "**/*",
-                "input": "projects/erp-hgrid/public"
+                "input": "projects/grids/erp-hgrid/public"
               },
               {
                 "glob": "**/*",
-                "input": "projects/finance-grid/public"
+                "input": "projects/grids/finance-grid/public"
               },
               {
                 "glob": "**/*",
-                "input": "projects/hr-portal/public"
+                "input": "projects/grids/hr-portal/public"
               },
               {
                 "glob": "**/*",
-                "input": "projects/sales-grid/public"
+                "input": "projects/grids/sales-grid/public"
               },
               {
                 "glob": "**/*",
-                "input": "projects/fleet-management-grid/public"
+                "input": "projects/grids/fleet-management-grid/public"
               }
             ],
             "styles": [
@@ -146,37 +146,37 @@
           "style": "scss"
         }
       },
-      "root": "projects/erp-hgrid",
-      "sourceRoot": "projects/erp-hgrid/src",
+      "root": "projects/grids/erp-hgrid",
+      "sourceRoot": "projects/grids/erp-hgrid/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
             "outputPath": "dist/erp-hgrid",
-            "index": "projects/erp-hgrid/src/index.html",
-            "browser": "projects/erp-hgrid/src/main.ts",
+            "index": "projects/grids/erp-hgrid/src/index.html",
+            "browser": "projects/grids/erp-hgrid/src/main.ts",
             "polyfills": [
               "zone.js"
             ],
-            "tsConfig": "projects/erp-hgrid/tsconfig.app.json",
+            "tsConfig": "projects/grids/erp-hgrid/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/erp-hgrid/public"
+                "input": "projects/grids/erp-hgrid/public"
               }
             ],
             "styles": [
-              "projects/erp-hgrid/src/styles.scss"
+              "projects/grids/erp-hgrid/src/styles.scss"
             ],
             "scripts": [
               "./node_modules/hammerjs/hammer.min.js"
             ],
-            "server": "projects/erp-hgrid/src/main.server.ts",
+            "server": "projects/grids/erp-hgrid/src/main.server.ts",
             "prerender": true,
             "ssr": {
-              "entry": "projects/erp-hgrid/src/server.ts"
+              "entry": "projects/grids/erp-hgrid/src/server.ts"
             },
             "stylePreprocessorOptions": {
               "includePaths": [
@@ -230,16 +230,16 @@
               "zone.js",
               "zone.js/testing"
             ],
-            "tsConfig": "projects/erp-hgrid/tsconfig.spec.json",
+            "tsConfig": "projects/grids/erp-hgrid/tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/erp-hgrid/public"
+                "input": "projects/grids/erp-hgrid/public"
               }
             ],
             "styles": [
-              "projects/erp-hgrid/src/styles.scss"
+              "projects/grids/erp-hgrid/src/styles.scss"
             ],
             "scripts": [
               "./node_modules/hammerjs/hammer.min.js"
@@ -260,37 +260,37 @@
           "style": "scss"
         }
       },
-      "root": "projects/finance-grid",
-      "sourceRoot": "projects/finance-grid/src",
+      "root": "projects/grids/finance-grid",
+      "sourceRoot": "projects/grids/finance-grid/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
             "outputPath": "dist/finance-grid",
-            "index": "projects/finance-grid/src/index.html",
-            "browser": "projects/finance-grid/src/main.ts",
+            "index": "projects/grids/finance-grid/src/index.html",
+            "browser": "projects/grids/finance-grid/src/main.ts",
             "polyfills": [
               "zone.js"
             ],
-            "tsConfig": "projects/finance-grid/tsconfig.app.json",
+            "tsConfig": "projects/grids/finance-grid/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/finance-grid/public"
+                "input": "projects/grids/finance-grid/public"
               }
             ],
             "styles": [
-              "projects/finance-grid/src/styles.scss"
+              "projects/grids/finance-grid/src/styles.scss"
             ],
             "scripts": [
               "./node_modules/hammerjs/hammer.min.js"
             ],
-            "server": "projects/finance-grid/src/main.server.ts",
+            "server": "projects/grids/finance-grid/src/main.server.ts",
             "prerender": true,
             "ssr": {
-              "entry": "projects/finance-grid/src/server.ts"
+              "entry": "projects/grids/finance-grid/src/server.ts"
             },
             "stylePreprocessorOptions": {
               "includePaths": [
@@ -344,16 +344,16 @@
               "zone.js",
               "zone.js/testing"
             ],
-            "tsConfig": "projects/finance-grid/tsconfig.spec.json",
+            "tsConfig": "projects/grids/finance-grid/tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/finance-grid/public"
+                "input": "projects/grids/finance-grid/public"
               }
             ],
             "styles": [
-              "projects/finance-grid/src/styles.scss"
+              "projects/grids/finance-grid/src/styles.scss"
             ],
             "scripts": [
               "./node_modules/hammerjs/hammer.min.js"
@@ -374,37 +374,37 @@
           "style": "scss"
         }
       },
-      "root": "projects/hr-portal",
-      "sourceRoot": "projects/hr-portal/src",
+      "root": "projects/grids/hr-portal",
+      "sourceRoot": "projects/grids/hr-portal/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
             "outputPath": "dist/hr-portal",
-            "index": "projects/hr-portal/src/index.html",
-            "browser": "projects/hr-portal/src/main.ts",
+            "index": "projects/grids/hr-portal/src/index.html",
+            "browser": "projects/grids/hr-portal/src/main.ts",
             "polyfills": [
               "zone.js"
             ],
-            "tsConfig": "projects/hr-portal/tsconfig.app.json",
+            "tsConfig": "projects/grids/hr-portal/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/hr-portal/public"
+                "input": "projects/grids/hr-portal/public"
               }
             ],
             "styles": [
-              "projects/hr-portal/src/styles.scss"
+              "projects/grids/hr-portal/src/styles.scss"
             ],
             "scripts": [
               "./node_modules/hammerjs/hammer.min.js"
             ],
-            "server": "projects/hr-portal/src/main.server.ts",
+            "server": "projects/grids/hr-portal/src/main.server.ts",
             "prerender": true,
             "ssr": {
-              "entry": "projects/hr-portal/src/server.ts"
+              "entry": "projects/grids/hr-portal/src/server.ts"
             },
             "stylePreprocessorOptions": {
               "includePaths": [
@@ -458,16 +458,16 @@
               "zone.js",
               "zone.js/testing"
             ],
-            "tsConfig": "projects/hr-portal/tsconfig.spec.json",
+            "tsConfig": "projects/grids/hr-portal/tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/hr-portal/public"
+                "input": "projects/grids/hr-portal/public"
               }
             ],
             "styles": [
-              "projects/hr-portal/src/styles.scss"
+              "projects/grids/hr-portal/src/styles.scss"
             ],
             "scripts": [
               "./node_modules/hammerjs/hammer.min.js"
@@ -488,37 +488,37 @@
           "style": "scss"
         }
       },
-      "root": "projects/sales-grid",
-      "sourceRoot": "projects/sales-grid/src",
+      "root": "projects/grids/sales-grid",
+      "sourceRoot": "projects/grids/sales-grid/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
             "outputPath": "dist/sales-grid",
-            "index": "projects/sales-grid/src/index.html",
-            "browser": "projects/sales-grid/src/main.ts",
+            "index": "projects/grids/sales-grid/src/index.html",
+            "browser": "projects/grids/sales-grid/src/main.ts",
             "polyfills": [
               "zone.js"
             ],
-            "tsConfig": "projects/sales-grid/tsconfig.app.json",
+            "tsConfig": "projects/grids/sales-grid/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/sales-grid/public"
+                "input": "projects/grids/sales-grid/public"
               }
             ],
             "styles": [
-              "projects/sales-grid/src/styles.scss"
+              "projects/grids/sales-grid/src/styles.scss"
             ],
             "scripts": [
               "./node_modules/hammerjs/hammer.min.js"
             ],
-            "server": "projects/sales-grid/src/main.server.ts",
+            "server": "projects/grids/sales-grid/src/main.server.ts",
             "prerender": true,
             "ssr": {
-              "entry": "projects/sales-grid/src/server.ts"
+              "entry": "projects/grids/sales-grid/src/server.ts"
             },
             "stylePreprocessorOptions": {
               "includePaths": [
@@ -572,16 +572,16 @@
               "zone.js",
               "zone.js/testing"
             ],
-            "tsConfig": "projects/sales-grid/tsconfig.spec.json",
+            "tsConfig": "projects/grids/sales-grid/tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/sales-grid/public"
+                "input": "projects/grids/sales-grid/public"
               }
             ],
             "styles": [
-              "projects/sales-grid/src/styles.scss"
+              "projects/grids/sales-grid/src/styles.scss"
             ],
             "scripts": [
               "./node_modules/hammerjs/hammer.min.js"
@@ -602,29 +602,29 @@
           "style": "scss"
         }
       },
-      "root": "projects/fleet-management-grid",
-      "sourceRoot": "projects/fleet-management-grid/src",
+      "root": "projects/grids/fleet-management-grid",
+      "sourceRoot": "projects/grids/fleet-management-grid/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
             "outputPath": "dist/fleet-management",
-            "index": "projects/fleet-management-grid/src/index.html",
-            "browser": "projects/fleet-management-grid/src/main.ts",
+            "index": "projects/grids/fleet-management-grid/src/index.html",
+            "browser": "projects/grids/fleet-management-grid/src/main.ts",
             "polyfills": [
               "zone.js"
             ],
-            "tsConfig": "projects/fleet-management-grid/tsconfig.app.json",
+            "tsConfig": "projects/grids/fleet-management-grid/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/fleet-management-grid/public"
+                "input": "projects/grids/fleet-management-grid/public"
               }
             ],
             "styles": [
-              "projects/fleet-management-grid/src/styles.scss"
+              "projects/grids/fleet-management-grid/src/styles.scss"
             ],
             "scripts": [
               "./node_modules/hammerjs/hammer.min.js"
@@ -682,16 +682,16 @@
               "zone.js",
               "zone.js/testing"
             ],
-            "tsConfig": "projects/fleet-management-grid/tsconfig.spec.json",
+            "tsConfig": "projects/grids/fleet-management-grid/tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/fleet-management-grid/public"
+                "input": "projects/grids/fleet-management-grid/public"
               }
             ],
             "styles": [
-              "projects/fleet-management-grid/src/styles.scss"
+              "projects/grids/fleet-management-grid/src/styles.scss"
             ],
             "scripts": [
               "./node_modules/hammerjs/hammer.min.js"
