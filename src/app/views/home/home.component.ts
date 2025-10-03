@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, ViewChild, ViewEncapsulation, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { RouterLinkActive, RouterModule, Router } from '@angular/router';
+import { RouterLinkActive, RouterModule, Router, NavigationEnd } from '@angular/router';
 import { IgxButtonDirective, IgxIconComponent, IgxTabsModule, IgxTooltipModule, IgxIconService } from 'igniteui-angular';
 import { exitFullScreenIcon, fileDownloadIcon, fullScreenIcon, viewMoreIcon } from '../../data/icons';
 
@@ -25,13 +25,22 @@ export class HomeComponent {
 
   @ViewChild('fullscreenElement') fullscreenElement!: ElementRef;
   public isFullscreen: boolean = false;
-  public tabs = [
+  public tabsGrids = [
     { key: 'inventory' },
     { key: 'hr-portal' },
     { key: 'finance' },
     { key: 'sales' },
     { key: 'fleet' }
   ];
+  public tabsCharts = [
+    { key: 'column-chart' },
+    { key: 'bar-chart' },
+    { key: 'line-chart' },
+    { key: 'pie-chart' },
+    { key: 'step-chart' },
+    { key: 'polar-chart' }
+  ];
+  public isChartsSection: boolean = false;
 
   constructor(
     private iconService: IgxIconService,
@@ -50,6 +59,8 @@ export class HomeComponent {
 
     document.addEventListener('fullscreenchange', this.onFullscreenChange);
     window.addEventListener('resize', this.onResize);
+
+    this.updateTabsBasedOnRoute(this.router.url);
   }
 
   ngOnDestroy(): void {
@@ -59,7 +70,7 @@ export class HomeComponent {
     window.removeEventListener('resize', this.onResize);
   }
 
-  public tabInfo = new Map<string, TabInfo>([
+  public tabInfoGrids = new Map<string, TabInfo>([
     ['inventory', {
       title: "ERP/Inventory",
       theme: "Material",
@@ -101,6 +112,60 @@ export class HomeComponent {
       downloadLink: "https://www.infragistics.com/resources/sample-applications/fleet-management-sample-app"
     }],
   ]);
+
+  public tabInfoCharts = new Map<string, TabInfo>([
+    ['charts/column-chart', {
+      title: "Column Chart",
+      theme: "Material",
+      themeMode: 'Light',
+      content: "Render a collection of data points connected by a straight line to emphasize the amount of change over a period of time",
+      moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/column-chart",
+      downloadLink: "https://www.infragistics.com/resources/sample-applications/column-chart-sample-app-angular"
+    }],
+    ['charts/bar-chart', {
+      title: "Bar Chart",
+      theme: "Fluent",
+      themeMode: 'Light',
+      content: "Quickly compare frequency, count, total, or average of data in different categories",
+      moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/bar-chart",
+      downloadLink: "https://www.infragistics.com/resources/sample-applications/bar-chart-sample-app-angular"
+    }],
+    ['charts/line-chart', {
+      title: "Line Chart",
+      theme: "Bootstrap",
+      themeMode: 'Light',
+      content: "Show trends and perform comparative analysis of one or more quantities over a period of time",
+      moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/line-chart",
+      downloadLink: "https://www.infragistics.com/resources/sample-applications/line-chart-sample-app-angular"
+    }],
+    ['charts/pie-chart', {
+      title: "Pie Chart",
+      theme: "Indigo",
+      themeMode: 'Light',
+      content: "Part-to-whole chart that shows how categories (parts) of a data set add up to a total (whole) value.",
+      moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/pie-chart",
+      downloadLink: "https://www.infragistics.com/resources/sample-applications/pie-chart-sample-app-angular"
+    }],
+    ['charts/step-chart', {
+      title: "Step Chart",
+      theme: "Material",
+      themeMode: 'Light',
+      content: "Emphasizes the amount of change over a period of time or compares multiple items at once.",
+      moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/step-chart",
+      downloadLink: "https://www.infragistics.com/resources/sample-applications/step-chart-sample-app-angular"
+    }],
+    ['charts/polar-chart', {
+      title: "Polar Chart",
+      theme: "Fluent",
+      themeMode: 'Light',
+      content: "Emphasizes the amount of change over a period of time or compares multiple items at once.",
+      moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/charts/types/polar-chart",
+      downloadLink: "https://www.infragistics.com/resources/sample-applications/polar-chart-sample-app-angular"
+    }],
+  ]);
+
+  public tabInfo = this.tabInfoGrids;
+  public activeTabs = this.tabsGrids;
 
   public onDownloadClick(event: MouseEvent, tabName: string) {
     event.preventDefault();
@@ -152,4 +217,16 @@ export class HomeComponent {
       this.cdr.detectChanges();
     }
   };
+
+  private updateTabsBasedOnRoute(url: string) {
+    if (url.includes('charts')) {
+      this.tabInfo = this.tabInfoCharts;
+      this.activeTabs = this.tabsCharts;
+      this.isChartsSection = true;
+    } else {
+      this.tabInfo = this.tabInfoGrids;
+      this.activeTabs = this.tabsGrids;
+      this.isChartsSection = false;
+    }
+  }
 }

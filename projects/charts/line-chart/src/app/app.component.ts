@@ -1,0 +1,15 @@
+import { Component, ViewEncapsulation } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { LineChartDemoComponent } from './line-chart-sample/line-chart-sample.component';
+
+@Component({
+  selector: 'app-line-chart',
+  standalone: true,
+  imports: [CommonModule, LineChartDemoComponent],
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+})
+export class AppComponent {
+  title = 'Home - IgniteUI for Angular';
+}
