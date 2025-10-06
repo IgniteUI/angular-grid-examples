@@ -51,7 +51,7 @@
     "@angular/platform-browser-dynamic": "^20.0.3",
     "@angular/platform-server": "^20.0.3",
     "@angular/router": "^20.0.3",
-    "@angular/ssr": "^20.0.2",
+    "@angular/ssr": "^20.3.4",
     "@igniteui/material-icons-extended": "^3.1.0",
     "express": "^5.1.0",
     "fflate": "^0.8.1",
