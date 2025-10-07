@@ -55,13 +55,13 @@
             </ng-template>
         </igx-column>
         <igx-column field="unitsSold" header="Sold Units Last Month" dataType="number" width="10%" [sortable]="true"></igx-column>
-        <!-- <igx-column field="salesTrendData" header="Monthly Sales Trends" filterable="false" width="15%">
+        <igx-column field="salesTrendData" header="Monthly Sales Trends" filterable="false" width="15%">
             <ng-template igxCell let-cell="cell" let-val>
                 @defer {
                   <sales-trends-chart [dataSource]="cell.value"></sales-trends-chart>
                 }
             </ng-template>
-        </igx-column> -->
+        </igx-column>
         <igx-column field="grossPrice" header="Gross Price" dataType="currency" width="7%" [sortable]="true"></igx-column>
         <igx-column field="netPrice" header="Net Price" dataType="currency" width="7%" [sortable]="true"></igx-column>
         <igx-column field="totalNetProfit" header="Net Profit" dataType="currency" width="7%" [sortable]="true"></igx-column>
