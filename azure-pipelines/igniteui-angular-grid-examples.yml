@@ -29,14 +29,14 @@ stages:
   jobs:
   - job: BuildSamples
     steps:
-      - checkout: 'self' 
+      - checkout: 'self'
         clean: true
 
       - task: NodeTool@0
         displayName: 'Install Node'
         inputs:
           versionSource: 'spec'
-          versionSpec: '20.x'
+          versionSpec: '22.x'
 
       - task: Bash@3
         displayName: 'Create download artifact per sample (Shell)'
@@ -65,7 +65,7 @@ stages:
                       # Convert to camel-case (capitalize first letters and remove hyphens)
                       dirName=$(echo "$dirName" | sed -E 's/(^|-)([a-z])/\U\2/g')
                   fi
-                  
+
                   echo "Processing directory: $dirName"
                   # Define the name for the zip file
                   zipName="$(Build.ArtifactStagingDirectory)/IgniteUI_Angular_ApplicationSample_${dirName}_Source.zip"
