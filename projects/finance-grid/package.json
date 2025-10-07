@@ -22,8 +22,8 @@
     "@angular/router": "^20.0.3",
     "@angular/ssr": "^20.0.2",
     "express": "^5.1.0",
-    "igniteui-angular": "^20.1.0",
-    "igniteui-theming": "^20.0.0",
+    "igniteui-angular": "^20.0.3",
+    "igniteui-theming": "^19.1.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
