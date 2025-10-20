@@ -223,6 +223,8 @@ $custom-icon-button-theme: icon-button-theme(
   height: 100vh;
   overflow: auto;
   display: block;
+  background: var(--ig-surface-500, white);
+  color: var(--ig-gray-900, black);
 }
 
 :-webkit-full-screen {
@@ -230,6 +232,8 @@ $custom-icon-button-theme: icon-button-theme(
   height: 100vh;
   overflow: auto;
   background: white;
+  background: var(--ig-surface-500, white);
+  color: var(--ig-gray-900, black);
 }
 
 .hidden {
