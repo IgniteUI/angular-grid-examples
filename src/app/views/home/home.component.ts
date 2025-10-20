@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, ViewChild, ViewEncapsulation, Inject, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, ViewChild, ViewEncapsulation, Inject, PLATFORM_ID, NgZone } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLinkActive, RouterModule, Router, NavigationEnd } from '@angular/router';
 import { IgxButtonDirective, IgxIconComponent, IgxTabsModule, IgxTooltipModule, IgxIconService } from 'igniteui-angular';
@@ -46,18 +46,20 @@ export class HomeComponent {
     private iconService: IgxIconService,
     private cdr: ChangeDetectorRef,
     public router: Router,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private zone: NgZone
   ) {
-      this.iconService.addSvgIconFromText('file_download', fileDownloadIcon, 'custom');
-      this.iconService.addSvgIconFromText('view_more', viewMoreIcon, 'custom');
-      this.iconService.addSvgIconFromText('fullscreen', fullScreenIcon, 'custom');
-      this.iconService.addSvgIconFromText('exit_fullscreen', exitFullScreenIcon, 'custom');
+    this.iconService.addSvgIconFromText('file_download', fileDownloadIcon, 'custom');
+    this.iconService.addSvgIconFromText('view_more', viewMoreIcon, 'custom');
+    this.iconService.addSvgIconFromText('fullscreen', fullScreenIcon, 'custom');
+    this.iconService.addSvgIconFromText('exit_fullscreen', exitFullScreenIcon, 'custom');
   }
 
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
 
     document.addEventListener('fullscreenchange', this.onFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', this.onFullscreenChange); // Safari / Mac
     window.addEventListener('resize', this.onResize);
 
     this.updateTabsBasedOnRoute(this.router.url);
@@ -67,6 +69,7 @@ export class HomeComponent {
     if (!isPlatformBrowser(this.platformId)) return;
 
     document.removeEventListener('fullscreenchange', this.onFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', this.onFullscreenChange); // Safari / Mac
     window.removeEventListener('resize', this.onResize);
   }
 
@@ -189,33 +192,62 @@ export class HomeComponent {
     }
   }
 
+  private requestFullscreen(el: HTMLElement) {
+    return (el.requestFullscreen ||
+      (el as any).webkitRequestFullscreen)?.call(el);
+  }
+
+  private exitFullscreen() {
+    return (document.exitFullscreen ||
+      (document as any).webkitExitFullscreen)?.call(document);
+  }
+
+  private isElementFullscreen(): boolean {
+    return !!(document.fullscreenElement || (document as any).webkitFullscreenElement);
+  }
+
   public async onToggleFullscreen(): Promise<void> {
     if (!isPlatformBrowser(this.platformId)) return;
 
     const el = this.fullscreenElement?.nativeElement;
+    if (!el) return;
 
-    if (!document.fullscreenElement && el?.requestFullscreen) {
-      await el.requestFullscreen();
-      this.isFullscreen = true;
-    } else if (document.exitFullscreen) {
-      await document.exitFullscreen();
-      this.isFullscreen = false;
+    try {
+      if (!this.isFullscreen) {
+        await this.requestFullscreen(el);
+      } else {
+        await this.exitFullscreen();
+      }
+
+      this.isFullscreen = this.isElementFullscreen();
+      this.cdr.detectChanges();
+    } catch (err) {
+      console.error('Fullscreen toggle failed', err);
     }
+  }
+
+  private checkFullscreen(): boolean {
+    return !!(
+      document.fullscreenElement ||
+      (document as any).webkitFullscreenElement ||
+      (window.innerHeight === screen.height && window.innerWidth === screen.width)
+    );
   }
 
   // Escaping fullscreen via the ESC button
   private onFullscreenChange = () => {
-    this.isFullscreen = !!document.fullscreenElement;
-    this.cdr.detectChanges();
+    this.zone.run(() => {
+      this.isFullscreen = this.checkFullscreen();
+      this.cdr.detectChanges();
+    });
   };
 
   // Entering and escaping fullscreen via F11 button
   private onResize = () => {
-    const isFullscreen = window.innerWidth === screen.width && window.innerHeight === screen.height;
-    if (this.isFullscreen !== isFullscreen) {
-      this.isFullscreen = isFullscreen;
+    this.zone.run(() => {
+      this.isFullscreen = this.checkFullscreen();
       this.cdr.detectChanges();
-    }
+    });
   };
 
   private updateTabsBasedOnRoute(url: string) {
