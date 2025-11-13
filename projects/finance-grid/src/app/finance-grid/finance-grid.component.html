@@ -1,4 +1,4 @@
-<igx-grid [data]="data$ | async" [rowSelection]="'multiple'" [isLoading]="isLoading" class="grid-sizing">
+<igx-grid [data]="data$ | async" [isLoading]="isLoading" class="grid-sizing">
   <igx-grid-toolbar>
     <igx-grid-toolbar-title>Financial Portfolio</igx-grid-toolbar-title>
       <igx-input-group type="search">
@@ -10,8 +10,8 @@
       <igx-grid-toolbar-exporter></igx-grid-toolbar-exporter>
     </igx-grid-toolbar-actions>
   </igx-grid-toolbar>
-  <igx-column field="id" header="Symbol" sortable="true" [width]="'7%'"></igx-column>
-  <igx-column field="holdingName" header="Asset" sortable="true" [width]="'15%'">
+  <igx-column field="id" header="Symbol" [width]="'7%'" [minWidth]="'68px'"></igx-column>
+  <igx-column field="holdingName" header="Asset" sortable="true" [width]="'15%'" [minWidth]="'100px'">
     <ng-template igxCell let-cell="cell" let-val>
       <div class="assets-container">
         <igx-avatar [src]="getPathToImage(val)" [shape]="'rounded'"></igx-avatar>
@@ -19,10 +19,8 @@
       </div>
     </ng-template>
   </igx-column>
-  <igx-column field="positions" header="Position" sortable="true" [dataType]="'number'" [width]="'6%'"></igx-column>
-  <igx-column field="value.boughtPrice" header="Average Cost/Share" dataType="currency" sortable="true" [width]="'10%'"></igx-column>
-  <igx-column field="value.currentPrice" header="Last Price" [dataType]="'currency'" sortable="true" [width]="'7%'"></igx-column>
-  <igx-column field="dailyPercentageChange" header="Daily Change %" dataType="percent" [cellClasses]="profitLossValueClasses" sortable="true" [width]="'10%'">
+  <igx-column field="value.currentPrice" header="Last Price" [dataType]="'currency'" [width]="'7%'" [minWidth]="'80px'"></igx-column>
+  <igx-column field="dailyPercentageChange" header="Change %" dataType="percent" [cellClasses]="profitLossValueClasses" [width]="'10%'" [minWidth]="'85px'">
     <ng-template igxCell let-val>
       <div class="assets-container">
         <div>
@@ -37,8 +35,8 @@
       </div>
     </ng-template>
   </igx-column>
-  <igx-column field="marketValue" header="Market Value" [dataType]="'currency'"  sortable="true" [width]="'5%'"></igx-column>
-  <igx-column field="profitLossValue" header="NET Profit/Loss"  sortable="true" dataType="currency" [width]="'10%'" [cellClasses]="profitLossValueClasses">
+  <igx-column field="marketValue" header="Market Value" [dataType]="'currency'" [width]="'5%'" [minWidth]="'100px'"></igx-column>
+  <igx-column field="profitLossValue" header="NET Profit" dataType="currency" [width]="'10%'" [minWidth]="'90px'" [cellClasses]="profitLossValueClasses">
     <ng-template igxCell let-val>
       <div class="assets-container">
         <div>
@@ -53,7 +51,7 @@
       </div>
     </ng-template>
   </igx-column>
-  <igx-column field="profitLossPercentage" header="NET Profit/Loss %" sortable="true" dataType="percent" [width]="'10%'" [cellClasses]="profitLossValueClasses">
+  <igx-column field="profitLossPercentage" header="NET Profit %" dataType="percent" [width]="'10%'" [minWidth]="'98px'" [cellClasses]="profitLossValueClasses">
     <ng-template igxCell let-val>
       <div class="assets-container">
         <div>
@@ -68,17 +66,19 @@
       </div>
     </ng-template>
   </igx-column>
-  <igx-column field="allocation" header="Allocation" sortable="true" dataType="percent" [width]="'10%'">
+  <igx-column field="allocation" header="Allocation" dataType="percent" [width]="'10%'" [minWidth]="'100px'">
     <ng-template igxCell let-val>
       <div class="progress-container">
-        <div>
+        <div style="width: 42px;">
           {{ val | percent : "1.0-2" }}
         </div>
         <igx-linear-bar [value]="val * 100" [animate]="false" textVisibility="false"></igx-linear-bar>
       </div>
     </ng-template>
   </igx-column>
-  <igx-column field="holdingPeriod" header="Holding Period" sortable="true"  [width]="'8%'">
+  <igx-column field="value.boughtPrice" header="Average Cost" dataType="currency" [width]="'10%'" [minWidth]="'100px'"></igx-column>
+  <igx-column field="positions" header="Position" [dataType]="'number'" [width]="'6%'" [minWidth]="'80px'"></igx-column>
+  <igx-column field="holdingPeriod" header="Holding Period" [width]="'8%'" [minWidth]="'50px'">
     <ng-template igxCell let-val> {{ val }} days </ng-template>
   </igx-column>
 </igx-grid>
