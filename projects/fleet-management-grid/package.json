@@ -1,6 +1,6 @@
 {
   "name": "master-detail-grid",
-  "homepage": "https://github.com/IgniteUI/grid-demos/tree/master/projects/fleet-management-grid",
+  "homepage": "https://github.com/IgniteUI/angular-grid-examples/tree/master/projects/fleet-management-grid",
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",

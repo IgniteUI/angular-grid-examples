@@ -1,6 +1,6 @@
 {
-  "name": "grid-demos",
-  "homepage": "https://github.com/IgniteUI/grid-demos",
+  "name": "angular-grid-examples",
+  "homepage": "https://github.com/IgniteUI/angular-grid-examples",
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
