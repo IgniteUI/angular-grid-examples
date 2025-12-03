@@ -1,5 +1,5 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { THEME_TOKEN, ThemeToken } from 'igniteui-angular';
 import {
   IgxCategoryChartModule,
@@ -23,7 +23,6 @@ import {
     },
   ],
   imports: [
-    CommonModule,
     IgxCategoryChartModule,
     IgxDataChartCoreModule,
     IgxDataChartPolarModule,
@@ -31,7 +30,7 @@ import {
     IgxDataChartInteractivityModule,
     IgxDataChartAnnotationModule,
     IgxLegendModule
-  ],
+],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './polar-chart-sample.component.html',
   styleUrl: './polar-chart-sample.component.scss'

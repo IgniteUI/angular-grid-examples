@@ -1,5 +1,5 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { THEME_TOKEN, ThemeToken } from 'igniteui-angular';
 import { IgxCategoryChartModule, IgxItemLegendModule, IgxPieChartModule } from 'igniteui-angular-charts';
 
@@ -15,11 +15,10 @@ import { IgxCategoryChartModule, IgxItemLegendModule, IgxPieChartModule } from '
     },
   ],
   imports: [
-    CommonModule,
     IgxCategoryChartModule,
     IgxItemLegendModule,
     IgxPieChartModule
-  ],
+],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './pie-chart-sample.component.html',
   styleUrl: './pie-chart-sample.component.scss'
