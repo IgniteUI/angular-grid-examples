@@ -1,6 +1,6 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
-import { THEME_TOKEN, ThemeToken } from 'igniteui-angular';
+import { THEME_TOKEN, ThemeToken } from 'igniteui-angular/core';
 import { IgxCategoryChartModule, IgxDataChartInteractivityModule, IgxLegendModule} from 'igniteui-angular-charts';
 
 @Component({

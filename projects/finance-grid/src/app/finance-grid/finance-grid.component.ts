@@ -5,27 +5,13 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
-import {
-  FilteringExpressionsTree,
-  FilteringLogic,
-  IgxAvatarComponent,
-  IgxCellTemplateDirective,
-  IgxColumnComponent,
-  IgxGridComponent,
-  IgxGridToolbarActionsComponent,
-  IgxGridToolbarComponent,
-  IgxGridToolbarExporterComponent,
-  IgxGridToolbarHidingComponent,
-  IgxGridToolbarPinningComponent,
-  IgxGridToolbarTitleComponent,
-  IgxIconComponent,
-  IgxInputDirective,
-  IgxInputGroupComponent,
-  IgxLinearProgressBarComponent,
-  IgxStringFilteringOperand,
-  THEME_TOKEN,
-  ThemeToken,
-} from 'igniteui-angular';
+import { FilteringExpressionsTree, FilteringLogic, IgxStringFilteringOperand, THEME_TOKEN, ThemeToken } from 'igniteui-angular/core';
+import { IgxAvatarComponent } from 'igniteui-angular/avatar';
+import { IgxCellTemplateDirective, IgxColumnComponent, IgxGridToolbarActionsComponent, IgxGridToolbarComponent, IgxGridToolbarExporterComponent, IgxGridToolbarHidingComponent, IgxGridToolbarPinningComponent, IgxGridToolbarTitleComponent } from 'igniteui-angular/grids/core';
+import { IgxGridComponent } from 'igniteui-angular/grids/grid';
+import { IgxIconComponent } from 'igniteui-angular/icon';
+import { IgxInputDirective, IgxInputGroupComponent } from 'igniteui-angular/input-group';
+import { IgxLinearProgressBarComponent } from 'igniteui-angular/progressbar';
 import { CurrencyPipe, PercentPipe, AsyncPipe } from '@angular/common';
 import { FinancialService } from '../services/financial.service';
 import { BehaviorSubject } from 'rxjs';
