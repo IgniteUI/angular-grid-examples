@@ -164,6 +164,7 @@ $custom-icon-button-theme: icon-button-theme(
   height: 90px;
   padding: 20px 24px;
   border: 1px solid #d6d6d6;
+  color: black;
 
   .sample-info {
     height: 58px;
@@ -223,6 +224,8 @@ $custom-icon-button-theme: icon-button-theme(
   height: 100vh;
   overflow: auto;
   display: block;
+  background: white;
+  color: var(--ig-gray-900, black);
 }
 
 :-webkit-full-screen {
@@ -230,6 +233,7 @@ $custom-icon-button-theme: icon-button-theme(
   height: 100vh;
   overflow: auto;
   background: white;
+  color: var(--ig-gray-900, black);
 }
 
 .hidden {

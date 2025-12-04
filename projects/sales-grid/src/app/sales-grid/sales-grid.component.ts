@@ -1,5 +1,5 @@
-import { CommonModule, CurrencyPipe } from '@angular/common';
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { CommonModule, CurrencyPipe, isPlatformBrowser } from '@angular/common';
+import { Component, Inject, OnInit, PLATFORM_ID, TemplateRef, ViewChild } from '@angular/core';
 import {
   IgxButtonDirective,
   IgxDropDownComponent,
@@ -101,6 +101,9 @@ export class SalesGridComponent implements OnInit {
 
   @ViewChild('countryColumn')
   public countryColumnTemplate!: TemplateRef<any>;
+
+  @ViewChild('configTooltipRef', { static: false })
+  public configTooltipRef?: IgxTooltipDirective;
 
   public currencyPipe = new CurrencyPipe('en-US');
   public brandFilter = new FilteringExpressionsTree(FilteringLogic.Or, 'Brand');
@@ -315,8 +318,16 @@ export class SalesGridComponent implements OnInit {
   public flagsData = FLAGS;
   public data$: BehaviorSubject<any> = new BehaviorSubject([]);
   public isLoading = true;
+  public isBrowser = false;
 
-  constructor(private dataService: DataService, public excelExporter: IgxExcelExporterService, public csvExporter: IgxCsvExporterService) {
+  constructor(
+    private dataService: DataService, 
+    public excelExporter: IgxExcelExporterService, 
+    public csvExporter: IgxCsvExporterService,
+    @Inject(PLATFORM_ID) private platformId: Object,
+    ) {
+    
+    this.isBrowser = isPlatformBrowser(this.platformId);
     var multipleFilters = new FilteringExpressionsTree(FilteringLogic.Or, 'Brand');
     multipleFilters.filteringOperands = [
       {
