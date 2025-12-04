@@ -1,7 +1,9 @@
 import { ChangeDetectorRef, Component, ElementRef, ViewChild, ViewEncapsulation, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLinkActive, RouterModule, Router, NavigationEnd } from '@angular/router';
-import { IgxButtonDirective, IgxIconComponent, IgxTabsModule, IgxTooltipModule, IgxIconService } from 'igniteui-angular';
+import { IgxButtonDirective, IgxTooltipModule } from 'igniteui-angular/directives';
+import { IgxIconComponent, IgxIconService } from 'igniteui-angular/icon';
+import { IgxTabsModule } from 'igniteui-angular/tabs';
 import { exitFullScreenIcon, fileDownloadIcon, fullScreenIcon, viewMoreIcon } from '../../data/icons';
 
 interface TabInfo {

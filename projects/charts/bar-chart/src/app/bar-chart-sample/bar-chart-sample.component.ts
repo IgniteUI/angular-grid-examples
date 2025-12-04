@@ -1,6 +1,6 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { THEME_TOKEN, ThemeToken } from 'igniteui-angular';
+
+import { THEME_TOKEN, ThemeToken } from 'igniteui-angular/core';
 import { IgxBarSeriesModule, IgxCategoryHighlightLayerModule, IgxCategoryYAxisModule, IgxDataChartAnnotationModule, IgxDataChartCategoryCoreModule, IgxDataChartCategoryModule, IgxDataChartCoreModule, IgxDataChartInteractivityModule, IgxDataChartVerticalCategoryModule, IgxDataToolTipLayerModule, IgxLegendModule, IgxNumericXAxisModule } from 'igniteui-angular-charts';
 
 @Component({
@@ -15,7 +15,6 @@ import { IgxBarSeriesModule, IgxCategoryHighlightLayerModule, IgxCategoryYAxisMo
     },
   ],
   imports: [
-    CommonModule,
     IgxLegendModule,
     IgxDataChartCoreModule,
     IgxDataChartCategoryCoreModule,
@@ -28,7 +27,7 @@ import { IgxBarSeriesModule, IgxCategoryHighlightLayerModule, IgxCategoryYAxisMo
     IgxBarSeriesModule,
     IgxCategoryHighlightLayerModule,
     IgxDataToolTipLayerModule
-  ],
+],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './bar-chart-sample.component.html',
   styleUrl: './bar-chart-sample.component.scss'

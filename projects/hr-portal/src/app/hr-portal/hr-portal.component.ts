@@ -1,25 +1,11 @@
 import { Component, inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
-import {
-  IgxTreeGridComponent,
-  IgxColumnComponent,
-  IgxAvatarComponent,
-  IgxPaginatorComponent,
-  IgxGridToolbarComponent,
-  IgxGridToolbarActionsComponent,
-  IgxGridToolbarHidingComponent,
-  IgxGridToolbarAdvancedFilteringComponent,
-  IgxGridToolbarPinningComponent,
-  IgxGridToolbarTitleComponent,
-  IgxGridToolbarExporterComponent,
-  IgxCellTemplateDirective,
-  IgxIconComponent,
-  IgxIconModule,
-  IgxIconService,
-  IgxIconButtonDirective,
-  IgxButtonModule,
-  THEME_TOKEN,
-  ThemeToken,
-} from 'igniteui-angular';
+import { IgxTreeGridComponent } from 'igniteui-angular/grids/tree-grid';
+import { IgxCellTemplateDirective, IgxColumnComponent, IgxGridToolbarActionsComponent, IgxGridToolbarAdvancedFilteringComponent, IgxGridToolbarComponent, IgxGridToolbarExporterComponent, IgxGridToolbarHidingComponent, IgxGridToolbarPinningComponent, IgxGridToolbarTitleComponent } from 'igniteui-angular/grids/core';
+import { IgxAvatarComponent } from 'igniteui-angular/avatar';
+import { IgxPaginatorComponent } from 'igniteui-angular/paginator';
+import { IgxIconComponent, IgxIconModule, IgxIconService } from 'igniteui-angular/icon';
+import { IgxButtonModule, IgxIconButtonDirective } from 'igniteui-angular/directives';
+import { THEME_TOKEN, ThemeToken } from 'igniteui-angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
 import { DataService } from '../services/data.service';
