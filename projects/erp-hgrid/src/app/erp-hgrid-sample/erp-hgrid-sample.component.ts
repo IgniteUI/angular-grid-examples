@@ -1,47 +1,12 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild, AfterViewInit, ElementRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  IgxHierarchicalGridComponent,
-  IgxColumnGroupComponent,
-  IgxColumnComponent,
-  IgxCellTemplateDirective,
-  IgxRowIslandComponent,
-  GridSelectionMode,
-  IgxTooltipDirective,
-  IgxTooltipTargetDirective,
-  IgxIconComponent,
-  IgxCollapsibleIndicatorTemplateDirective,
-  IgxGridToolbarComponent,
-  IgxGridToolbarActionsComponent,
-  IgxGridToolbarHidingComponent,
-  IgxGridToolbarPinningComponent,
-  IgxGridToolbarExporterComponent,
-  IgxGridToolbarAdvancedFilteringComponent,
-  IgxGridToolbarTitleComponent,
-  IgxIconModule,
-  IgxIconService,
-  IgxBadgeModule,
-  IgxBadgeComponent,
-  SortingDirection,
-  DefaultSortingStrategy,
-  IgxExporterEvent,
-  IColumnExportingEventArgs,
-  IgxButtonModule,
-	IgxDialogModule,
-	IgxRippleModule,
-  AutoPositionStrategy,
-  IgxDialogComponent,
-  IgxTooltipModule,
-  PositionSettings,
-  HorizontalAlignment,
-  VerticalAlignment,
-  THEME_TOKEN,
-  ThemeToken,
-  IgxGridToolbarDirective,
-  OverlaySettings,
-  IgxStringFilteringOperand,
-  IFilteringOperation
-} from 'igniteui-angular';
+import { IgxHierarchicalGridComponent, IgxRowIslandComponent } from 'igniteui-angular/grids/hierarchical-grid';
+import { GridSelectionMode, IColumnExportingEventArgs, IgxCellTemplateDirective, IgxCollapsibleIndicatorTemplateDirective, IgxColumnComponent, IgxColumnGroupComponent, IgxExporterEvent, IgxGridToolbarActionsComponent, IgxGridToolbarAdvancedFilteringComponent, IgxGridToolbarComponent, IgxGridToolbarDirective, IgxGridToolbarExporterComponent, IgxGridToolbarHidingComponent, IgxGridToolbarPinningComponent, IgxGridToolbarTitleComponent } from 'igniteui-angular/grids/core';
+import { IgxButtonModule, IgxRippleModule, IgxTooltipDirective, IgxTooltipModule, IgxTooltipTargetDirective } from 'igniteui-angular/directives';
+import { IgxIconComponent, IgxIconModule, IgxIconService } from 'igniteui-angular/icon';
+import { IgxBadgeComponent, IgxBadgeModule } from 'igniteui-angular/badge';
+import { AutoPositionStrategy, DefaultSortingStrategy, HorizontalAlignment, IFilteringOperation, IgxStringFilteringOperand, OverlaySettings, PositionSettings, SortingDirection, THEME_TOKEN, ThemeToken, VerticalAlignment } from 'igniteui-angular/core';
+import { IgxDialogComponent, IgxDialogModule } from 'igniteui-angular/dialog';
 import { fadeIn } from 'igniteui-angular/animations'
 import { IgxSparklineModule } from 'igniteui-angular-charts';
 import { defineComponents, IgcRatingComponent } from 'igniteui-webcomponents';

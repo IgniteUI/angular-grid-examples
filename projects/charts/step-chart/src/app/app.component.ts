@@ -1,11 +1,11 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { StepChartDemoComponent } from './step-chart-sample/step-chart-sample.component';
 
 @Component({
   selector: 'app-step-chart',
   standalone: true,
-  imports: [CommonModule, StepChartDemoComponent],
+  imports: [StepChartDemoComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None,

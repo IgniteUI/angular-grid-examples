@@ -1,35 +1,11 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import {
-  IgxButtonDirective,
-  IgxDropDownComponent,
-  IgxDropDownItemComponent,
-  IgxIconComponent,
-  IgxPivotDataSelectorComponent,
-  IgxPivotGridComponent,
-  IgxToggleActionDirective,
-  IPivotConfiguration,
-  ISelectionEventArgs,
-  IgxExcelExporterService,
-  IgxCsvExporterService,
-  IgxCsvExporterOptions,
-  IgxExcelExporterOptions,
-  IgxBaseExporter,
-  IgxExporterOptionsBase,
-  CsvFileTypes,
-  IgxPivotDateDimension,
-  IgxColumnComponent,
-  IgxCellHeaderTemplateDirective,
-  IgxStringFilteringOperand,
-  FilteringExpressionsTree,
-  FilteringLogic,
-  IPivotValue,
-  THEME_TOKEN,
-  ThemeToken,
-  IgxDropDownItemNavigationDirective,
-  IgxTooltipDirective,
-  IgxTooltipTargetDirective
-} from 'igniteui-angular';
+import { IgxButtonDirective, IgxToggleActionDirective, IgxTooltipDirective, IgxTooltipTargetDirective } from 'igniteui-angular/directives';
+import { ISelectionEventArgs, IgxDropDownComponent, IgxDropDownItemComponent, IgxDropDownItemNavigationDirective } from 'igniteui-angular/drop-down';
+import { IgxIconComponent } from 'igniteui-angular/icon';
+import { IgxPivotDataSelectorComponent, IgxPivotGridComponent } from 'igniteui-angular/grids/pivot-grid';
+import { CsvFileTypes, IPivotConfiguration, IPivotValue, IgxBaseExporter, IgxCellHeaderTemplateDirective, IgxColumnComponent, IgxCsvExporterOptions, IgxCsvExporterService, IgxExcelExporterOptions, IgxExcelExporterService, IgxExporterOptionsBase, IgxPivotDateDimension } from 'igniteui-angular/grids/core';
+import { FilteringExpressionsTree, FilteringLogic, IgxStringFilteringOperand, THEME_TOKEN, ThemeToken } from 'igniteui-angular/core';
 import FLAGS from './data/flags.json'
 import { DataService } from '../services/data.service';
 import { BehaviorSubject } from 'rxjs';
