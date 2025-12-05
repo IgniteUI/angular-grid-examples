@@ -1,31 +1,33 @@
 <div class="demo-container" #fullscreenElement>
   <div class="tabs-info-wrapper-element">
     <div class="tab-container" [class.hidden]="isFullscreen">
-      <div
-        class="tab-item-container"
-        *ngFor="let tab of activeTabs"
-        [routerLink]="isChartsSection ? ['charts', tab.key] : [tab.key]"
-        routerLinkActive
-        #rla="routerLinkActive"
-      >
-        <ng-container
-          [ngTemplateOutlet]="tabItemTemplate"
+      @for (tab of activeTabs; track tab) {
+        <div
+          class="tab-item-container"
+          [routerLink]="isChartsSection ? ['charts', tab.key] : [tab.key]"
+          routerLinkActive
+          #rla="routerLinkActive"
+          >
+          <ng-container
+            [ngTemplateOutlet]="tabItemTemplate"
           [ngTemplateOutletContext]="{
             enabled: rla.isActive,
             tabName: isChartsSection ? 'charts/' + tab.key : tab.key
           }"
-        ></ng-container>
-      </div>
+          ></ng-container>
+        </div>
+      }
     </div>
 
 
-    <ng-container *ngFor="let tab of activeTabs">
-      <ng-container
-        *ngIf="router.url.includes(tab.key)"
-        [ngTemplateOutlet]="tabItemInfoTemplate"
-        [ngTemplateOutletContext]="{ tabName: isChartsSection ? 'charts/' + tab.key : tab.key }"
-      ></ng-container>
-    </ng-container>
+    @for (tab of activeTabs; track tab) {
+      @if (router.url.includes(tab.key)) {
+        <ng-container
+          [ngTemplateOutlet]="tabItemInfoTemplate"
+          [ngTemplateOutletContext]="{ tabName: isChartsSection ? 'charts/' + tab.key : tab.key }"
+        ></ng-container>
+      }
+    }
 
   </div>
 
@@ -49,7 +51,7 @@
           igxButton="outlined"
           class="custom-button"
           (click)="onDownloadClick($event, tabName)"
-        >
+          >
           <igx-icon family="custom" name="file_download"></igx-icon>
           Download
         </button>
@@ -58,7 +60,7 @@
           igxButton="outlined"
           class="custom-button"
           (click)="onViewMoreClick($event, tabName)"
-        >
+          >
           <igx-icon family="custom" name="view_more"></igx-icon>
           View More
         </button>
@@ -67,7 +69,7 @@
           igxButton="outlined"
           class="custom-button"
           (click)="onToggleFullscreen()"
-        >
+          >
           <igx-icon family="custom" [name]="isFullscreen ? 'exit_fullscreen' : 'fullscreen'"></igx-icon>
           <span>{{ isFullscreen ? 'Exit Fullscreen' : 'Fullscreen' }}</span>
         </button>

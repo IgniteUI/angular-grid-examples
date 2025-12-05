@@ -1,6 +1,6 @@
 {
   "name": "polar-chart",
-  "homepage": "https://github.com/IgniteUI/grid-demos/tree/master/projects/charts/polar-chart",
+  "homepage": "https://github.com/IgniteUI/angular-grid-examples/tree/master/projects/charts/polar-chart",
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",

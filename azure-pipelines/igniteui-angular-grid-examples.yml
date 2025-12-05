@@ -138,8 +138,8 @@ stages:
 
         displayName: 'Publish app'
         inputs:
-          targetPath: '$(Build.SourcesDirectory)/dist/grid-demos/browser'
-          artifact: 'dist.grid-demos.browser'
+          targetPath: '$(Build.SourcesDirectory)/dist/angular-grid-examples/browser'
+          artifact: 'dist.angular-grid-examples.browser'
           publishLocation: 'pipeline'
 
       - ${{ if eq(parameters.shouldCleanPostExecution, true) }}:

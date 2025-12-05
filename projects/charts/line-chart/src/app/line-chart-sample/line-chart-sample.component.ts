@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { THEME_TOKEN, ThemeToken } from 'igniteui-angular';
+
+import { THEME_TOKEN, ThemeToken } from 'igniteui-angular/core';
 import { IgxCategoryChartModule, IgxLegendModule } from 'igniteui-angular-charts';
 
 @Component({
@@ -16,10 +16,9 @@ import { IgxCategoryChartModule, IgxLegendModule } from 'igniteui-angular-charts
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     IgxCategoryChartModule,
-    IgxLegendModule,
-  ],
+    IgxLegendModule
+],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './line-chart-sample.component.html',
   styleUrl: './line-chart-sample.component.scss'

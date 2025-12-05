@@ -1,6 +1,6 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { THEME_TOKEN, ThemeToken } from 'igniteui-angular';
+
+import { THEME_TOKEN, ThemeToken } from 'igniteui-angular/core';
 import { IgxCategoryChartModule } from 'igniteui-angular-charts';
 
 @Component({
@@ -15,9 +15,8 @@ import { IgxCategoryChartModule } from 'igniteui-angular-charts';
     },
   ],
   imports: [
-    CommonModule,
     IgxCategoryChartModule
-  ],
+],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './column-chart-sample.component.html',
   styleUrl: './column-chart-sample.component.scss'

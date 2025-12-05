@@ -2,10 +2,12 @@
   <igx-grid-toolbar>
     <igx-grid-toolbar-title>Fleet Management</igx-grid-toolbar-title>
     <igx-grid-toolbar-actions>
-      <button igxButton="flat" *ngIf="grid.sortingExpressions.length > 0" (buttonClick)="grid.sortingExpressions=[]">
-        <igx-icon>clear</igx-icon>
-        <label>Clear Sort</label>
-      </button>
+      @if (grid.sortingExpressions.length > 0) {
+        <button igxButton="flat" (buttonClick)="grid.sortingExpressions=[]">
+          <igx-icon>clear</igx-icon>
+          <label>Clear Sort</label>
+        </button>
+      }
       <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
       <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
       <igx-grid-toolbar-advanced-filtering></igx-grid-toolbar-advanced-filtering>
@@ -35,7 +37,7 @@
   <igx-column field="locationGps" header="Location (GPS)" width="14%">
     <ng-template igxCell let-cell="cell">
       <a class="link-style" #coordinates href="#"
-        (click)="showLocationOverlay($event, cell); $event.preventDefault();">{{ cell.value }}</a>
+      (click)="showLocationOverlay($event, cell); $event.preventDefault();">{{ cell.value }}</a>
     </ng-template>
   </igx-column>
 
@@ -51,30 +53,38 @@
           <div class="details-container">
             <div class="carousel-container">
               <igx-carousel #carousel>
-                <igx-slide *ngFor="let slide of getPathToCarImage(dataItem.vehicleId)">
-                  <div class="image-container">
-                    <img [src]="slide" />
-                  </div>
-                </igx-slide>
+                @for (slide of getPathToCarImage(dataItem.vehicleId); track slide) {
+                  <igx-slide>
+                    <div class="image-container">
+                      <img [src]="slide" />
+                    </div>
+                  </igx-slide>
+                }
               </igx-carousel>
             </div>
 
             <div class="details-table">
-              <div class="detail-block-container"
-                *ngFor="let categorySet of [VEHICLE_DETAILS.detailsCategories, VEHICLE_DETAILS.engineCategories]">
-                <div class="detail-category-container">
-                  <div class="detail-item" *ngFor="let category of categorySet">
-                    <span class="detail-category">{{ category.label }}: </span>
-                    <igx-divider></igx-divider>
+              @for (categorySet of [VEHICLE_DETAILS.detailsCategories, VEHICLE_DETAILS.engineCategories]; track categorySet) {
+                <div class="detail-block-container"
+                  >
+                  <div class="detail-category-container">
+                    @for (category of categorySet; track category) {
+                      <div class="detail-item">
+                        <span class="detail-category">{{ category.label }}: </span>
+                        <igx-divider></igx-divider>
+                      </div>
+                    }
+                  </div>
+                  <div class="detail-content-container">
+                    @for (category of categorySet; track category) {
+                      <div class="detail-item">
+                        <span class="detail-value">{{ getValueByPath(dataItem, category.key) }}</span>
+                        <igx-divider></igx-divider>
+                      </div>
+                    }
                   </div>
                 </div>
-                <div class="detail-content-container">
-                  <div class="detail-item" *ngFor="let category of categorySet">
-                    <span class="detail-value">{{ getValueByPath(dataItem, category.key) }}</span>
-                    <igx-divider></igx-divider>
-                  </div>
-                </div>
-              </div>
+              }
             </div>
           </div>
         </igx-tab-content>
@@ -88,7 +98,7 @@
         <igx-tab-content>
           <div class="grid-container">
             <ng-container
-              *ngTemplateOutlet="tripHistory; context: { $implicit: dataService.findTripHistoryById(dataItem.vehicleId) }"></ng-container>
+            *ngTemplateOutlet="tripHistory; context: { $implicit: dataService.findTripHistoryById(dataItem.vehicleId) }"></ng-container>
           </div>
         </igx-tab-content>
       </igx-tab-item>
@@ -101,7 +111,7 @@
         <igx-tab-content>
           <div class="grid-container">
             <ng-container
-              *ngTemplateOutlet="maintenance; context: { $implicit: dataService.findMaintenanceDataById(dataItem.vehicleId)}"></ng-container>
+            *ngTemplateOutlet="maintenance; context: { $implicit: dataService.findMaintenanceDataById(dataItem.vehicleId)}"></ng-container>
           </div>
         </igx-tab-content>
       </igx-tab-item>
@@ -215,15 +225,17 @@
 <ng-template #tripHistory let-tripHistoryData>
   <igx-grid class="child-grid" [data]="tripHistoryData" height="null" width="100%">
     <igx-column field="id" header="ID" width="5%" [cellStyles]="rightAlignedCellStyles"
-      [headerStyles]="rightAlignedHeaderStyles"></igx-column>
+    [headerStyles]="rightAlignedHeaderStyles"></igx-column>
     <igx-column field="driverName" header="Driver" width="18%">
       <ng-template igxCell let-cell="cell">
         <igx-avatar shape="circle" size="small" [src]="getPathToDriverPhoto(cell)" class="driver-avatar"></igx-avatar>
         <a class="status-value" #coordinates href="#"
-          (click)="showDriverOverlay($event, cell); $event.preventDefault();">{{ cell.value }}</a>
-        <igx-badge class="driver-badge" type="success" *ngIf="cell.row.index === 0 && cell.row.data.end === 'N/A'">
-          Current
-        </igx-badge>
+        (click)="showDriverOverlay($event, cell); $event.preventDefault();">{{ cell.value }}</a>
+        @if (cell.row.index === 0 && cell.row.data.end === 'N/A') {
+          <igx-badge class="driver-badge" type="success">
+            Current
+          </igx-badge>
+        }
       </ng-template>
     </igx-column>
     <igx-column field="start" header="Start" width="9%"></igx-column>
@@ -231,31 +243,35 @@
     <igx-column field="startLocation" header="Start Location" width="10%"></igx-column>
     <igx-column field="endLocation" header="End Location" width="10%"></igx-column>
     <igx-column field="startMeter" header="Start Meter" width="9.5%" [cellStyles]="rightAlignedCellStyles"
-      [headerStyles]="rightAlignedHeaderStyles"></igx-column>
+    [headerStyles]="rightAlignedHeaderStyles"></igx-column>
     <igx-column field="endMeter" header="End Meter" width="9.5%" [cellStyles]="rightAlignedCellStyles"
-      [headerStyles]="rightAlignedHeaderStyles"></igx-column>
+    [headerStyles]="rightAlignedHeaderStyles"></igx-column>
     <igx-column field="distance" header="Distance" width="9%" [cellStyles]="rightAlignedCellStyles"
-      [headerStyles]="rightAlignedHeaderStyles"></igx-column>
+    [headerStyles]="rightAlignedHeaderStyles"></igx-column>
     <igx-column field="totalTime" header="Total Time" width="9%" [cellStyles]="rightAlignedCellStyles"
-      [headerStyles]="rightAlignedHeaderStyles"></igx-column>
+    [headerStyles]="rightAlignedHeaderStyles"></igx-column>
   </igx-grid>
 </ng-template>
 
 <ng-template #maintenance let-maintenanceData>
   <igx-grid class="child-grid" [data]="maintenanceData" height="100%" width="100%">
     <igx-column field="id" header="ID" width="5%" [cellStyles]="rightAlignedCellStyles"
-      [headerStyles]="rightAlignedHeaderStyles"></igx-column>
+    [headerStyles]="rightAlignedHeaderStyles"></igx-column>
     <igx-column field="event" header="Event" width="23%"></igx-column>
     <igx-column field="date" header="Date" width="10%"></igx-column>
     <igx-column field="location" header="Location" width="10%"></igx-column>
     <igx-column field="type" header="Type" width="12%">
       <ng-template igxCell let-value>
-        <igx-badge type="success" *ngIf="value === 'Regular'">
-          <igx-icon class="icon-style" family="imx-icons" name="check"></igx-icon>
-        </igx-badge>
-        <igx-badge type="warning" *ngIf="value === 'Incident'">
-          <igx-icon class="icon-style" family="imx-icons" name="git-issue"></igx-icon>
-        </igx-badge>
+        @if (value === 'Regular') {
+          <igx-badge type="success">
+            <igx-icon class="icon-style" family="imx-icons" name="check"></igx-icon>
+          </igx-badge>
+        }
+        @if (value === 'Incident') {
+          <igx-badge type="warning">
+            <igx-icon class="icon-style" family="imx-icons" name="git-issue"></igx-icon>
+          </igx-badge>
+        }
         <span class="status-value">{{ value }}</span>
       </ng-template>
     </igx-column>
@@ -273,7 +289,7 @@
     <igx-card-content class="overlay-location-content">
       @if (isBrowserOnly) {
         <igx-geographic-map #map [width]="'100%'" [height]="'100%'" zoomable="false" draggable="false"
-        [dataSource]="vehicleDetails.markerLocations" latitudeMemberPath="latitude" longitudeMemberPath="longitude">
+          [dataSource]="vehicleDetails.markerLocations" latitudeMemberPath="latitude" longitudeMemberPath="longitude">
         </igx-geographic-map>
       }
     </igx-card-content>
@@ -292,16 +308,20 @@
     <igx-card-content class="overlay-driver-content">
       <div class="driver-block-container">
         <div class="driver-category-container">
-          <div class="detail-item" *ngFor="let category of DRIVER_CATEGORIES.driverCategories">
-            <span class="detail-category">{{ category.label }}: </span>
-            <igx-divider></igx-divider>
-          </div>
+          @for (category of DRIVER_CATEGORIES.driverCategories; track category) {
+            <div class="detail-item">
+              <span class="detail-category">{{ category.label }}: </span>
+              <igx-divider></igx-divider>
+            </div>
+          }
         </div>
         <div class="driver-content-container">
-          <div class="detail-item" *ngFor="let category of DRIVER_CATEGORIES.driverCategories">
-            <span class="detail-value">{{ driverDetails[category.key] }}</span>
-            <igx-divider></igx-divider>
-          </div>
+          @for (category of DRIVER_CATEGORIES.driverCategories; track category) {
+            <div class="detail-item">
+              <span class="detail-value">{{ driverDetails[category.key] }}</span>
+              <igx-divider></igx-divider>
+            </div>
+          }
         </div>
       </div>
     </igx-card-content>
