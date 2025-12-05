@@ -1,6 +1,6 @@
 {
   "name": "sales-grid-app",
-  "homepage": "https://github.com/IgniteUI/grid-demos/tree/master/projects/sales-grid",
+  "homepage": "https://github.com/IgniteUI/angular-grid-examples/tree/master/projects/sales-grid",
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",

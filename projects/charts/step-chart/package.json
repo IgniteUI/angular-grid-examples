@@ -1,6 +1,6 @@
 {
   "name": "step-chart",
-  "homepage": "https://github.com/IgniteUI/grid-demos/tree/master/projects/charts/step-chart",
+  "homepage": "https://github.com/IgniteUI/angular-grid-examples/tree/master/projects/charts/step-chart",
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",

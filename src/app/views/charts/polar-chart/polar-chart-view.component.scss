@@ -7,7 +7,7 @@
 
   // Needed because of routing animations keeping both views in DOM even after OnDestroy (https://github.com/angular/angular/issues/19742)
   // This is a fix for a bug with horizontal flickering due display: flex of the container positions each view next to each other
-  // causing their height or width be incorrect (https://github.com/IgniteUI/grid-demos/issues/60)
+  // causing their height or width be incorrect (https://github.com/IgniteUI/angular-grid-examples/issues/60)
   position: absolute;
   top: 0;
   left: 0;
