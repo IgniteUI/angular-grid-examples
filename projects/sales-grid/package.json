@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@angular/build": "^22.1.6",
-    "@angular/cli": "^22.1.6",
+    "@angular/cli": "^22.2.2",
     "@angular/compiler-cli": "^22.1.4",
     "@igniteui/angular-schematics": "~22.0.1551",
     "@types/express": "^5.0.1",
