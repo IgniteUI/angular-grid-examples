@@ -130,6 +130,7 @@ stages:
         displayName: 'npm run build:ci'
         env:
           NG_BUILD_MAX_WORKERS: '2'
+          NG_BUILD_PARALLEL_TS: 'false'
         inputs:
           command: custom
           workingDir: '$(Build.SourcesDirectory)'
