@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy } from '@angular/core';
 
 import { THEME_TOKEN, ThemeToken } from 'igniteui-angular/core';
 import { IgxBarSeriesModule, IgxCategoryHighlightLayerModule, IgxCategoryYAxisModule, IgxDataChartAnnotationModule, IgxDataChartCategoryCoreModule, IgxDataChartCategoryModule, IgxDataChartCoreModule, IgxDataChartInteractivityModule, IgxDataChartVerticalCategoryModule, IgxDataToolTipLayerModule, IgxLegendModule, IgxNumericXAxisModule } from 'igniteui-angular-charts';
@@ -30,6 +30,7 @@ import { IgxBarSeriesModule, IgxCategoryHighlightLayerModule, IgxCategoryYAxisMo
 ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './bar-chart-sample.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './bar-chart-sample.component.scss'
 })
 export class BarChartDemoComponent {

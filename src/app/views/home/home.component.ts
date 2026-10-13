@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, ViewChild, ViewEncapsulation, Inject, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, ViewChild, ViewEncapsulation, Inject, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLinkActive, RouterModule, Router, NavigationEnd } from '@angular/router';
 import { IgxButtonDirective, IgxTooltipModule } from 'igniteui-angular/directives';
@@ -21,6 +21,7 @@ interface TabInfo {
   imports: [CommonModule, RouterModule, RouterLinkActive, IgxIconComponent, IgxButtonDirective, IgxTabsModule, IgxTooltipModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None
 })
 export class HomeComponent {

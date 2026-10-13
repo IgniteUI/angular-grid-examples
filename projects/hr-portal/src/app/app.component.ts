@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { HrPortalComponent } from "./hr-portal/hr-portal.component";
 
 @Component({
@@ -7,6 +7,7 @@ import { HrPortalComponent } from "./hr-portal/hr-portal.component";
   styleUrls: ['./app.component.scss'],
   standalone: true,
   imports: [HrPortalComponent],
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None
 
 })

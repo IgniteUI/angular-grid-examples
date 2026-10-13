@@ -20,8 +20,8 @@ $custom-icon-button-theme: icon-button-theme(
   flex-direction: column;
   align-items: center;
   igx-chip {
-    --igx-chip-hover-background: var(--ig-gray-300);
-    --igx-chip-focus-background: var(--ig-gray-300);
+    --ig-chip-hover-background: var(--ig-gray-300);
+    --ig-chip-focus-background: var(--ig-gray-300);
   }
 }
 
@@ -135,14 +135,14 @@ $custom-icon-button-theme: icon-button-theme(
   }
 
   button {
-    --igx-icon-button-focus-background: var(--ig-gray-600);
-    --igx-icon-button-hover-background: var(--ig-gray-600);
+    --ig-icon-button-focus-background: var(--ig-gray-600);
+    --ig-icon-button-hover-background: var(--ig-gray-600);
   }
 
   .button--disabled {
-    --igx-icon-button-background: var(--ig-gray-500);
-    --igx-icon-button-focus-background: var(--ig-gray-800);
-    --igx-icon-button-hover-background: var(--ig-gray-800);
+    --ig-icon-button-background: var(--ig-gray-500);
+    --ig-icon-button-focus-background: var(--ig-gray-800);
+    --ig-icon-button-hover-background: var(--ig-gray-800);
   }
 }
 
