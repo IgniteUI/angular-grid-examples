@@ -128,6 +128,8 @@ stages:
 
       - task: Npm@1
         displayName: 'npm run build:ci'
+        env:
+          NG_BUILD_MAX_WORKERS: '2'
         inputs:
           command: custom
           workingDir: '$(Build.SourcesDirectory)'
