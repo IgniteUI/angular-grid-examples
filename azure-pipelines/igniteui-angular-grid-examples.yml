@@ -36,7 +36,7 @@ stages:
         displayName: 'Install Node'
         inputs:
           versionSource: 'spec'
-          versionSpec: '24.x'
+          versionSpec: '26.x'
 
       - task: Bash@3
         displayName: 'Create download artifact per sample (Shell)'
