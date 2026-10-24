@@ -1,0 +1,64 @@
+@use 'igniteui-angular/theming' as *;
+@use './signal-desk-theme' as sd;
+
+// -----------------------------------------------------------------------------
+// Signal Desk - theme
+//
+// Colour comes exclusively from the two palettes in `_signal-desk-theme.scss`.
+// This file declares them on the app's host, with the component themes; the
+// desk's layout lives with the desk, in `signal-desk/signal-desk.component.scss`.
+// -----------------------------------------------------------------------------
+
+// The page-wide base: Fluent, light. The desk's palettes are declared on this
+// app's host below, so this base is what everything outside that host renders
+// with - the drop-downs, menus and the other overlays the library attaches to
+// the body.
+@include core();
+@include typography(
+  $font-family: $fluent-typeface,
+  $type-scale: $fluent-type-scale
+);
+@include theme(
+  $palette: $light-fluent-palette,
+  $schema: $light-fluent-schema
+);
+
+// The palettes go on the app's host rather than the desk's: the prerendered
+// page carries only this host - the desk is built in the browser - so this is
+// what paints it in the desk's surface colour until the desk arrives.
+app-grid-fintech-dock-manager {
+  // Dark is the default appearance.
+  @include palette(sd.$sd-dark-palette);
+  @include sd.sd-component-themes();
+
+  // The grid's even row - the one thing the two palettes disagree about that
+  // is not a colour. The light field wants a stripe to hold the eye on a row
+  // across a wide white table; the dark field's rules already do that, and a
+  // second near-black only muddies it. Same value as the odd row here, so the
+  // dark grid has no zebra at all. Read by `$sd-grid`.
+  --sd-zebra: var(--ig-gray-50);
+
+  display: block;
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  color-scheme: dark;
+  background: var(--ig-surface-500);
+  color: var(--ig-gray-900);
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  // Light appearance. Only the palette is re-emitted - the semantic aliases
+  // and every component theme above are palette references, so they follow.
+  .light-theme {
+    @include palette(sd.$sd-light-palette);
+
+    --sd-zebra: var(--ig-gray-100);
+
+    color-scheme: light;
+  }
+}

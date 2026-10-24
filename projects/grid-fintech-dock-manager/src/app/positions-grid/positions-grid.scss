@@ -1,0 +1,91 @@
+// Positions & P&L pane - layout only; grid colour comes from the shell theme.
+
+@use '../desk-shared' as desk;
+
+@include desk.pane;
+@include desk.quote-primitives;
+
+.grid-host {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    border-bottom: 1px solid var(--ig-gray-200);
+}
+
+.positions-grid {
+    @include desk.desk-grid;
+}
+
+.pl-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    line-height: 1.2;
+}
+
+.pl-amount {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.pl-pct {
+    font-size: 10px;
+    opacity: 0.9;
+}
+
+.weight-cell {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 6px;
+}
+
+// Track and fill colours come from `progress-linear-theme()` in the shell.
+.weight-bar {
+    --ig-size: var(--ig-size-small);
+}
+
+// Label ink for text that lives *inside a grid row* rather than in panel
+// chrome. One step darker than the gray-700 used everywhere else, because a
+// row can be selected and hovered at once and that fill is the gray-200 step:
+// gray-700 measures 4.4:1 there (4.3:1 light) and misses AA by a hair, where
+// gray-800 clears 7:1. Panel labels keep 700 - nothing selectable sits under
+// them, so the subordination to the gray-900 values is preserved where it can be.
+.weight-value {
+    font-size: 10px;
+    color: var(--ig-gray-800);
+}
+
+.flatten-btn {
+    color: var(--ig-error-500);
+}
+
+// -- Account footer ----------------------------------------------------------
+
+.account-footer {
+    flex: 0 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 18px;
+    align-items: center;
+    padding: 7px 12px;
+    background: var(--ig-gray-100);
+    border-top: 1px solid var(--ig-gray-200);
+}
+
+.footer-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    line-height: 1.2;
+}
+
+.footer-label {
+    @include desk.section-label;
+}
+
+.footer-value {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ig-gray-900);
+}

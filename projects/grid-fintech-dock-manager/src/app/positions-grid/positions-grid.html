@@ -1,0 +1,143 @@
+<div class="grid-host">
+  <igx-grid
+    #positionsGrid
+    [data]="positions()"
+    primaryKey="symbol"
+    [autoGenerate]="false"
+    [hideRowSelectors]="true"
+    rowSelection="single"
+    [selectedRows]="selectedRows()"
+    [rowHeight]="38"
+    [summaryRowHeight]="42"
+    height="100%"
+    width="100%"
+    class="positions-grid"
+    emptyGridMessage="No open positions &mdash; place an order to build the book."
+    (rowClick)="selectSymbol($event.row.key)"
+  >
+    <igx-column field="symbol" header="Symbol" [sortable]="true" [pinned]="true" width="88px">
+      <ng-template igxCell let-value>
+        <span class="symbol-cell">{{ value }}</span>
+      </ng-template>
+    </igx-column>
+
+    <igx-column field="quantity" header="Qty" dataType="number" [sortable]="true" width="64px"></igx-column>
+
+    <igx-column field="avgCost" header="Avg cost" dataType="number" [sortable]="true" width="94px">
+      <ng-template igxCell let-value><span>{{ value | money }}</span></ng-template>
+    </igx-column>
+
+    <igx-column field="last" header="Last" dataType="number" [sortable]="true" width="94px">
+      <ng-template igxCell let-value><span class="live-price">{{ value | money }}</span></ng-template>
+    </igx-column>
+
+    <igx-column
+      field="marketValue"
+      header="Market value"
+      dataType="number"
+      [sortable]="true"
+      [hasSummary]="true"
+      [summaries]="currencySum"
+      width="120px"
+    >
+      <ng-template igxCell let-value><span>{{ value | money }}</span></ng-template>
+    </igx-column>
+
+    <igx-column
+      field="dayChange"
+      header="Day P&amp;L"
+      dataType="number"
+      [sortable]="true"
+      [hasSummary]="true"
+      [summaries]="currencySum"
+      width="118px"
+    >
+      <ng-template igxCell let-cell="cell">
+        <div class="pl-cell" [class.pos-pnl]="cell.value >= 0" [class.neg-pnl]="cell.value < 0">
+          <span class="pl-amount">{{ cell.value | signed: 'money' }}</span>
+          <span class="pl-pct">{{ cell.row.data.dayChangePct | signed: 'pct' }}</span>
+        </div>
+      </ng-template>
+    </igx-column>
+
+    <igx-column
+      field="openPl"
+      header="Open P&amp;L"
+      dataType="number"
+      [sortable]="true"
+      [hasSummary]="true"
+      [summaries]="currencySum"
+      width="118px"
+    >
+      <ng-template igxCell let-cell="cell">
+        <div class="pl-cell" [class.pos-pnl]="cell.value >= 0" [class.neg-pnl]="cell.value < 0">
+          <span class="pl-amount">{{ cell.value | signed: 'money' }}</span>
+          <span class="pl-pct">{{ cell.row.data.openPlPct | signed: 'pct' }}</span>
+        </div>
+      </ng-template>
+    </igx-column>
+
+    <igx-column field="weight" header="Weight" dataType="number" [sortable]="true" width="96px">
+      <ng-template igxCell let-value>
+        <div class="weight-cell" [attr.title]="value + '% of gross exposure'">
+          <igx-linear-bar
+            class="weight-bar"
+            [value]="value"
+            [max]="100"
+            [textVisibility]="false"
+            [striped]="false"
+          />
+          <span class="weight-value">{{ value | price: 1 }}%</span>
+        </div>
+      </ng-template>
+    </igx-column>
+
+    <igx-action-strip #rowActions>
+      <button
+        igxIconButton="flat"
+        type="button"
+        title="Add to position"
+        aria-label="Add to position"
+        (click)="addTo(symbolOf(rowActions.context))"
+      >
+        <igx-icon>add</igx-icon>
+      </button>
+      <button
+        igxIconButton="flat"
+        type="button"
+        class="flatten-btn"
+        title="Flatten position at market"
+        aria-label="Flatten position at market"
+        (click)="flatten(symbolOf(rowActions.context))"
+      >
+        <igx-icon>close_fullscreen</igx-icon>
+      </button>
+    </igx-action-strip>
+  </igx-grid>
+</div>
+
+<!-- Net liq. and Day P&L are account-wide and already sit in the command bar,
+     on screen whatever pane you are in. What is left here is what the book
+     itself says: unrealised, realised, and how much of the account it uses. -->
+<footer class="account-footer">
+  <div class="footer-stat">
+    <span class="footer-label">Open P&amp;L</span>
+    <span
+      class="footer-value mono"
+      [class.pos-pnl]="account().openPl >= 0"
+      [class.neg-pnl]="account().openPl < 0"
+    >{{ account().openPl | signed: 'money' }}</span>
+  </div>
+  <div class="footer-stat">
+    <span class="footer-label">Realised</span>
+    <span
+      class="footer-value mono"
+      [class.pos-pnl]="account().realizedPl >= 0"
+      [class.neg-pnl]="account().realizedPl < 0"
+    >{{ account().realizedPl | signed: 'money' }}</span>
+  </div>
+  <div class="footer-stat">
+    <span class="footer-label">Exposure</span>
+    <span class="footer-value mono">{{ account().utilisation | price: 1 }}%</span>
+  </div>
+</footer>

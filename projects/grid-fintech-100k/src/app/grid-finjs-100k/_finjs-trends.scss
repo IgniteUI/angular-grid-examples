@@ -1,0 +1,54 @@
+@use 'igniteui-angular/theming' as *;
+
+$finjs-bar-width: rem(3px);
+$finjs-bar-gap: rem(4px);
+
+// Cell classes come from `cellClasses` in grid-finjs-100k.component.ts.
+$finjs-buckets: (
+  'changePos': var(--finjs-pos),
+  'changeNeg': var(--finjs-neg),
+  'strongPositive': var(--finjs-pos),
+  'strongNegative': var(--finjs-neg),
+);
+
+@mixin finjs-trends() {
+  // `igx-icon` resolves its own `color` from `--ig-icon-color`, so feed the
+  // token rather than overriding `color`.
+  .positive {
+    --ig-icon-color: var(--finjs-pos);
+  }
+
+  .negative {
+    --ig-icon-color: var(--finjs-neg);
+  }
+
+  @each $class, $tone in $finjs-buckets {
+    .#{$class} {
+      --finjs-trend: #{$tone};
+
+      // `--cell-active-border-color` is substituted where the grid declares it,
+      // so the public token cannot reach one cell - shadow the private one here.
+      &.igx-grid__td--active {
+        --cell-active-border-color: var(--finjs-trend);
+      }
+    }
+  }
+
+  // Cells with no bucket class fall back to transparent and paint nothing.
+  .igx-grid__td-text {
+    position: relative;
+    padding-inline-start: calc(#{$finjs-bar-width} + #{$finjs-bar-gap});
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset-inline-start: 0;
+      inset-block-start: 50%;
+      width: $finjs-bar-width;
+      height: 100%;
+      border-radius: $finjs-bar-width;
+      background: var(--finjs-trend, transparent);
+      translate: 0 -50%;
+    }
+  }
+}

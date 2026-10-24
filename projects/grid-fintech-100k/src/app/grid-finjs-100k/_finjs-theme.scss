@@ -1,0 +1,114 @@
+@use 'igniteui-angular/theming' as *;
+
+// Emitted inside the themed subtree, not on the host: a var() inside a custom
+// property is substituted where that property is declared.
+@mixin finjs-component-themes() {
+  // grid-theme() is composed - the toolbar, excel filtering, paginator and
+  // buttons all derive from these primary tokens.
+  //
+  // .igx-grid draws its own outline from grid-border-color.
+  $finjs-grid: grid-theme(
+    $schema: $light-fluent-schema,
+    $background: var(--ig-surface-500),
+    $foreground: var(--ig-gray-900),
+    $accent-color: var(--ig-primary-500),
+    // The one token that cannot take a single shade. The gray ramp inverts off
+    // the surface, but not symmetrically in contrast terms: `gray-300` is a
+    // 1.3:1 hairline on white and a 5.1:1 line on the dark surface, which would
+    // make every rule in the grid four times heavier after a theme flip. The
+    // pair keeps the weight even.
+    $grid-border-color: light-dark(var(--ig-gray-300), var(--ig-gray-100))
+  );
+
+  // The size selector. The selected state is stated because it should read as
+  // the accent rather than as a gray fill; everything else derives from the
+  // schema, and the palette carries it across both appearances.
+  //
+  // `$item-border-color` is the one exception, for the same reason the grid's
+  // border is a pair: the schema points it at `gray-600`, which is a 3.4:1
+  // border on white but inverts to a near-white 13:1 outline on the dark
+  // surface. `gray-300` is the shade that sits at the same relative step in the
+  // inverted ramp - 5.1:1, still clearing 1.4.11's 3:1 for a control boundary.
+  $finjs-btn-group: button-group-theme(
+    $schema: $light-fluent-schema,
+    $item-border-color: light-dark(var(--ig-gray-600), var(--ig-gray-300)),
+    $item-selected-background: var(--ig-primary-500),
+    $item-selected-text-color: var(--ig-primary-500-contrast),
+    $item-selected-border-color: var(--ig-primary-500),
+    $item-selected-hover-border-color: var(--ig-primary-500)
+  );
+
+  // The scrollbars are the one part of the sample the palette could not reach on
+  // its own. The library declares the `--sb-*` tokens on `.ig-scrollbar`, which
+  // is the document body, so the `var(--ig-gray-300)` inside them is substituted
+  // against the *global* light theme; what inherits down into the sample is the
+  // already-resolved light colour, and re-emitting the palette here cannot undo
+  // that. Re-declaring the tokens inside the sample is what re-binds them.
+  //
+  // The thumb is a light-dark() pair for the same reason the grid's border is:
+  // the gray ramp inverts off the surface, so the shade that reads as a quiet
+  // thumb on white is a bright one on the dark surface.
+  $finjs-scrollbar: scrollbar-theme(
+    $schema: $light-fluent-schema,
+    $sb-thumb-bg-color: var(--finjs-sb-thumb),
+    $sb-thumb-bg-color-hover: light-dark(var(--ig-gray-400), var(--ig-gray-300)),
+    $sb-track-bg-color: var(--ig-surface-500),
+    $sb-corner-bg: var(--ig-surface-500)
+  );
+
+  // On the host rather than on the grid so the excel-style filter overlays the
+  // grid opens inside the sample are covered by the same pair.
+  --finjs-sb-thumb: light-dark(var(--ig-gray-300), var(--ig-gray-200));
+
+  // `scoped` is the mode that matters here, and it is not interchangeable with
+  // the default: the default emits the `--ig-scrollbar-sb-*` override layer,
+  // which only the body's declaration reads, and the body resolves it before
+  // this subtree exists. `scoped` emits the short `--sb-*` names the
+  // ::-webkit-scrollbar rules read directly, so they are re-resolved here.
+  @include tokens($finjs-scrollbar, $mode: 'scoped');
+
+  // Firefox never sees the ::-webkit-scrollbar rules those tokens feed, and the
+  // library's own `scrollbar-color` is declared on the body, so it carries the
+  // global light colours down here by inheritance. Stating it here stops that.
+  scrollbar-color: var(--finjs-sb-thumb) var(--ig-surface-500);
+
+  igx-grid {
+    @include tokens($finjs-grid);
+
+    border-radius: rem(4px);
+  }
+
+  .finjs-size-group {
+    @include tokens($finjs-btn-group);
+  }
+
+  // The excel-style filter's button groups (Sort, Move, and the custom filter's
+  // And/Or). The library draws them from a derived theme in its `ig.derived`
+  // cascade layer, which must follow the theme's own `ig.fluent` layer. The
+  // layer order is fixed by the first theme in the document, though: in the
+  // samples browser that is the shell's Material theme, which declares
+  // `ig.derived` before this sample's Fluent theme adds `ig.fluent`, so there
+  // Fluent's bordered, filled button-group defaults win and the menu grows boxed
+  // buttons. The derived theme is restated here, unlayered and with the same
+  // arguments the library passes for Fluent, so the menu reads the same
+  // wherever the sample runs.
+  $finjs-filter-btn-group: button-group-theme(
+    $schema: $light-fluent-schema,
+    $item-background: transparent,
+    $item-border-color: transparent,
+    $item-text-color: var(--_excel-filtering-foreground, #{color($color: 'gray', $variant: 700)}),
+    $item-selected-background: var(--ig-btn-group-selected-bg, #{color($color: 'gray', $variant: 100)}),
+    $item-hover-background: var(--item-selected-background),
+    $item-active-border-color: transparent,
+    $item-selected-text-color: var(--_excel-filtering-accent-color, #{color($color: 'primary', $variant: 500)}),
+    $item-selected-active-border-color: transparent,
+    $item-selected-hover-text-color: var(--_excel-filtering-accent-color, #{color($color: 'primary', $variant: 500)}),
+    $item-selected-hover-background: dynamic-shade(var(--item-hover-background), $offset: 3),
+    $shadow: none
+  );
+
+  .igx-excel-filter .igx-button-group,
+  .igx-excel-filter__secondary .igx-button-group {
+    @include tokens($finjs-filter-btn-group, $mode: 'scoped');
+  }
+}

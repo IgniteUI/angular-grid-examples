@@ -1,0 +1,90 @@
+<header class="blotter-bar">
+  <igx-chips-area class="blotter-filters" aria-label="Filter orders by status">
+    @for (filter of statusFilters; track filter) {
+      <igx-chip
+        [selectable]="true"
+        [selected]="activeFilter() === filter"
+        (selectedChanging)="onFilterChipSelect(filter, $event)"
+      >
+        {{ filter }}
+        <igx-suffix class="filter-count">{{ counts()[filter] }}</igx-suffix>
+      </igx-chip>
+    }
+  </igx-chips-area>
+
+  <button
+    igxButton="flat"
+    type="button"
+    class="cancel-all"
+    [disabled]="workingCount() === 0"
+    (click)="cancelAll()"
+  >
+    <igx-icon aria-hidden="true">cancel</igx-icon>
+    Cancel all
+  </button>
+</header>
+
+<div class="grid-host">
+  <igx-grid
+    [data]="rows()"
+    primaryKey="id"
+    [autoGenerate]="false"
+    [hideRowSelectors]="true"
+    [rowHeight]="36"
+    height="100%"
+    width="100%"
+    class="blotter-grid"
+    emptyGridMessage="No orders yet &mdash; place one from the ticket."
+    (rowClick)="selectSymbol($event.row.data.symbol)"
+  >
+    <igx-column field="placedAt" header="Time" dataType="date" [sortable]="true" width="70px">
+      <ng-template igxCell let-value><span>{{ value | shortClock }}</span></ng-template>
+    </igx-column>
+
+    <igx-column field="symbol" header="Symbol" [sortable]="true" width="82px">
+      <ng-template igxCell let-value><span class="symbol-cell">{{ value }}</span></ng-template>
+    </igx-column>
+
+    <igx-column field="side" header="Side" [sortable]="true" width="62px">
+      <ng-template igxCell let-value>
+        <span class="side-tag" [class.side-buy]="value === 'BUY'" [class.side-sell]="value === 'SELL'">{{ value }}</span>
+      </ng-template>
+    </igx-column>
+
+    <igx-column field="quantity" header="Qty" dataType="number" [sortable]="true" width="62px"></igx-column>
+
+    <igx-column field="type" header="Type" [sortable]="true" width="104px"></igx-column>
+
+    <igx-column field="displayPrice" header="Price" dataType="number" [sortable]="true" width="112px">
+      <ng-template igxCell let-cell="cell">
+        <span>{{ cell.value | money }}</span>
+        <span class="price-kind">{{ cell.row.data.priceKind }}</span>
+      </ng-template>
+    </igx-column>
+
+    <igx-column field="timeInForce" header="TIF" [sortable]="true" width="62px"></igx-column>
+
+    <igx-column field="status" header="Status" [sortable]="true" width="96px">
+      <ng-template igxCell let-value>
+        <igx-badge class="status-badge" [type]="badgeType(value)" [value]="value" />
+      </ng-template>
+    </igx-column>
+
+    <igx-column field="note" header="Detail" width="240px">
+      <ng-template igxCell let-value><span class="note-cell" [title]="value">{{ value }}</span></ng-template>
+    </igx-column>
+
+    <igx-action-strip #rowActions>
+      <button
+        igxIconButton="flat"
+        type="button"
+        title="Cancel order"
+        aria-label="Cancel order"
+        [disabled]="!isWorking(rowActions.context)"
+        (click)="cancel(rowActions.context)"
+      >
+        <igx-icon>delete_outline</igx-icon>
+      </button>
+    </igx-action-strip>
+  </igx-grid>
+</div>

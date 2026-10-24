@@ -1,0 +1,376 @@
+<section class="fleet-shell ig-scrollbar" aria-label="Fleet management page">
+  <section class="fleet-chip-row" aria-label="Fleet status filters">
+    <igx-chip class="fleet-chip" outlined [class.active]="vm.isFleetFilterActive('all')" (click)="vm.setFleetFilter('all')">
+      All vehicles ({{ vm.fleetMetrics()[0].value }})
+    </igx-chip>
+    <igx-chip variant="info" outlined class="fleet-chip fleet-chip-active" [class.active]="vm.isFleetFilterActive('Active')" (click)="vm.setFleetFilter('Active')">
+      Active ({{ vm.fleetMetrics()[1].value }})
+    </igx-chip>
+    <igx-chip variant="success" outlined class="fleet-chip fleet-chip-available" [class.active]="vm.isFleetFilterActive('Available')" (click)="vm.setFleetFilter('Available')">
+      Available ({{ vm.fleetMetrics()[2].value }})
+    </igx-chip>
+    <igx-chip variant="warning" outlined class="fleet-chip fleet-chip-maintenance" [class.active]="vm.isFleetFilterActive('In Maintenance')" (click)="vm.setFleetFilter('In Maintenance')">
+      In Maintenance ({{ vm.fleetMetrics()[3].value }})
+    </igx-chip>
+
+    <button igxButton="outlined" type="button" class="fleet-reset" (click)="askResetFleet()">
+      <igx-icon>restart_alt</igx-icon>
+      <span>Reset</span>
+    </button>
+
+    <igx-buttongroup
+      class="fleet-size-group"
+      selectionMode="singleRequired"
+      aria-label="Component size"
+      (selected)="onFleetSizeSelected($event)"
+    >
+      @for (size of fleetSizes; track size) {
+        <button igxButton [selected]="fleetSize() === size" [title]="'Render the sample at ' + size + ' size'">
+          <span>{{ size }}</span>
+        </button>
+      }
+    </igx-buttongroup>
+
+    <button
+      igxIconButton="contained"
+      type="button"
+      class="fleet-theme-toggle"
+      [title]="isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+      [attr.aria-label]="isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+      (click)="toggleTheme()"
+    >
+      <igx-icon>{{ isDark() ? 'light_mode' : 'dark_mode' }}</igx-icon>
+    </button>
+  </section>
+
+  <igx-grid #fleetGrid igxGridState class="fleet-master-grid" [data]="vm.filteredFleetVehicles()" [primaryKey]="'id'" [autoGenerate]="false" [moving]="true" [showGroupArea]="false" [isLoading]="fleetPrerendering">
+    <igx-grid-toolbar>
+      <igx-grid-toolbar-title>
+        <span class="fleet-title-wrap">
+          <div class="fleet-title-icon-wrap">
+            <igx-icon class="fleet-title-icon" aria-hidden="true">directions_car</igx-icon>
+            <igx-icon class="fleet-title-icon" aria-hidden="true">directions_car</igx-icon>
+            <igx-icon class="fleet-title-icon" aria-hidden="true">directions_car</igx-icon>
+          </div>
+          <h1>Fleet Management</h1>
+        </span>
+      </igx-grid-toolbar-title>
+      <igx-grid-toolbar-actions>
+        <igx-input-group type="search" class="fleet-search">
+          <igx-prefix><igx-icon aria-hidden="true">search</igx-icon></igx-prefix>
+          <input
+            igxInput
+            type="search"
+            placeholder="Search fleet"
+            aria-label="Search vehicles by ID, plate, VIN, make, model or location"
+            [value]="fleetSearchQuery()"
+            (input)="updateSearchQuery($event)"
+          />
+        </igx-input-group>
+        <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
+        <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+        <igx-grid-toolbar-advanced-filtering></igx-grid-toolbar-advanced-filtering>
+      </igx-grid-toolbar-actions>
+    </igx-grid-toolbar>
+
+    <igx-column field="id" header="Vehicle ID" [sortable]="true" [filterable]="false"></igx-column>
+    <igx-column field="licensePlate" header="License Plate" [sortable]="true" [filterable]="true"></igx-column>
+    <igx-column field="make" header="Make" [sortable]="true" [filterable]="true"></igx-column>
+    <igx-column field="model" header="Model" [sortable]="true" [filterable]="true"></igx-column>
+    <igx-column field="type" header="Type" [sortable]="true" [filterable]="true"></igx-column>
+    <igx-column field="vin" header="VIN" [sortable]="true" [filterable]="false"></igx-column>
+    <igx-column field="status" header="Status" [sortable]="true" [filterable]="true">
+      <ng-template igxCell let-cell="cell">
+        @let badge = vm.fleetStatusBadge(cell.value);
+        <span class="status-display">
+          <igx-badge
+            class="status-badge"
+            [class.status-badge-pulse]="badge.pulse"
+            [type]="badge.type"
+            dot
+            aria-hidden="true"
+          />
+          <span class="badge-text">{{ cell.value }}</span>
+        </span>
+      </ng-template>
+    </igx-column>
+    <igx-column field="locationCity" header="Location" [sortable]="true" [filterable]="true" [width]="'12%'"></igx-column>
+
+    <!-- One action per status the row is not already in, so every status stays
+         reachable from every other one. -->
+    <igx-action-strip #rowActions>
+      @if (rowActions.context?.data; as vehicle) {
+        @if (vehicle.status !== 'Active') {
+          <button
+            igxIconButton="flat"
+            class="fleet-row-action fleet-row-action-active"
+            type="button"
+            title="Put back in service"
+            aria-label="Put back in service"
+            (click)="setVehicleStatus(vehicle, 'Active')"
+          >
+            <igx-icon>play_circle</igx-icon>
+          </button>
+        }
+        @if (vehicle.status !== 'Available') {
+          <button
+            igxIconButton="flat"
+            class="fleet-row-action fleet-row-action-available"
+            type="button"
+            title="Mark available"
+            aria-label="Mark available"
+            (click)="setVehicleStatus(vehicle, 'Available')"
+          >
+            <igx-icon>check_circle</igx-icon>
+          </button>
+        }
+        @if (vehicle.status !== 'In Maintenance') {
+          <button
+            igxIconButton="flat"
+            class="fleet-row-action fleet-row-action-maintenance"
+            type="button"
+            title="Send to maintenance"
+            aria-label="Send to maintenance"
+            (click)="setVehicleStatus(vehicle, 'In Maintenance')"
+          >
+            <igx-icon>build</igx-icon>
+          </button>
+        }
+      }
+    </igx-action-strip>
+
+    <ng-template igxGridDetail let-dataItem>
+      <div class="fleet-detail-wrap" #fleetDetailWrap>
+        <igx-tabs class="fleet-detail-tabs">
+          <igx-tab-item selected>
+            <igx-tab-header>Details</igx-tab-header>
+            <igx-tab-content>
+              <div class="fleet-detail-content">
+                <igx-card class="fleet-vehicle-card">
+                  <igx-card-content>
+                    <div class="fleet-vehicle-illustration">
+                      @if (vm.fleetVehiclePhotoUrl(dataItem); as photoUrl) {
+                        <img class="fleet-vehicle-photo" [src]="photoUrl" [alt]="vm.fleetVehiclePhotoAlt(dataItem)" loading="lazy" decoding="async" (error)="vm.onFleetVehicleImageError($event, dataItem)" />
+                      } @else {
+                        <div class="fleet-vehicle-photo fleet-vehicle-photo-empty">
+                          <igx-icon aria-hidden="true">directions_car</igx-icon>
+                          <span>Photo unavailable</span>
+                        </div>
+                      }
+                    </div>
+                  </igx-card-content>
+                </igx-card>
+
+                <div class="fleet-spec-grid">
+                  <div class="fleet-spec-item"><span>Make</span><strong>{{ dataItem.make }}</strong></div>
+                  <div class="fleet-spec-item"><span>Engine</span><strong>{{ dataItem.specs.engine }}</strong></div>
+                  <div class="fleet-spec-item"><span>Generation</span><strong>{{ dataItem.specs.generation }}</strong></div>
+                  <div class="fleet-spec-item"><span>Year</span><strong>{{ dataItem.specs.year }}</strong></div>
+                  <div class="fleet-spec-item"><span>Fuel Type</span><strong>{{ dataItem.specs.fuelType }}</strong></div>
+                  <div class="fleet-spec-item"><span>Power</span><strong>{{ dataItem.specs.power }}</strong></div>
+                  <div class="fleet-spec-item"><span>Mileage</span><strong>{{ dataItem.specs.mileage }}</strong></div>
+                  <div class="fleet-spec-item"><span>Doors</span><strong>{{ dataItem.specs.doorsSeats.split(' / ')[0] }}</strong></div>
+                  <div class="fleet-spec-item"><span>Seats</span><strong>{{ dataItem.specs.doorsSeats.split(' / ')[1] }}</strong></div>
+                  <div class="fleet-spec-item"><span>Engine Displacement</span><strong>{{ dataItem.specs.cubature }}</strong></div>
+                  <!-- The swatch is decorative: the colour name beside it carries the meaning. -->
+                  <div class="fleet-spec-item"><span>Color</span><strong class="fleet-spec-color"><span class="fleet-color-swatch" [style.background-color]="vm.fleetVehicleColor(dataItem).hex" aria-hidden="true"></span>{{ vm.fleetVehicleColor(dataItem).name }}</strong></div>
+                  <div class="fleet-spec-item"><span>Transmission</span><strong>{{ dataItem.specs.transmission }}</strong></div>
+                  <div class="fleet-spec-item"><span>MSRP</span><strong>{{ dataItem.specs.msrp }}</strong></div>
+                  <div class="fleet-spec-item"><span>Toll Pass ID</span><strong>{{ dataItem.specs.tollPassId }}</strong></div>
+                  <div class="fleet-spec-item"><span>Body Type</span><strong>{{ dataItem.type }}</strong></div>
+                </div>
+              </div>
+            </igx-tab-content>
+          </igx-tab-item>
+          <igx-tab-item>
+            <igx-tab-header>Trip History</igx-tab-header>
+            <igx-tab-content>
+              <div class="fleet-tab-panel">
+                <div class="fleet-tab-kpis fleet-tab-kpis-3up">
+                  <div class="fleet-tab-kpi"><span>Trips &mdash; Last 30 Days</span><strong>{{ vm.fleetDetail(dataItem).tripSummary.trips }}</strong></div>
+                  <div class="fleet-tab-kpi"><span>Total distance</span><strong>{{ vm.fleetDetail(dataItem).tripSummary.totalDistance }}</strong></div>
+                  <div class="fleet-tab-kpi"><span>Avg trip</span><strong>{{ vm.fleetDetail(dataItem).tripSummary.avgTrip }}</strong></div>
+                </div>
+
+                <table class="fleet-detail-table fleet-trip-table">
+                  <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Driver</th>
+                    <th>Start Odometer</th>
+                    <th>End Odometer</th>
+                    <th>Distance</th>
+                    <th class="status-cell">Duration</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    @for (trip of vm.fleetDetail(dataItem).tripRows; track trip.date + trip.from + trip.to) {
+                      <tr>
+                        <td>{{ trip.date }}</td>
+                        <td>{{ trip.from }}</td>
+                        <td>{{ trip.to }}</td>
+                        <td>{{ trip.driver }}</td>
+                        <td>{{ trip.startMeter }}</td>
+                        <td>{{ trip.endMeter }}</td>
+                        <td>{{ trip.distance }}</td>
+                        <td class="status-cell">{{ trip.duration }}</td>
+
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </igx-tab-content>
+          </igx-tab-item>
+          <igx-tab-item>
+            <igx-tab-header>Maintenance</igx-tab-header>
+            <igx-tab-content>
+              <div class="fleet-tab-panel">
+                <div class="fleet-maintenance-alert"><igx-icon>build</igx-icon><span>{{ vm.fleetDetail(dataItem).maintenanceNotice }}</span></div>
+
+                <table class="fleet-detail-table fleet-maintenance-table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Service</th>
+                      <th>Odometer</th>
+                      <th>Cost</th>
+                      <th class="status-cell">Status</th></tr>
+                  </thead>
+                  <tbody>
+                    @for (entry of vm.fleetDetail(dataItem).maintenanceRows; track entry.date + entry.service) {
+                    <tr>
+                      <td>{{ entry.date }}</td>
+                      <td>{{ entry.service }}</td>
+                      <td>{{ entry.odometer }}</td>
+                      <td>{{ entry.cost }}</td>
+                      <td class="status-cell">
+                        <span class="fleet-detail-pill" [class]="vm.fleetMaintenanceStatusClass(entry.status)">{{ entry.status }}</span>
+                      </td>
+                    </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </igx-tab-content>
+          </igx-tab-item>
+          <igx-tab-item>
+            <igx-tab-header>Cost</igx-tab-header>
+            <igx-tab-content>
+              <div class="fleet-tab-panel">
+                <div class="fleet-tab-kpis fleet-tab-kpis-3up">
+                  <div class="fleet-tab-kpi"><span>Total cost &mdash; YTD</span><strong class="fleet-accent-value">{{ vm.fleetDetail(dataItem).totalCost }}</strong></div>
+                  <div class="fleet-tab-kpi"><span>Largest category</span><strong>{{ vm.fleetDetail(dataItem).topCostCategory }}</strong></div>
+                  <div class="fleet-tab-kpi"><span>Peak month</span><strong>{{ vm.fleetDetail(dataItem).peakSpendMonth }}</strong></div>
+                </div>
+
+                <!-- The donut's own tooltip. The package default reads
+                     "value : 812" off the member paths; the slice already
+                     carries its share as a label, so the tooltip is the one
+                     place the money itself can be named. -->
+                <ng-template #costSliceTooltip let-item="item">
+                  <div class="fleet-chart-tooltip">
+                    <span class="fleet-chart-tooltip-label">{{ item.label }}</span>
+                    <span class="fleet-chart-tooltip-value">{{ vm.fleetCurrencyAxisLabel(item.value) }} &middot; {{ item.percentage }}</span>
+                  </div>
+                </ng-template>
+
+                <div class="fleet-cost-charts">
+                  <section class="fleet-cost-panel">
+                    <div class="fleet-cost-donut-layout">
+                      <div class="fleet-cost-donut-legend" aria-label="Cost distribution legend">
+                        <div class="fleet-cost-panel-title">Cost Breakdown &mdash; YTD</div>
+                        @for (item of vm.fleetDetail(dataItem).costDistribution; track item.label) {
+                        <div class="fleet-cost-donut-legend-item">
+                          <span class="fleet-cost-donut-legend-main">
+                            <span class="fleet-cost-dot" [class]="vm.fleetCostToneClass(item.tone)"></span>
+                            <span>{{ item.label }}</span>
+                          </span>
+                          <strong>{{ item.percentage }}</strong>
+                        </div>
+                        }
+                      </div>
+
+                      <!-- Stamped through the palette rather than binding to it:
+                           the engine reads the tooltip styling table once, while
+                           the chart is being constructed, so flipping the
+                           appearance has to rebuild the chart. The same directive
+                           frees the charts once their detail has left the page;
+                           see `FleetLiveChartsDirective`. -->
+                      <ng-container *fleetLiveCharts="vm.fleetChartTheme(); within: fleetDetailWrap; let palette">
+                        <igx-doughnut-chart class="fleet-cost-donut" width="100%" height="280px" [allowSliceSelection]="false" [allowSliceExplosion]="false" [innerExtent]="62">
+                          <igx-ring-series [dataSource]="vm.fleetDetail(dataItem).costDistribution" valueMemberPath="value" labelMemberPath="displayLabel" [labelsPosition]="vm.LabelsPosition.Center" [leaderLineVisibility]="vm.Visibility.Collapsed" [labelInnerColor]="palette.onBrush" [tooltipTemplate]="costSliceTooltip" [brushes]="palette.cost" [outlines]="palette.cost" textStyle="600 12px 'DM Sans', sans-serif"></igx-ring-series>
+                        </igx-doughnut-chart>
+                      </ng-container>
+                    </div>
+                  </section>
+
+                  <section class="fleet-cost-panel">
+                    <div class="fleet-cost-panel-title">Monthly Operating Cost</div>
+                    <!-- `crosshairsAnnotation*TextColor` is set on both
+                         category charts, here and on Utilization. The bubble
+                         the crosshair puts on the axis under the cursor is
+                         painted in the series brush, and left alone the engine
+                         auto-contrasts its text between a hardcoded #666 and
+                         white - which on the accent picks the gray and lands at
+                         2.7:1. Naming the colour outright skips that choice.
+                         The background stays the brush, so the bubble is still
+                         colour-coded to the series it is reading. -->
+                    <ng-container *fleetLiveCharts="vm.fleetChartTheme(); within: fleetDetailWrap; let palette">
+                      <igx-category-chart class="fleet-cost-column-chart" width="100%" height="280px" [dataSource]="vm.fleetDetail(dataItem).monthlySpend" xAxisLabel="month" [yAxisMinimumValue]="0" [crosshairsAnnotationXAxisTextColor]="palette.onBrush" [crosshairsAnnotationYAxisTextColor]="palette.onBrush" [yAxisFormatLabel]="vm.fleetCurrencyAxisLabel" [isTransitionInEnabled]="false" [includedProperties]="['spend']" [brushes]="palette.spend" [outlines]="palette.spend" xAxisLabelTextStyle="500 12px 'DM Sans', sans-serif" yAxisLabelTextStyle="500 12px 'DM Sans', sans-serif" [xAxisLabelTextColor]="palette.label" [yAxisLabelTextColor]="palette.label" [xAxisMajorStroke]="palette.gridline" [yAxisMajorStroke]="palette.gridline" [xAxisMajorStrokeThickness]="1" [yAxisMajorStrokeThickness]="1" [chartType]="vm.CategoryChartType.Column" [isHorizontalZoomEnabled]="false" [isVerticalZoomEnabled]="false" [thickness]="1"></igx-category-chart>
+                    </ng-container>
+                  </section>
+                </div>
+              </div>
+            </igx-tab-content>
+          </igx-tab-item>
+          <igx-tab-item>
+            <igx-tab-header>Utilization</igx-tab-header>
+            <igx-tab-content>
+              <div class="fleet-tab-panel">
+                <div class="fleet-tab-kpis fleet-tab-kpis-4up">
+                  <div class="fleet-tab-kpi"><span>Utilization rate</span><strong class="fleet-accent-value">{{ vm.fleetDetail(dataItem).utilization.rate }}</strong></div>
+                  <div class="fleet-tab-kpi"><span>Active hours</span><strong>{{ vm.fleetDetail(dataItem).utilization.activeHours }}</strong></div>
+                  <div class="fleet-tab-kpi"><span>Idle hours</span><strong>{{ vm.fleetDetail(dataItem).utilization.idleHours }}</strong></div>
+                  <div class="fleet-tab-kpi"><span>Trips this month</span><strong>{{ vm.fleetDetail(dataItem).utilization.trips }}</strong></div>
+                </div>
+
+                <div class="fleet-utilization-wrap">
+                  <div class="fleet-utilization-title">Monthly Active Hours &mdash; {{ vm.fleetUtilizationYears.current }} vs {{ vm.fleetUtilizationYears.prior }} {{ vm.fleetDetail(dataItem).utilizationYoY }}</div>
+                  <div class="fleet-utilization-legend" aria-label="Utilization comparison legend">
+                    <span class="fleet-utilization-legend-item"><span class="fleet-utilization-legend-swatch fleet-utilization-legend-swatch-current"></span><span>{{ vm.fleetUtilizationYears.current }}</span></span>
+                    <span class="fleet-utilization-legend-item"><span class="fleet-utilization-legend-swatch fleet-utilization-legend-swatch-prior"></span><span>{{ vm.fleetUtilizationYears.prior }}</span></span>
+                  </div>
+                  <ng-container *fleetLiveCharts="vm.fleetChartTheme(); within: fleetDetailWrap; let palette">
+                    <igx-category-chart class="fleet-utilization-comparison-chart" width="100%" height="320px" [dataSource]="vm.fleetDetail(dataItem).utilizationSeries" xAxisLabel="month" [yAxisMinimumValue]="0" [crosshairsAnnotationXAxisTextColor]="palette.onBrush" [crosshairsAnnotationYAxisTextColor]="palette.onBrush" [isTransitionInEnabled]="false" [includedProperties]="['currentYear', 'priorYear']" [brushes]="palette.utilization" [outlines]="palette.utilization" xAxisLabelTextStyle="500 12px 'DM Sans', sans-serif" yAxisLabelTextStyle="500 12px 'DM Sans', sans-serif" [xAxisLabelTextColor]="palette.label" [yAxisLabelTextColor]="palette.label" [xAxisMajorStroke]="palette.gridline" [yAxisMajorStroke]="palette.gridline" [xAxisMajorStrokeThickness]="1" [yAxisMajorStrokeThickness]="1" [chartType]="vm.CategoryChartType.Column" [isHorizontalZoomEnabled]="false" [isVerticalZoomEnabled]="false" [thickness]="1"></igx-category-chart>
+                  </ng-container>
+                </div>
+              </div>
+            </igx-tab-content>
+          </igx-tab-item>
+        </igx-tabs>
+      </div>
+    </ng-template>
+  </igx-grid>
+
+  <igx-snackbar #fleetSnackbar [displayTime]="3000" [autoHide]="true" />
+
+  <!-- The dialog opens into this outlet rather than the body-level one, so it
+       renders inside the palette declared on the host. Out of flow: the shell
+       is a grid, and an in-flow child here would open an implicit row. -->
+  <div class="fleet-overlay-host" #fleetOverlay></div>
+
+  <igx-dialog
+    #fleetResetDialog
+    title="Reset the fleet?"
+    message="Vehicle statuses, the status filter, the search, the component size and the theme all go back to how they opened, along with the grid's sorting, filters, column order, pinning and expanded rows."
+    leftButtonLabel="Cancel"
+    rightButtonLabel="Reset"
+    rightButtonType="contained"
+    [closeOnOutsideSelect]="true"
+    (leftButtonSelect)="fleetResetDialog.close()"
+    (rightButtonSelect)="confirmResetFleet()"
+  />
+</section>
