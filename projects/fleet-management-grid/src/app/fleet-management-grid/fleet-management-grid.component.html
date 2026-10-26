@@ -126,7 +126,7 @@
             <div class="chart-container pie-chart-container">
               <div class="chart-header">
                 <span class="chart-title">Costs per Type</span>
-                <igx-select #select class="chart-select"
+<igx-select type="line" #select class="chart-select"
                   [value]="periods[dataItem.vehicleId]?.costPerTypePeriod || Period.YTD"
                   (selectionChanging)="onPeriodChange($event, 'costsPerType', dataItem.vehicleId)">
                   <label igxLabel>Period</label>
@@ -148,7 +148,7 @@
             <div class="chart-container area-chart-container">
               <div class="chart-header">
                 <span class="chart-title">Costs per Meter, per Quarter</span>
-                <igx-select #select class="chart-select"
+<igx-select type="line" #select class="chart-select"
                   [value]="periods[dataItem.vehicleId]?.costPerMeterPeriod || Period.YTD"
                   (selectionChanging)="onPeriodChange($event, 'costsPerMeter', dataItem.vehicleId)">
                   <label igxLabel>Period</label>
@@ -173,7 +173,7 @@
             <div class="chart-container column-chart-container">
               <div class="chart-header">
                 <span class="chart-title">Fuel Costs per Month</span>
-                <igx-select #select class="chart-select"
+<igx-select type="line" #select class="chart-select"
                   [value]="periods[dataItem.vehicleId]?.fuelCostPeriod || Period.YTD"
                   (selectionChanging)="onPeriodChange($event, 'fuelCosts', dataItem.vehicleId)">
                   <label igxLabel>Period</label>

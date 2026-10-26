@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy } from '@angular/core';
 
 import { THEME_TOKEN, ThemeToken } from 'igniteui-angular/core';
 import { IgxCategoryChartModule, IgxItemLegendModule, IgxPieChartModule } from 'igniteui-angular-charts';
@@ -21,6 +21,7 @@ import { IgxCategoryChartModule, IgxItemLegendModule, IgxPieChartModule } from '
 ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './pie-chart-sample.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './pie-chart-sample.component.scss'
 })
 export class PieChartDemoComponent {

@@ -1,5 +1,5 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { IgxButtonDirective, IgxToggleActionDirective, IgxTooltipDirective, IgxTooltipTargetDirective } from 'igniteui-angular/directives';
 import { ISelectionEventArgs, IgxDropDownComponent, IgxDropDownItemComponent, IgxDropDownItemNavigationDirective } from 'igniteui-angular/drop-down';
 import { IgxIconComponent } from 'igniteui-angular/icon';
@@ -69,6 +69,7 @@ export class IgxSaleProfitAggregate {
       },
     },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './sales-grid.component.scss'
 })
 export class SalesGridComponent implements OnInit {

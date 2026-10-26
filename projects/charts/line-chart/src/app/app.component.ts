@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 
 import { LineChartDemoComponent } from './line-chart-sample/line-chart-sample.component';
 
@@ -8,6 +8,7 @@ import { LineChartDemoComponent } from './line-chart-sample/line-chart-sample.co
   imports: [LineChartDemoComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent {
