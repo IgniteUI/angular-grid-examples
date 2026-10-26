@@ -1,0 +1,298 @@
+<div class="app-shell" [class.light-theme]="!isDark()">
+
+  <!-- The pane rail is a pinned Navigation Drawer: mini by default, expanded on
+       demand. Both states render the same item list through `railItems`. -->
+  <igx-nav-drawer
+    class="platform-rail"
+    [pin]="true"
+    [enableGestures]="false"
+    [isOpen]="navExpanded()"
+    width="208px"
+    miniWidth="58px"
+  >
+    <ng-template igxDrawer>
+      <ng-container *ngTemplateOutlet="railItems; context: { expanded: true }" />
+    </ng-template>
+
+    <ng-template igxDrawerMini>
+      <ng-container *ngTemplateOutlet="railItems; context: { expanded: false }" />
+    </ng-template>
+  </igx-nav-drawer>
+
+  <ng-template #railItems let-expanded="expanded">
+    <div class="rail-head" [class.rail-head-expanded]="expanded">
+      <button
+        igxIconButton="flat"
+        type="button"
+        class="rail-toggle"
+        [attr.aria-expanded]="expanded"
+        [attr.aria-label]="expanded ? 'Collapse the pane rail' : 'Expand the pane rail'"
+        (click)="toggleNav()"
+      >
+        <igx-icon>{{ expanded ? 'chevron_left' : 'chevron_right' }}</igx-icon>
+      </button>
+    </div>
+
+    <nav class="rail-nav" aria-label="Show or hide panes">
+      @for (pane of paneToggles; track pane.id) {
+        <button
+          igxDrawerItem
+          type="button"
+          class="rail-item"
+          role="switch"
+          [active]="isPaneVisible(pane.id)"
+          [attr.aria-checked]="isPaneVisible(pane.id)"
+          [attr.aria-label]="expanded ? null : pane.label"
+          [title]="expanded ? '' : pane.label"
+          (click)="togglePane(pane.id)"
+        >
+          <igx-icon aria-hidden="true">{{ pane.icon }}</igx-icon>
+          @if (expanded) {
+            <span class="rail-label">{{ pane.label }}</span>
+
+            <!-- Indicator only - the row is the control, so a click anywhere on
+                 the item flips it. The switch inherits a host click listener
+                 from the checkbox base, so without `pointer-events: none` a
+                 click on the track would toggle it *and* bubble to the row, and
+                 the two would cancel out. `readonly`, `tabindex="-1"` and
+                 `aria-hidden` keep its input out of the tab order and off the
+                 accessibility tree, where the row's `role="switch"` already
+                 reports the state. -->
+            <igx-switch
+              class="rail-switch"
+              aria-hidden="true"
+              [tabindex]="-1"
+              [readonly]="true"
+              [checked]="isPaneVisible(pane.id)"
+            />
+          }
+        </button>
+      }
+    </nav>
+
+    <div class="rail-footer">
+      <button
+        igxDrawerItem
+        type="button"
+        class="rail-item"
+        title="Restore the desk to its opening state"
+        aria-label="Reset the desk"
+        (click)="resetDesk()"
+      >
+        <igx-icon aria-hidden="true">restart_alt</igx-icon>
+        @if (expanded) {
+          <span class="rail-label">Reset desk</span>
+        }
+      </button>
+    </div>
+  </ng-template>
+
+  <div class="workspace">
+    <header class="command-bar" role="banner">
+      <!-- Three zones, hairline-separated: who we are and what the tape is
+           doing, then the market, then the account and its controls. -->
+      <div class="bar-zone bar-lead">
+        <div class="brand">SignalDesk</div>
+
+        <div class="feed-controls" role="group" aria-label="Market feed">
+          <igx-badge
+            class="feed-status"
+            [type]="feedBadgeType()"
+            [value]="feedStatus()"
+            [attr.aria-label]="'Feed status: ' + feedStatus()"
+          />
+
+          <button
+            igxIconButton="flat"
+            type="button"
+            [attr.aria-label]="isPaused() ? 'Resume the market feed' : 'Pause the market feed'"
+            [title]="isPaused() ? 'Resume the market feed' : 'Pause the market feed'"
+            (click)="togglePlayback()"
+          >
+            <igx-icon>{{ isPaused() ? 'play_arrow' : 'pause' }}</igx-icon>
+          </button>
+
+          <igx-buttongroup
+            class="speed-group"
+            selectionMode="singleRequired"
+            (selected)="onFeedSpeedSelected($event)"
+          >
+            @for (speed of feedSpeeds; track speed.value) {
+              <button
+                igxButton
+                [selected]="feedFrequency() === speed.value"
+                [title]="'Tick every ' + speed.value + 'ms'"
+              ><span>{{ speed.label }}</span></button>
+            }
+          </igx-buttongroup>
+        </div>
+      </div>
+
+      <!-- The figure ribbon: indices and account summary on one endless loop.
+           `tabindex` is what makes the pause reachable without a mouse - see
+           `.bar-ticker` for both halves of that. -->
+      <div
+        class="bar-zone bar-ticker"
+        role="region"
+        aria-label="Market indices and account summary &mdash; hover or focus to pause"
+        tabindex="0"
+      >
+        <!-- The same figures over and over. The copies are not redundant: the
+             loop resets the instant copy two stands where copy one began, so
+             there is never a blank stretch in frame, and it takes more than two
+             of them to fill a wide bar (see `tickerRuns`). Only the first is
+             read out - a screen reader should hear the ribbon once. -->
+        <div class="ticker-track">
+          @for (run of tickerRuns; track $index) {
+            <div class="ticker-run" [attr.aria-hidden]="$first ? null : 'true'">
+              <ng-container *ngTemplateOutlet="tickerFigures" />
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="bar-zone bar-actions">
+        <igx-avatar initials="S" shape="circle" class="user-avatar" size="small" />
+
+        <div class="notification-controls" role="group" aria-label="Alerts">
+          <button
+            igxIconButton="flat"
+            type="button"
+            class="alert-bell"
+            [attr.aria-label]="unreadAlerts() + ' unread alerts &mdash; show alerts'"
+            title="Show alerts"
+            (click)="showAlerts()"
+          >
+            <igx-icon>notifications</igx-icon>
+            @if (unreadAlerts() > 0) {
+              <igx-badge class="bell-badge" type="error" [value]="unreadAlerts()" />
+            }
+          </button>
+        </div>
+
+        <button
+          igxIconButton="flat"
+          type="button"
+          [title]="isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+          [attr.aria-label]="isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+          (click)="toggleTheme()"
+        >
+          <igx-icon>{{ isDark() ? 'light_mode' : 'dark_mode' }}</igx-icon>
+        </button>
+      </div>
+    </header>
+
+    <!-- One run of the ticker: the four indices, then the account summary,
+         divided the way the bar's zones are. Stamped into `.ticker-track` once
+         per entry in `tickerRuns`. -->
+    <ng-template #tickerFigures>
+      @for (index of indices(); track index.name) {
+        <div class="stat">
+          <span class="stat-label">{{ index.name }}</span>
+          <span class="stat-line">
+            <span class="stat-value mono">{{ index.value | price }}</span>
+            <span class="stat-delta mono" [class.pos]="index.positive" [class.neg]="!index.positive">
+              {{ index.changePct | signed: 'pct' }}
+            </span>
+          </span>
+        </div>
+      }
+
+      <dl class="ticker-account" aria-label="Account summary">
+        <div class="stat">
+          <dt class="stat-label">Net liq.</dt>
+          <dd class="stat-line"><span class="stat-value mono">{{ account().netLiquidation | money }}</span></dd>
+        </div>
+        <div class="stat">
+          <dt class="stat-label">Day P&amp;L</dt>
+          <dd class="stat-line">
+            <span
+              class="stat-value mono"
+              [class.pos]="account().dayPl >= 0"
+              [class.neg]="account().dayPl < 0"
+            >{{ account().dayPl | signed: 'money' }}</span>
+          </dd>
+        </div>
+        <div class="stat">
+          <dt class="stat-label">Buying power</dt>
+          <dd class="stat-line"><span class="stat-value mono">{{ account().buyingPower | money }}</span></dd>
+        </div>
+        <div class="stat">
+          <dt class="stat-label">Working</dt>
+          <dd class="stat-line"><span class="stat-value mono">{{ workingOrderCount() }}</span></dd>
+        </div>
+      </dl>
+    </ng-template>
+
+    <div class="main-area">
+      <igc-dockmanager
+        class="dock-area ig-scrollbar"
+        [layout]="layout()"
+        [class.dark-theme]="isDark()"
+        [class.light-theme]="!isDark()"
+        (layoutChange)="onLayoutChange($event)"
+        (paneClose)="onPaneClose($event)"
+      >
+        <div slot="watchlist" class="pane-host"><app-watchlist /></div>
+        <div slot="orderTicket" class="pane-host"><app-order-ticket /></div>
+        <div slot="positions" class="pane-host"><app-positions-grid /></div>
+        <div slot="blotter" class="pane-host"><app-blotter /></div>
+        <div slot="news" class="pane-host"><app-news-panel /></div>
+
+        <!-- One slot per open chart document; the layout is the source of truth. -->
+        @for (symbol of chartSymbols(); track symbol) {
+          <div [attr.slot]="chartContentId(symbol)" class="pane-host">
+            <app-chart-panel [symbol]="symbol" />
+          </div>
+        }
+      </igc-dockmanager>
+    </div>
+  </div>
+
+  <!-- Alerts are read on arrival rather than browsed, so they are a dialog
+       rather than a pane; the news wire they used to share a pane with is
+       docked again.
+
+       The dialog opens into `deskOverlay` rather than the default body-level
+       outlet. The overlay moves the dialog's content out of `igx-dialog`, and
+       the desk palette is declared on the app root's host
+       (`app-grid-fintech-dock-manager`), so a body-level outlet would render
+       the dialog outside every `--ig-*` token it needs. The host is out of
+       flow: `.app-shell` is a grid, and an in-flow child here would open an
+       implicit row.
+
+       It carries the theme class, as the Dock Manager does. In the light theme
+       that declares the light palette on the very element the dialog tokens
+       are declared on (`.desk-overlay-host` in `_signal-desk-theme.scss`); in
+       the dark theme they resolve against the palette inherited from the app
+       root's host. Either way the dialogs follow the desk around them. -->
+  <div class="desk-overlay-host ig-scrollbar" #deskOverlay [class.light-theme]="!isDark()">
+    <!-- Reset throws away the session, so it asks first. -->
+    <igx-dialog
+      #resetDialog
+      title="Reset the desk?"
+      message="The layout, watchlist, theme, book and alerts all go back to how they opened. Orders you have placed and positions you have opened are discarded."
+      leftButtonLabel="Cancel"
+      rightButtonLabel="Reset"
+      rightButtonType="contained"
+      [closeOnOutsideSelect]="true"
+      (leftButtonSelect)="resetDialog.close()"
+      (rightButtonSelect)="confirmReset()"
+    />
+
+    <igx-dialog #notificationsDialog [closeOnOutsideSelect]="true">
+      <div igxDialogTitle class="notifications-title">
+        <igx-icon aria-hidden="true">notifications</igx-icon>
+        <span>Alerts</span>
+      </div>
+
+      <div class="notifications-body">
+        <app-alerts-panel />
+      </div>
+
+      <div igxDialogActions>
+        <button igxButton="flat" type="button" (click)="notificationsDialog.close()">Close</button>
+      </div>
+    </igx-dialog>
+  </div>
+</div>

@@ -1,0 +1,474 @@
+@use 'igniteui-angular/theming' as *;
+@use './finance-theme' as fin;
+
+// -----------------------------------------------------------------------------
+// Financial Portfolio
+//
+// Colour comes exclusively from the two palettes in `_finance-theme.scss`.
+// This file is layout only, plus the palette / component-theme wiring.
+//
+// The component runs with `ViewEncapsulation.None`, so every selector is
+// nested under the element selector to keep it off the rest of the app.
+// -----------------------------------------------------------------------------
+
+$fin-pill-radius: rem(999px);
+$fin-chip-min-width: rem(70px);
+$fin-stack-gap: rem(8px);
+
+app-finance-grid-new-sample {
+  // Light is the default appearance.
+  @include palette(fin.$fin-light-palette);
+  @include fin.fin-light-aliases();
+  @include fin.fin-component-themes();
+
+  color-scheme: light;
+  display: block;
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+  min-width: rem(1100px);
+  overflow: hidden;
+  background: var(--ig-surface-500);
+  color: var(--ig-gray-900);
+  font-family: 'Barlow', 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  // Dark appearance. Only the palette and the semantic aliases are re-emitted -
+  // every component theme above is a reference to one of them, so they follow.
+  .dark-theme {
+    @include palette(fin.$fin-dark-palette);
+    @include fin.fin-dark-aliases();
+
+    color-scheme: dark;
+  }
+
+  // -- Shell ----------------------------------------------------------------
+  .finance-shell {
+    padding: rem(20px);
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: rem(16px);
+    height: 100%;
+    min-height: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    background: var(--ig-surface-500);
+  }
+
+  // -- Header ---------------------------------------------------------------
+  // One sample-header treatment across the gallery. Font size, weight, icon
+  // size and row spacing match the Fleet Management header.
+  .finance-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: rem(16px);
+  }
+
+  .sample-logo {
+    display: flex;
+    align-items: center;
+  }
+
+  .finance-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: rem(9px);
+
+    h1 {
+      color: var(--ig-gray-900);
+
+      @include type-style(h6) {
+        margin-block: rem(4px) 0;
+      }
+    }
+  }
+
+  .finance-title-icon {
+    color: var(--ig-primary-500);
+    font-size: rem(21px);
+  }
+
+  .finance-topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: rem(8px);
+  }
+
+  // -- Feed indicator -------------------------------------------------------
+  .finance-feed-status {
+    display: inline-flex;
+    align-items: center;
+    gap: rem(6px);
+    padding: rem(3px) rem(10px);
+    border: rem(1px) solid var(--fin-line);
+    border-radius: $fin-pill-radius;
+    color: var(--ig-gray-700);
+    font-size: rem(12px);
+    font-weight: 600;
+    letter-spacing: rem(0.4px);
+    text-transform: uppercase;
+  }
+
+  .finance-feed-dot {
+    inline-size: rem(8px);
+    block-size: rem(8px);
+    border-radius: 50%;
+    background: var(--ig-success-500);
+    animation: finance-pulse 1.6s ease-in-out infinite;
+  }
+
+  .finance-feed-status.is-paused {
+    .finance-feed-dot {
+      background: var(--ig-gray-500);
+      animation: none;
+    }
+  }
+
+  @keyframes finance-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0.35;
+    }
+  }
+
+  // -- Grid -----------------------------------------------------------------
+  .finance-grid {
+    --ig-size: var(--ig-size-large);
+
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    border: rem(1px) solid var(--fin-line);
+    font-family: 'DM Sans', 'Segoe UI', sans-serif;
+    font-size: rem(14px);
+  }
+
+  .finance-grid .igx-grid__th,
+  .finance-grid .igx-grid__td,
+  .finance-grid .igx-grid-th__title,
+  .finance-grid .igx-grid__td-inner,
+  .finance-grid .igx-grid__drop-area {
+    font-size: rem(14px);
+  }
+
+  // Every figure in the grid is tabular, so a digit changing on a live tick
+  // does not shift the ones next to it.
+  .finance-grid .numeric-cell,
+  .finance-grid .allocation-value,
+  .finance-grid .holding-elapsed,
+  .finance-grid .ticker-symbol,
+  .finance-grid igx-chip {
+    font-variant-numeric: tabular-nums;
+  }
+
+  // Every column reads from the leading edge.
+  //
+  // `dataType="number"` is what end-aligns a column: the grid puts
+  // `--number` on both the header and the cell, and those set `text-align: end`
+  // plus `justify-content: flex-end` on the cell, which is a flex container.
+  // Overriding the two classes is the narrow fix - dropping `dataType` would
+  // also change the sort strategy, the filter conditions offered and what the
+  // exporter writes, none of which is being asked for.
+  .finance-grid .igx-grid-th--number,
+  .finance-grid .igx-grid__td--number {
+    text-align: start;
+    justify-content: flex-start;
+  }
+
+  .finance-grid .igx-grid__th.finance-col-sep,
+  .finance-grid .igx-grid__td.finance-col-sep {
+    border-left: rem(2px) solid var(--fin-line);
+  }
+
+  .finance-toolbar-search {
+    flex: 1;
+    max-width: rem(280px);
+
+    --ig-size: var(--ig-size-medium);
+  }
+
+  // -- Asset cell -----------------------------------------------------------
+  .ticker-cell {
+    display: flex;
+    align-items: center;
+    gap: rem(8px);
+  }
+
+  .ticker-logo {
+    --finance-avatar-size: #{rem(32px)};
+
+    flex: 0 0 auto;
+    inline-size: var(--finance-avatar-size);
+    block-size: var(--finance-avatar-size);
+    min-inline-size: var(--finance-avatar-size);
+    min-block-size: var(--finance-avatar-size);
+  }
+
+  igx-avatar.ticker-logo.igx-avatar--initials {
+    font-family: 'Barlow Condensed', 'Barlow', 'Segoe UI', sans-serif;
+    font-size: rem(14px);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    line-height: 1;
+  }
+
+  .ticker-meta {
+    display: grid;
+    gap: 0;
+    line-height: 1.2;
+    min-width: 0;
+  }
+
+  .ticker-symbol {
+    color: var(--ig-gray-900);
+    font-weight: 600;
+  }
+
+  // The toolbar filter's hit marker. `mark` carries a background of its own in
+  // every UA stylesheet, and the colour it picks is not one of ours.
+  .search-hit {
+    background: var(--fin-search-hit-bg);
+    color: inherit;
+    border-radius: rem(2px);
+    padding: 0 rem(1px);
+  }
+
+  .ticker-name {
+    color: var(--ig-gray-700);
+    font-size: rem(12px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // -- Sparkline ------------------------------------------------------------
+  .price-trend-spark {
+    display: block;
+    width: 100%;
+    height: rem(20px);
+    padding-inline: rem(2px);
+  }
+
+  // -- Figure cells ---------------------------------------------------------
+  // Both figure columns stack rather than sit side by side: the change and the
+  // value are two readings of one thing, and stacking them lets the delta line
+  // up in a column of its own that can be scanned straight down without the
+  // price widths pushing it around.
+  //
+  // `flex-start` in both, against the convention that figures align on their
+  // trailing edge so digits of the same magnitude line up. The grid is asked to
+  // read from one edge throughout, and a cell that ignored it would be the only
+  // thing in the row not doing so.
+  .price-combined-cell,
+  .net-profit-combined-cell {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: $fin-stack-gap;
+    width: 100%;
+  }
+
+  .price-combined-cell {
+    white-space: nowrap;
+  }
+
+  .price-combined-price {
+    display: inline;
+    width: auto;
+    white-space: nowrap;
+  }
+
+  // -- Figure chips ---------------------------------------------------------
+  // The figures are read-only, so the chips are inert: no pointer target, no
+  // tab stop, and `aria-hidden` - a chip carries `role="option"`, and inside a
+  // grid cell there is no listbox for it to belong to. The Holding Period tag
+  // is repeated in a `.sr-only` span beside it.
+  //
+  // The library paints a chip on its inner `.igx-chip__item`, from rules inside
+  // its `ig.base` cascade layer. These are unlayered - `ViewEncapsulation.None`
+  // puts them in the page's own styles - so they win outright and the
+  // specificity arithmetic against `.igx-chip--success.igx-chip--outlined`
+  // never comes into it.
+  igx-chip.finance-chip {
+    --ig-size: var(--ig-size-small);
+    --border-radius: 4px;
+    --shadow: none;
+
+    // Beats the `min-width: max-content` the chip ships, which is what made
+    // every chip a different width. See `$fin-chip-min-width`.
+    min-width: $fin-chip-min-width;
+    pointer-events: none;
+  }
+
+  igx-chip.finance-chip .igx-chip__item {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 0;
+    font-size: rem(12px);
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  igx-chip.finance-delta-chip.igx-chip--success .igx-chip__item,
+  igx-chip.finance-delta-chip.igx-chip--success:hover .igx-chip__item,
+  igx-chip.finance-delta-chip.igx-chip--success:focus .igx-chip__item,
+  igx-chip.finance-term-chip.igx-chip--success .igx-chip__item,
+  igx-chip.finance-term-chip.igx-chip--success:hover .igx-chip__item,
+  igx-chip.finance-term-chip.igx-chip--success:focus .igx-chip__item {
+    color: var(--fin-pos-text);
+    border-color: var(--fin-pos-text);
+  }
+
+  igx-chip.finance-delta-chip.igx-chip--danger .igx-chip__item,
+  igx-chip.finance-delta-chip.igx-chip--danger:hover .igx-chip__item,
+  igx-chip.finance-delta-chip.igx-chip--danger:focus .igx-chip__item {
+    color: var(--fin-neg-text);
+    border-color: var(--fin-neg-text);
+  }
+
+  igx-chip.finance-delta-chip.igx-chip--info .igx-chip__item,
+  igx-chip.finance-delta-chip.igx-chip--info:hover .igx-chip__item,
+  igx-chip.finance-delta-chip.igx-chip--info:focus .igx-chip__item,
+  igx-chip.finance-term-chip.igx-chip--info .igx-chip__item,
+  igx-chip.finance-term-chip.igx-chip--info:hover .igx-chip__item,
+  igx-chip.finance-term-chip.igx-chip--info:focus .igx-chip__item {
+    color: var(--fin-neutral-text);
+    border-color: var(--fin-neutral-text);
+  }
+
+  // Text carried for assistive technology only - see the chips above.
+  .sr-only {
+    position: absolute;
+    width: rem(1px);
+    height: rem(1px);
+    margin: rem(-1px);
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  // -- Tick flash -----------------------------------------------------------
+  // The visible half of the live feed. A re-priced figure washes once in its
+  // direction's colour, then settles - the standard blotter cue for "this
+  // number just moved".
+  //
+  // It is contained to the outlined delta chip. Washing the whole cell would
+  // put a loose block of colour behind text that has no edge of its own; inside
+  // the chip the border gives the wash a shape to fill. The plain price, Market
+  // Value and Total Revenue figures carry no border, so none of them flashes.
+  //
+  // A keyframe beats a normal declaration in the cascade, so these override the
+  // `background: transparent` the chip rests at without needing `!important`,
+  // and fall back to it when the animation ends.
+  igx-chip.finance-delta-chip.is-up .igx-chip__item {
+    animation: finance-flash-up 0.9s ease-in-out;
+  }
+
+  igx-chip.finance-delta-chip.is-down .igx-chip__item {
+    animation: finance-flash-down 0.9s ease-in-out;
+  }
+
+  @keyframes finance-flash-up {
+    0% {
+      background: color-mix(in srgb, var(--ig-success-500) 28%, transparent);
+    }
+
+    100% {
+      color: var(--ig-success-500-contrast);
+      background: var(--ig-success-500);
+    }
+  }
+
+  @keyframes finance-flash-down {
+    0% {
+      background: color-mix(in srgb, var(--ig-error-500) 28%, transparent);
+    }
+
+    100% {
+      color: var(--ig-error-500-contrast);
+      background: var(--ig-error-500);
+    }
+  }
+
+  // -- Holding period -------------------------------------------------------
+  .holding-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: $fin-stack-gap;
+    width: 100%;
+  }
+
+  // The tag and the figure share the top line, with the bar spanning below -
+  // the same two-row shape as Allocation next door, so the pair of bar columns
+  // read as siblings.
+  //
+  // On the tag's own line the figure costs no width, so the bar spans the whole
+  // cell: it starts under the chip, matches Allocation's length, and every bar
+  // in the column is the same length.
+  .holding-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: rem(8px);
+    width: 100%;
+
+    .igx-chip__item {
+      font-size: 10px;
+    }
+  }
+
+  .holding-elapsed {
+    font-size: rem(12px);
+    color: var(--fin-neutral-text);
+    white-space: nowrap;
+  }
+
+  // -- Allocation -----------------------------------------------------------
+  // The figure reads above its own bar, so the bar gets the cell's full width
+  // and every row's bar is the same length - which is the whole point of a bar
+  // in a column. Beside the figure, a wider percentage would squeeze the bar
+  // and no two bars would be comparable.
+  .allocation-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: $fin-stack-gap;
+    width: 100%;
+  }
+
+  .allocation-value {
+    font-size: rem(14px);
+  }
+
+  // Height, radius, track and fill colours all come from
+  // `progress-linear-theme()` in `_finance-theme.scss`; the component only
+  // needs telling to take the width it is given, since it sizes to content.
+  .allocation-bar,
+  .holding-bar {
+    display: block;
+    width: 100%;
+  }
+
+  // Motion is decorative here - the figures carry the same information - so
+  // none of it survives a reduced-motion preference.
+  @media (prefers-reduced-motion: reduce) {
+    .finance-feed-dot,
+    igx-chip.finance-delta-chip.is-up .igx-chip__item,
+    igx-chip.finance-delta-chip.is-down .igx-chip__item {
+      animation: none;
+    }
+  }
+}

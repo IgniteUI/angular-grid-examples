@@ -1,0 +1,9 @@
+<section class="excel-sample" aria-label="Meridian North Retail Co. &mdash; FY2027 Budget Planning Workbook">
+  @if (statusMessage()) {
+    <p class="excel-status" role="status">{{ statusMessage() }}</p>
+  }
+
+  <div class="excel-spreadsheet-container">
+    <igx-spreadsheet #spreadsheet height="100%" width="100%"></igx-spreadsheet>
+  </div>
+</section>

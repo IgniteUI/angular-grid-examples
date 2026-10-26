@@ -1,0 +1,23 @@
+@use "igniteui-angular/theming" as *;
+
+// The light Fluent theme: the component styles, the typography (the
+// Spreadsheet's tabs, name box and formula bar inherit its font family) and
+// the palette (`--ig-gray-700` colours the status message).
+@include core();
+@include typography(
+  $font-family: $fluent-typeface,
+  $type-scale: $fluent-type-scale
+);
+@include theme(
+  $palette: $light-fluent-palette,
+  $schema: $light-fluent-schema
+);
+
+app-excel {
+  display: block;
+  height: 100%;
+  // The Spreadsheet leaves cells without a fill transparent (empty cells and
+  // the unstriped table rows), so the page colour behind it shows through.
+  // Painting it on the host keeps that colour wherever the app is mounted.
+  background: #f3f5f7;
+}

@@ -1,0 +1,131 @@
+@use 'igniteui-angular/theming' as *;
+@use './sales-palette' as p;
+
+@mixin sd-layout() {
+  // One grid for the whole dashboard, four columns wide:
+  //
+  //   header    1 / -1
+  //   metrics   1 + 1 + 1 + 1
+  //   charts    2 + 1 + 1
+  //   tables    3 + 1
+  //
+  // All four bands share the same tracks, so their column edges line up.
+  //
+  // The four tracks are fixed rather than intrinsic, and every step below is a
+  // span. The host is both the grid and the query container, and a container
+  // query can only style a container's *descendants* - so the track list can
+  // never be retracked by one, while spans on the tiles and panels can.
+  .metrics-grid,
+  .upper-panels,
+  .lower-panels {
+    display: contents;
+  }
+
+  // Stacked is the base: one item per row until a step narrows the spans.
+  .title-row,
+  .metric-tile,
+  .panel {
+    grid-column: 1 / -1;
+  }
+
+  .title-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: rem(6px) p.$sd-gap;
+    min-height: rem(32px);
+
+    h1 {
+      margin: 0;
+      font-size: clamp(#{rem(22px)}, #{rem(15px)} + 1.4cqi, #{rem(28px)});
+      font-family: p.$sd-font-condensed;
+      font-weight: 600;
+      line-height: 1.1;
+    }
+  }
+
+  .status-row {
+    display: flex;
+    align-items: center;
+    gap: rem(7px);
+    color: var(--sd-muted);
+    font-size: p.$sd-text-xs;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  // Two across: half the four tracks each. The wide member of every band keeps
+  // the full row it already has.
+  @container sales-dashboard (width >= #{rem(640px)}) {
+    .metric-tile,
+    .region-panel,
+    .deals-panel {
+      grid-column: span 2;
+    }
+  }
+
+  // Four across: 1+1+1+1, then 2+1+1, then 3+1.
+  @container sales-dashboard (width >= #{rem(1024px)}) {
+    .metric-tile,
+    .region-panel,
+    .deals-panel,
+    .leaderboard-panel {
+      grid-column: span 1;
+    }
+
+    .trend-panel {
+      grid-column: span 2;
+    }
+
+    .activity-panel {
+      grid-column: span 3;
+    }
+  }
+
+  .panel {
+    display: flex;
+    flex-direction: column;
+    border: rem(1px) solid var(--sd-line);
+    background: var(--sd-surface-raised);
+  }
+
+  .panel-title {
+    margin: 0;
+    padding: rem(12px) rem(13px);
+    border-bottom: rem(1px) solid var(--sd-line);
+    font-family: p.$sd-font-condensed;
+    font-size: p.$sd-text-lg;
+  }
+
+  .panel-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: p.$sd-pad;
+  }
+
+  // Only these three hold a single child that fills the panel. The region and
+  // leaderboard bodies stack normal flow content, so they stay block -
+  // stretching them as a flex row would size the list to its content.
+  :is(.trend-panel, .deals-panel, .activity-panel) > .panel-body {
+    display: flex;
+    align-items: stretch;
+  }
+
+  .activity-panel {
+    overflow: hidden;
+
+    .panel-body {
+      padding: 0;
+    }
+  }
+
+  .split {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: rem(8px);
+  }
+}

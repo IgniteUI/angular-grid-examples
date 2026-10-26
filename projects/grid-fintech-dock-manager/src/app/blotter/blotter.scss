@@ -1,0 +1,105 @@
+// Order blotter pane - working, filled and rejected orders for the session.
+
+@use '../desk-shared' as desk;
+
+@include desk.pane;
+@include desk.quote-primitives;
+
+.blotter-bar {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--ig-gray-200);
+}
+
+.blotter-filters {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.blotter-filters igx-chip {
+    --ig-size: var(--ig-size-small);
+
+    font-size: 10px;
+}
+
+.filter-count {
+    font-variant-numeric: tabular-nums;
+    opacity: 0.75;
+}
+
+.cancel-all {
+    --ig-size: var(--ig-size-small);
+
+    flex-shrink: 0;
+    font-size: 10px;
+
+    igx-icon {
+        --ig-size: var(--ig-size-small);
+    }
+}
+
+.grid-host {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.blotter-grid {
+    @include desk.desk-grid;
+}
+
+.side-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+
+// Opaque, like every other fill inside a grid row - and the same 10% over the
+// row's base that `tinted-figures` gives every P&L cell, so the side tag and
+// the figures beside it read as one fill rather than two near-misses. The 16%
+// over gray-100 this replaces put the light theme's deeper green at 4.0:1 on
+// its own tag.
+.side-buy {
+    color: var(--ig-success-500);
+    background: color-mix(in srgb, var(--ig-success-500) 10%, var(--ig-gray-50));
+}
+
+.side-sell {
+    color: var(--ig-error-500);
+    background: color-mix(in srgb, var(--ig-error-500) 10%, var(--ig-gray-50));
+}
+
+// Label ink for text that lives *inside a grid row* rather than in panel
+// chrome. One step darker than the gray-700 used everywhere else, because a
+// row can be selected and hovered at once and that fill is the gray-200 step:
+// gray-700 measures 4.4:1 there (4.3:1 light) and misses AA by a hair, where
+// gray-800 clears 7:1. Panel labels keep 700 - nothing selectable sits under
+// them, so the subordination to the gray-900 values is preserved where it can be.
+.price-kind {
+    margin-inline-start: 5px;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--ig-gray-800);
+}
+
+// Colour comes from the badge's `type`; only sizing is set here.
+.status-badge {
+    --ig-size: var(--ig-size-small);
+}
+
+.note-cell {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--ig-gray-800);
+    font-size: 11px;
+}

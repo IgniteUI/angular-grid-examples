@@ -1,0 +1,222 @@
+<header class="title-row">
+  <h1>Sales Overview</h1>
+  <div class="status-row">
+    <igx-badge type="success" shape="square" [dot]="true" aria-label="Live status" class="success-badge"></igx-badge>
+    <span>LIVE &middot; UPDATED JUST NOW</span>
+    <button
+      igxIconButton="flat"
+      type="button"
+      class="theme-toggle"
+      [title]="vm.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+      [attr.aria-label]="vm.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+      (click)="vm.toggleTheme()"
+    >
+      <igx-icon>{{ vm.isDark() ? 'light_mode' : 'dark_mode' }}</igx-icon>
+    </button>
+  </div>
+</header>
+
+<!-- All three tooltips are real DOM, and all three are themed by
+     `.ig-tooltip-container-background` in _sales-widgets.scss.
+
+     For the donut that is free: `igx-ring-series` takes a `tooltipTemplate`.
+     The two `igx-category-chart`s default to `toolTipType: Category`, which is
+     the *pointer* tooltip - drawn entirely on canvas, box and text, with only
+     the box fill exposed (through `ui-chart-pointer-tooltip` in the styling
+     table) and no way to colour the text. That is why a dark box came out with
+     unreadable dark text. `toolTipType="Item"` moves them onto the per-item
+     path, which honours the template and therefore the stylesheet. -->
+<ng-template #trendTooltip let-item="item">
+  <div class="chart-tip">
+    <span class="chart-tip-label">{{ item.month }}</span>
+    <span class="chart-tip-value">Revenue {{ item.revenue }}K &middot; Target {{ item.targetLine }}K</span>
+  </div>
+</ng-template>
+
+<ng-template #dealsTooltip let-item="item">
+  <div class="chart-tip">
+    <span class="chart-tip-label">{{ item.day }}</span>
+    <span class="chart-tip-value">{{ item.deals }} deals</span>
+  </div>
+</ng-template>
+
+<ng-template #regionTooltip let-item="item">
+  <div class="chart-tip">
+    <span class="chart-tip-label">{{ item.region }}</span>
+    <span class="chart-tip-value">{{ item.value }}% of revenue</span>
+  </div>
+</ng-template>
+
+<section class="metrics-grid" aria-label="KPI metrics">
+  @for (item of vm.metrics; track item.label) {
+  <igx-card class="metric-tile">
+    <igx-card-content class="metric-body">
+      <div class="metric-head">
+        <span class="metric-label">{{ item.label }}</span>
+        <igx-avatar class="metric-icon {{ item.iconClass }}" [size]="'small'" [icon]="item.icon"></igx-avatar>
+      </div>
+      <div class="metric-value">{{ item.value }}</div>
+      <igx-badge
+        class="metric-delta"
+        [class.negative]="!item.positive"
+        [type]="item.positive ? 'success' : 'error'"
+        [icon]="item.positive ? 'arrow_upward' : 'arrow_downward'"
+      >{{ item.delta }}</igx-badge>
+    </igx-card-content>
+  </igx-card>
+  }
+</section>
+
+<section class="upper-panels">
+  <article class="panel trend-panel">
+    <header class="panel-title split">
+      <span>Revenue Trend</span>
+      <div class="trend-legend" aria-label="Revenue trend legend">
+        <span class="trend-legend-item">
+          <span class="trend-legend-swatch" [style.background]="vm.chartTheme().trend[0]"></span>
+          <span>Revenue</span>
+        </span>
+        <span class="trend-legend-item">
+          <span class="trend-legend-swatch" [style.background]="vm.chartTheme().trend[1]"></span>
+          <span>Target</span>
+        </span>
+      </div>
+    </header>
+    <div class="panel-body">
+      <!-- Stamped through the theme so a toggle rebuilds the chart; see
+           `applySalesTooltipTheme`. Built in the browser only, since the charts
+           draw to canvas; the prerendered page holds an empty box of the same
+           size. Same for the other two charts below. -->
+      @if (vm.isBrowser) {
+        @for (chart of [vm.chartTheme()]; track chart.appearance) {
+        <igx-category-chart class="chart-box" width="100%" height="100%" [dataSource]="vm.revenueTrend"
+          xAxisLabelTextStyle="500 13px 'Barlow', sans-serif" yAxisLabelTextStyle="500 13px 'Barlow', sans-serif"
+          [xAxisLabelTextColor]="chart.label" [yAxisLabelTextColor]="chart.label"
+          [xAxisMajorStroke]="chart.gridline" [yAxisMajorStroke]="chart.gridline"
+          [crosshairsAnnotationXAxisBackground]="chart.bubble" [crosshairsAnnotationXAxisTextColor]="chart.bubbleText"
+          [crosshairsAnnotationYAxisBackground]="chart.bubble" [crosshairsAnnotationYAxisTextColor]="chart.bubbleText"
+          xAxisLabel="month" [includedProperties]="['month', 'revenue', 'targetLine']" [brushes]="chart.trend"
+          [outlines]="chart.trend" [markerBrushes]="chart.trend" [markerOutlines]="chart.trend" chartType="line"
+          toolTipType="Item" [tooltipTemplate]="trendTooltip" [isItemHighlightingEnabled]="false" [isHorizontalZoomEnabled]="false" [isVerticalZoomEnabled]="false"
+          [thickness]="2" [yAxisInterval]="25" [yAxisMinimumValue]="620" [yAxisMaximumValue]="810"></igx-category-chart>
+        }
+      } @else {
+        <div class="chart-box" aria-hidden="true"></div>
+      }
+    </div>
+  </article>
+
+  <article class="panel region-panel">
+    <header class="panel-title">Revenue by Region</header>
+    <div class="panel-body">
+      <p class="subtle">$842K total</p>
+      @if (vm.isBrowser) {
+        @for (chart of [vm.chartTheme()]; track chart.appearance) {
+        <igx-doughnut-chart class="donut-box" width="100%" height="190px" [allowSliceSelection]="true"
+          [allowSliceExplosion]="true" [innerExtent]="55">
+          <igx-ring-series [dataSource]="vm.revenueByRegion" valueMemberPath="value" labelMemberPath="region"
+            [labelsPosition]="'outsideEnd'" [tooltipTemplate]="regionTooltip" [brushes]="chart.series"
+            [outlines]="chart.series" [labelOuterColor]="chart.sliceLabel"
+            [labelInnerColor]="chart.sliceLabel"></igx-ring-series>
+        </igx-doughnut-chart>
+        }
+      } @else {
+        <div class="donut-box donut-placeholder" aria-hidden="true"></div>
+      }
+
+      <ul class="legend-list" aria-label="Revenue by region legend">
+        @for (region of vm.revenueByRegion; track region.region; let i = $index) {
+        <li>
+          <span class="legend-name-wrap">
+            <span class="legend-swatch" [style.background]="vm.chartTheme().series[i]"></span>
+            <span class="legend-name">{{ region.region }}</span>
+          </span>
+          <span class="legend-value">{{ region.value }}%</span>
+        </li>
+        }
+      </ul>
+    </div>
+  </article>
+
+  <article class="panel deals-panel">
+    <header class="panel-title split">
+      <span>Deals Closed This Week</span>
+      <span class="subtle">37 total</span>
+    </header>
+
+    <div class="panel-body">
+      @if (vm.isBrowser) {
+        @for (chart of [vm.chartTheme()]; track chart.appearance) {
+        <igx-category-chart class="deals-chart" [dataSource]="vm.weeklyDeals" xAxisLabel="day" [brushes]="chart.deals"
+          [outlines]="chart.deals" xAxisLabelTextStyle="500 13px 'Barlow', sans-serif"
+          yAxisLabelTextStyle="500 13px 'Barlow', sans-serif"
+          [xAxisLabelTextColor]="chart.label" [yAxisLabelTextColor]="chart.label"
+          [xAxisMajorStroke]="chart.gridline" [yAxisMajorStroke]="chart.gridline"
+          [crosshairsAnnotationXAxisBackground]="chart.bubble" [crosshairsAnnotationXAxisTextColor]="chart.bubbleText"
+          [crosshairsAnnotationYAxisBackground]="chart.bubble" [crosshairsAnnotationYAxisTextColor]="chart.bubbleText"
+          toolTipType="Item" [tooltipTemplate]="dealsTooltip" chartType="column" [isHorizontalZoomEnabled]="false"
+          [isVerticalZoomEnabled]="false" [thickness]="1" [yAxisInterval]="10" [yAxisMinimumValue]="0"
+          [yAxisMaximumValue]="50"></igx-category-chart>
+        }
+      } @else {
+        <div class="deals-chart" aria-hidden="true"></div>
+      }
+    </div>
+  </article>
+</section>
+
+<section class="lower-panels">
+  <section class="panel activity-panel">
+    <header class="panel-title split">
+      <span>Recent Activity</span>
+    </header>
+
+    <div class="panel-body">
+      <!-- On the server the grid reports no data whatever it is bound to, so the
+           prerendered page shows its loading indicator instead of the empty-grid
+           message until the browser takes over. -->
+      <igx-grid class="activity-grid" [data]="vm.activityRows" [autoGenerate]="false" [isLoading]="!vm.isBrowser">
+        <igx-column field="company" header="COMPANY" [sortable]="false" [filterable]="false"></igx-column>
+        <igx-column field="region" header="REGION" [sortable]="false" [filterable]="false"></igx-column>
+        <igx-column field="stage" header="STAGE" [sortable]="false" [filterable]="false">
+          <ng-template igxCell let-cell="cell">
+            <span class="stage-pill" [class]="vm.stageClassFor(cell.value)">{{ cell.value }}</span>
+          </ng-template>
+        </igx-column>
+        <igx-column field="value" header="VALUE" [sortable]="false" [filterable]="false"></igx-column>
+        <igx-column field="rep" header="REP" [sortable]="false" [filterable]="false"></igx-column>
+        <igx-column field="source" header="SOURCE" [sortable]="false" [filterable]="false"></igx-column>
+        <igx-column field="when" header="WHEN" [sortable]="false" [filterable]="false"></igx-column>
+      </igx-grid>
+    </div>
+  </section>
+
+  <article class="panel leaderboard-panel">
+    <header class="panel-title">Leaderboard</header>
+
+    <div class="panel-body">
+      <igx-list>
+        @for (person of vm.leaderboard; track person.rank) {
+        <igx-list-item>
+          <div class="leader-row">
+            <div class="leader-left">
+              <igx-avatar [size]="'small'" [initials]="person.rank.toString()" class="rank-badge"
+                [class.rank-1]="person.rank === 1" [class.rank-2]="person.rank === 2"
+                [class.rank-3]="person.rank === 3"></igx-avatar>
+              <div>
+                <div class="leader-name">{{ person.name }}</div>
+                <small>{{ person.quota }}</small>
+              </div>
+            </div>
+            <div class="leader-right">
+              <div class="leader-amount">{{ person.amount }}</div>
+              <small [class.negative]="!person.positive">{{ person.delta }}</small>
+            </div>
+          </div>
+        </igx-list-item>
+        }
+      </igx-list>
+    </div>
+  </article>
+</section>
+

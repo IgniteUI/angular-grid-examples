@@ -1,0 +1,103 @@
+@use 'igniteui-angular/theming' as *;
+
+// Every colour in the sample derives from one of these two palettes. Dark is
+// the default; light is emitted again under `.light-theme`. One schema serves
+// both: schema colours are palette references, and `palette()` inverts the gray
+// ramp off the surface's luminance, so the same schema reads correctly on each.
+$fleet-accent: #5099f9;
+
+// Info is violet, and it is violet in both appearances for one reason: it is
+// the Active status, and Active's dot sits directly above Available's in the
+// status column. Info used to be a teal (#80c2ba), 42 degrees from success and
+// only Delta E 31 from it once deuteranopia flattens the red-green axis - two
+// 10px dots that most people can separate and some cannot. Violet is 122
+// degrees away and holds Delta E 56 under deuteranopia, 77 under protanopia.
+//
+// Violet is also the only band this palette has free. In hue, warn sits at 27
+// degrees, success at 130, the accent at 214 and error at 349, which leaves
+// 225-345 empty; magenta is in that gap too but collapses against green under
+// CVD exactly the way teal does (Delta E 13), so the useful half of the gap is
+// the violet half.
+$fleet-info: #bda4f7;
+$fleet-surface: #0a0e10;
+$fleet-success: #85ec97;
+$fleet-warn: #ed8936;
+$fleet-error: #ed546f;
+
+$fleet-palette: palette(
+  $primary: $fleet-accent,
+  $secondary: $fleet-info,
+  $surface: $fleet-surface,
+  $info: $fleet-info,
+  $success: $fleet-success,
+  $warn: $fleet-warn,
+  $error: $fleet-error,
+  $gray: #0c1013
+);
+
+// Light appearance. The accents are a step deeper than the dark set - the dark
+// values were picked against a near-black surface and drop to 2-3:1 on paper.
+// Measured against the light surface (#eff6fd), each clears WCAG AA (4.5:1) as
+// body text: accent 7.9:1, info 6.5:1, success 6.5:1, warn 6.7:1, error 5.9:1.
+//
+// Warn is the one that has to clear more than that. It is the only family the
+// sample paints as text *on a tint of itself* - the maintenance alert (14%) and
+// the maintenance pill (22%) - and the only one the donut writes white on. A
+// mid-tone orange fails all three at once, which is why this is a deep burnt
+// orange rather than the dark set's #ed8936: 6.7:1 on the surface, 5.4:1 on its
+// own 14% tint, 4.7:1 on its 22% tint, and 7.3:1 under white in the donut.
+//
+// Info is violet here for the reason it is violet on the dark set, plus one
+// this appearance has on its own: the blue it used to be (#0b5cd5) sat 3
+// degrees from the accent in hue, Delta E 5.7 apart once both are taken to
+// their 700 shade. The Active dot and the sample's accent were the same colour.
+// Violet puts 47 between them.
+$fleet-accent-light: #1145a8;
+$fleet-info-light: #6d28d9;
+$fleet-surface-light: #f6f9fc;
+$fleet-success-light: #166534;
+$fleet-warn-light: #9a3412;
+$fleet-error-light: #b91c1c;
+
+$fleet-light-palette: palette(
+  $primary: $fleet-accent-light,
+  $secondary: $fleet-info-light,
+  $surface: $fleet-surface-light,
+  $info: $fleet-info-light,
+  $success: $fleet-success-light,
+  $warn: $fleet-warn-light,
+  $error: $fleet-error-light,
+  $gray: #0b0e17
+);
+
+$fleet-schema: $dark-fluent-schema;
+
+// Every hairline in the sample: the grid's outline, the overlay panels' edges,
+// the spec and table rules, the KPI boxes. One token rather than a `surface`
+// shade per place, for two reasons.
+//
+// The surface shades cannot carry a border at all on the light palette. The
+// ramp multiplies the seed's lightness (1.08 through 1.78 for 400 down to 50),
+// and #eff6fd is light enough that all five clamp to #ffffff - so `surface-50`
+// through `surface-400` are the same pure white, and a border drawn in any of
+// them is invisible on paper. WCAG 1.4.11 wants 3:1 for a boundary that
+// identifies a component.
+//
+// The gray ramp does carry it, but it inverts off the surface's luminance, so no
+// single shade is the same weight in both appearances: `gray-600` is 4.1:1 on
+// the light surface and 14.7:1 on the dark one. Hence the pair - 4.1:1 light,
+// 3.2:1 dark. Visible in both, loud in neither.
+//
+// The light half is 600 and not 500 for one reason: 500 measures 2.997:1, which
+// is under the threshold rather than on it. Worth stating, because 500 is the
+// shade the ramp's own border guidance points at, and the two are a hair apart.
+$fleet-border: light-dark(var(--ig-gray-300), var(--ig-gray-200));
+
+$fleet-overlay-background: light-dark(var(--ig-surface-500), var(--ig-surface-100));
+
+// The panels the grid opens over itself sit on a background a step from the
+// grid's own - 1.1:1 either way - so the border is the only thing that says
+// where the panel ends. It takes the shared hairline for exactly that reason.
+$fleet-overlay-border: $fleet-border;
+$fleet-tooltip-background: light-dark(var(--ig-surface-600), var(--ig-surface-100));
+$fleet-tooltip-border: light-dark(var(--ig-surface-700), var(--ig-gray-100));

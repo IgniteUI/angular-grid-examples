@@ -1,0 +1,378 @@
+@use 'igniteui-angular/theming' as *;
+@use './sales-palette' as p;
+// Ink on a 12% wash of that same ink. Mixing the ground from the text colour
+// rather than from the family's 500 keeps every pairing above 4.5:1 whatever the
+// seed's lightness - a 500-based tint left the amber at 2.4:1.
+//
+// Two things about the ink itself.
+//
+// It is a `light-dark()` pair because a chromatic ramp does not invert: 900 is
+// the darkest end in *both* palettes, so on the dark panel it would be
+// near-black ink on a near-black wash. 400 is the shade that reads as the same
+// family there and still clears AA on its own wash - 5.7:1 at worst.
+//
+// And on the light side 900 alone is not deep enough. The palette's amber and
+// green are vivid by choice, which makes their 900 shallow: as pill ink they
+// measure 3.6:1 and 4.4:1 on their own wash. Carrying 75% of the family into
+// gray-900 keeps the hue plainly readable as green/amber/violet/blue/red and
+// takes the worst of the five to 4.9:1. 85% leaves the amber at 4.3:1, so 75%
+// is the floor rather than a round number.
+@mixin sd-pill($family) {
+  --sd-pill-ink: light-dark(
+    color-mix(in srgb, var(--ig-#{$family}-900) 75%, var(--ig-gray-900)),
+    var(--ig-#{$family}-400)
+  );
+
+  color: var(--sd-pill-ink);
+  background: color-mix(in srgb, var(--sd-pill-ink) 12%, var(--sd-surface-raised));
+}
+
+$sd-stages: (
+  'stage-win': success,
+  'stage-proposal': warn,
+  'stage-negotiation': primary,
+  'stage-qualified': info,
+);
+
+$sd-ranks: (1: primary, 2: warn, 3: secondary);
+
+@mixin sd-widgets() {
+  .metric-tile {
+    margin: 0;
+    width: 100%;
+    min-width: 0;
+    min-height: rem(105px);
+    overflow: hidden;
+  }
+
+  .metric-body {
+    padding: rem(13px);
+  }
+
+  .metric-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: rem(7px);
+    min-width: 0;
+  }
+
+  .metric-label {
+    overflow: hidden;
+    color: var(--sd-muted);
+    font-size: p.$sd-text-sm;
+    font-weight: 500;
+    letter-spacing: rem(0.3px);
+    text-transform: uppercase;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .metric-icon {
+    flex: 0 0 auto;
+    margin-inline-start: auto;
+  }
+
+  .metric-value {
+    margin-top: rem(9px);
+    color: var(--ig-gray-900);
+    font-size: clamp(#{rem(26px)}, #{rem(20px)} + 1.1cqi, #{rem(34px)});
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  // An `igx-badge`, carrying its direction in the badge's own `icon` input
+  // rather than in a `::before` glyph - so the arrow doubles the tint for
+  // 1.4.1's sake *and* reaches assistive tech, which the pseudo-element did
+  // only by accident.
+  //
+  // The fill stays the tinted pill the rest of the sample uses rather than the
+  // badge's solid `--ig-success-500`, for contrast: `sd-pill` is shade-900 ink
+  // on a 12% wash of itself, which the mixin's comment measures above 4.5:1 for
+  // every family. The badge's per-type backgrounds live in `@layer ig.base`, so
+  // these unlayered declarations win on layer order and need no specificity
+  // games - but they do have to restate the box, because a badge is sized as a
+  // fixed-height counter and this one is a text pill.
+  .metric-delta {
+    width: fit-content;
+    height: auto;
+    min-width: 0;
+    gap: rem(3px);
+    margin-top: rem(6px);
+    padding: rem(3px) rem(9px);
+    border-radius: rem(999px);
+    box-shadow: none;
+    font-size: p.$sd-text-sm;
+    font-weight: 600;
+    line-height: 1.2;
+
+    // The badge shrinks icons to 0.625rem, which is too small to read as an
+    // arrow next to 14px text.
+    --ig-icon-size: #{rem(15px)};
+
+    // The badge points its icon at `--ig-primary-900-contrast` - the contrast of
+    // the *primary* ramp, not of whatever the badge is actually filled with.
+    // That resolves to white, so on this pale wash the arrow would be invisible.
+    // `currentColor` ties it to the pill's own ink instead.
+    --ig-icon-color: currentColor;
+
+    @include sd-pill(success);
+
+    &.negative {
+      @include sd-pill(error);
+    }
+  }
+
+  .stage-pill {
+    padding: rem(2px) rem(8px);
+    border-radius: rem(999px);
+    font-size: p.$sd-text-xs;
+    font-weight: 600;
+  }
+
+  @each $class, $family in $sd-stages {
+    .#{$class} {
+      @include sd-pill($family);
+    }
+  }
+
+  .chart-box,
+  .deals-chart {
+    flex: 1 1 auto;
+    display: block;
+    width: 100%;
+    height: 100%;
+    font-family: p.$sd-font;
+  }
+
+  .chart-box {
+    min-height: rem(248px);
+  }
+
+  .deals-chart {
+    min-height: rem(190px);
+  }
+
+  .donut-box {
+    display: block;
+    margin: rem(4px) auto 0;
+    font-family: p.$sd-font;
+  }
+
+  // Holds the doughnut's place on the prerendered page, at the height the chart
+  // is given in the template.
+  .donut-placeholder {
+    height: rem(190px);
+  }
+
+  .subtle {
+    margin: 0;
+    color: var(--sd-muted);
+    font-size: p.$sd-text-base;
+  }
+
+  .trend-legend-swatch,
+  .legend-swatch {
+    display: inline-block;
+    width: rem(14px);
+    height: rem(14px);
+    border-radius: rem(2px);
+  }
+
+  .trend-legend {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: rem(4px) rem(14px);
+    color: var(--sd-muted);
+    font-size: p.$sd-text-sm;
+    font-weight: 500;
+  }
+
+  .trend-legend-item,
+  .legend-name-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: rem(6px);
+  }
+
+  .legend-list {
+    display: grid;
+    gap: rem(7px);
+    margin: rem(16px) 0 0;
+    padding: rem(16px) 0 0;
+    border-top: rem(1px) solid var(--sd-line);
+    list-style: none;
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: p.$sd-text-sm;
+      font-weight: 500;
+    }
+  }
+
+  .legend-name,
+  .legend-value {
+    color: var(--ig-gray-900);
+  }
+
+  .legend-value {
+    min-width: rem(40px);
+    text-align: end;
+  }
+
+  .leader-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: rem(8px);
+    width: 100%;
+  }
+
+  .leader-left {
+    display: flex;
+    align-items: center;
+    gap: rem(9px);
+  }
+
+  .leader-name {
+    font-size: p.$sd-text-base;
+    font-weight: 600;
+  }
+
+  .leader-right {
+    text-align: end;
+  }
+
+  .leader-amount {
+    font-weight: 600;
+  }
+
+  small {
+    color: var(--sd-muted);
+    font-size: p.$sd-text-sm;
+
+    // The same pair `sd-pill` uses, and for the same reason: error-900 is the
+    // deepest end of the ramp in *both* palettes, so on the dark panel it was
+    // near-black-red at 3.3:1. 400 puts it at 7.4:1.
+    &.negative {
+      color: light-dark(var(--ig-error-900), var(--ig-error-400));
+    }
+  }
+
+  // Also reused by the metric-tile icons. `-contrast` picks black or white per
+  // background, replacing three hand-assigned text colours.
+  // Ranks 4 and 5 land here, so this pair is on screen, not just a fallback.
+  // `-contrast` rather than gray-900 for the reason the ranked variants below
+  // already use it: the grey ramp inverts, so gray-900 is near-black ink on the
+  // light theme's gray-300 and near-white ink on the dark theme's - 3.6:1 there.
+  // The adaptive shade picks a side per background and reads 15.7:1 / 5.5:1.
+  .rank-badge {
+    --ig-avatar-background: var(--ig-gray-300);
+    --ig-avatar-color: var(--ig-gray-300-contrast);
+  }
+
+  @each $rank, $family in $sd-ranks {
+    .rank-badge.rank-#{$rank} {
+      --ig-avatar-background: var(--ig-#{$family}-500);
+      --ig-avatar-color: var(--ig-#{$family}-500-contrast);
+      --ig-avatar-icon-color: var(--ig-#{$family}-500-contrast);
+    }
+  }
+
+  .icon-avg {
+    --ig-avatar-background: var(--ig-success-500);
+    --ig-avatar-color: var(--ig-success-500-contrast);
+  }
+
+  // `--ig-badge-background` is not a token the library reads - the name is
+  // `--ig-badge-background-color`. The dot has been coming out green only
+  // because `type="success"` carries its own fill, so this line has never done
+  // anything; corrected rather than deleted so the intent stays visible.
+  .success-badge {
+    --ig-badge-background-color: var(--ig-success-500);
+  }
+
+  .theme-toggle {
+    flex-shrink: 0;
+    margin-inline-start: rem(4px);
+    --ig-icon-color: var(--sd-muted);
+  }
+
+  .igx-grid-th__title {
+    font-family: p.$sd-font-condensed;
+    font-weight: 700;
+    letter-spacing: rem(0.4px);
+  }
+
+  .activity-grid {
+    flex: 1 1 auto;
+    width: 100%;
+    height: 100%;
+    min-height: rem(250px);
+  }
+}
+
+
+/// Chart tooltips - emitted at the *top level*, not inside `app-sales-dashboard-sample`.
+///
+/// The charts move tooltip DOM to `<body>`, outside the host, which is why the
+/// first attempt at this silently did nothing: the rules were nested under the
+/// host and the box has no such ancestor. Two consequences follow.
+///
+/// The palette is unreachable, because `--ig-*` is declared on the host. So
+/// these are literals, the same way `SALES_CHART_THEMES` is and for the same
+/// reason - and they are the shades that theme file names, kept in step by
+/// hand: gray-50/700/900 on the light palette, gray-100/300/900 on the dark.
+///
+/// The appearance has to come from somewhere the box can see, so the component
+/// mirrors its theme onto `<body>` as `.sd-dark`.
+///
+/// `!important` is not decoration. The package writes
+/// `--tooltip-container-background-color: transparent` and
+/// `border-color: transparent` *inline* on this box and its wrapper, and inline
+/// wins over anything a stylesheet can say without it.
+@mixin sd-chart-tooltips() {
+  .ig-tooltip-container-background {
+    padding: rem(7px) rem(10px) !important;
+    border: rem(1px) solid #445d7e !important;
+    border-radius: rem(4px) !important;
+    background: #f8f9fb !important;
+    box-shadow: none !important;
+    font-family: p.$sd-font !important;
+    font-size: p.$sd-text-xs !important;
+  }
+
+  .chart-tip {
+    display: grid;
+    gap: rem(2px);
+  }
+
+  .chart-tip-label {
+    color: #445d7e;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: rem(0.3px);
+  }
+
+  .chart-tip-value {
+    color: #17202b;
+    font-weight: 700;
+  }
+
+  body.sd-dark & .ig-tooltip-container-background,
+  body.sd-dark .ig-tooltip-container-background {
+    border-color: #5d85b7 !important;
+    background: #29405c !important;
+  }
+
+  body.sd-dark .chart-tip-label {
+    color: #a3bad6;
+  }
+
+  body.sd-dark .chart-tip-value {
+    color: #f8fafc;
+  }
+}

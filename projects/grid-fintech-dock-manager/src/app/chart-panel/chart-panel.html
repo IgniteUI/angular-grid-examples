@@ -1,0 +1,141 @@
+<div class="chart-panel">
+  <header class="chart-header">
+    <div class="price-block">
+      <div class="chart-symbol">
+        <span class="chart-ticker">{{ symbol() }}</span>
+        <span class="chart-name">{{ quote()?.name }}</span>
+      </div>
+      <div class="price-line">
+        <span class="current-price mono">{{ currentPrice() | price }}</span>
+        <span
+          class="price-change"
+          [class.pos]="quote()?.positive"
+          [class.neg]="quote() && !quote()?.positive"
+        >
+          {{ quote()?.change | signed }} ({{ quote()?.changePct | signed: 'pct' }})
+        </span>
+      </div>
+    </div>
+
+    <ul class="ohlc-stats">
+      <li class="stat-item"><div class="ohlc-stats__label">O</div><span>{{ sessionStats().open | price }}</span></li>
+      <li class="stat-item"><div class="ohlc-stats__label">H</div><span>{{ sessionStats().high | price }}</span></li>
+      <li class="stat-item"><div class="ohlc-stats__label">L</div><span>{{ sessionStats().low | price }}</span></li>
+      <li class="stat-item"><div class="ohlc-stats__label">Vol</div><span>{{ sessionStats().volume | compact }}</span></li>
+      <li class="stat-item"><div class="ohlc-stats__label">{{ selectedRange() }}</div>
+        <span [class.pos]="rangeChange().pct >= 0" [class.neg]="rangeChange().pct < 0">
+          {{ rangeChange().pct | signed: 'pct' }}
+        </span>
+      </li>
+    </ul>
+
+    @if (position(); as held) {
+      <div class="position-chip" [class.pos]="held.openPl >= 0" [class.neg]="held.openPl < 0">
+        <span class="chip-qty">{{ held.quantity }} @ {{ held.avgCost | price }}</span>
+        <span class="chip-pl mono">{{ held.openPl | signed: 'money' }}</span>
+      </div>
+    }
+  </header>
+
+  <div class="chart-toolbar">
+    <igx-buttongroup
+      class="chart-group"
+      selectionMode="singleRequired"
+      (selected)="onRangeSelected($event)"
+    >
+      @for (range of ranges; track range) {
+        <button igxButton [selected]="selectedRange() === range"><span>{{ range }}</span></button>
+      }
+    </igx-buttongroup>
+
+    <igx-buttongroup
+      class="chart-group"
+      selectionMode="singleRequired"
+      (selected)="onChartTypeSelected($event)"
+    >
+      @for (type of chartTypes; track type) {
+        <button igxButton [selected]="chartType() === type"><span>{{ type }}</span></button>
+      }
+    </igx-buttongroup>
+
+    <igx-buttongroup
+      class="chart-group"
+      selectionMode="multi"
+      (selected)="onStudyToggled($event, true)"
+      (deselected)="onStudyToggled($event, false)"
+    >
+      <button igxButton [selected]="showVolume()">
+        <igx-icon aria-hidden="true">bar_chart</igx-icon>
+        <span>Volume</span>
+      </button>
+      <button igxButton [selected]="showRsi()">
+        <igx-icon aria-hidden="true">show_chart</igx-icon>
+        <span>RSI</span>
+      </button>
+    </igx-buttongroup>
+  </div>
+
+  <div class="chart-area">
+    <!--
+      Keyed on the palette so a theme flip stamps a new chart: the two branches
+      render the same template, and switching between them destroys the chart
+      and builds a fresh one. Everything bound below re-themes in place, but the
+      tooltip's box does not: the chart reads those colours out of the engine's
+      styling table while it is being built and never looks again (see
+      `applyPointerTooltipTheme`).
+    -->
+    @if (chartPalette() === darkChartPalette) {
+      <ng-container *ngTemplateOutlet="priceChartTemplate" />
+    } @else {
+      <ng-container *ngTemplateOutlet="priceChartTemplate" />
+    }
+
+    <!--
+      `xAxisMode` is Ordinal rather than Time: a true time scale leaves a
+      two-day hole at every weekend the daily windows skip. Ordinal spaces the
+      bars evenly and still labels the axis with their timestamps, which is how
+      a trading chart reads a calendar.
+
+      `toolTipType="Data"` is part of the tooltip fix as much as it is a richer
+      tooltip - it is the one the engine draws itself, and so the one the
+      styling table reaches. It covers the price pane only: a financial chart is
+      several charts stacked, and the volume and RSI panes have no input surface
+      of their own. Their tooltips are themed in the shell stylesheet.
+    -->
+    <ng-template #priceChartTemplate>
+      <igx-financial-chart
+        #priceChart
+        [dataSource]="chartData()"
+        [chartType]="chartType()"
+        [volumeType]="volumeType()"
+        [indicatorTypes]="indicatorTypes()"
+        xAxisMode="Ordinal"
+        zoomSliderType="None"
+        [isToolbarVisible]="false"
+        [brushes]="chartPalette().up"
+        [outlines]="chartPalette().up"
+        [negativeBrushes]="chartPalette().down"
+        [negativeOutlines]="chartPalette().down"
+        [xAxisLabelTextColor]="chartPalette().label"
+        [yAxisLabelTextColor]="chartPalette().label"
+        [xAxisMajorStroke]="chartPalette().gridline"
+        [yAxisMajorStroke]="chartPalette().gridline"
+        [finalValueAnnotationsTextColor]="chartPalette().annotationText"
+        [crosshairsAnnotationXAxisBackground]="chartPalette().axisChipBackground"
+        [crosshairsAnnotationXAxisTextColor]="chartPalette().axisChipText"
+        [crosshairsAnnotationYAxisTextColor]="chartPalette().annotationText"
+        toolTipType="Data"
+        [dataToolTipHeaderTextColor]="chartPalette().tooltipText"
+        [dataToolTipTitleTextColor]="chartPalette().tooltipText"
+        [dataToolTipLabelTextColor]="chartPalette().label"
+        [dataToolTipValueTextColor]="chartPalette().tooltipText"
+        [dataToolTipHeaderTextStyle]="tooltipHeaderFont"
+        [dataToolTipTitleTextStyle]="tooltipHeaderFont"
+        [dataToolTipLabelTextStyle]="tooltipFont"
+        [dataToolTipValueTextStyle]="tooltipFont"
+        height="100%"
+        width="100%"
+      ></igx-financial-chart>
+    </ng-template>
+  </div>
+</div>

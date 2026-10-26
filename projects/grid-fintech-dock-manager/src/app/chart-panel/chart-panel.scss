@@ -1,0 +1,169 @@
+// Chart document pane.
+
+@use '../desk-shared' as desk;
+
+@include desk.pane;
+@include desk.figures;
+@include desk.directional;
+
+.chart-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.chart-header {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--ig-gray-200);
+}
+
+.price-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.chart-symbol {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+}
+
+.chart-ticker {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ig-info-500);
+  letter-spacing: 0.3px;
+}
+
+.chart-name {
+  font-size: 11px;
+  color: var(--ig-gray-700);
+}
+
+.price-line {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+}
+
+// -- Holding the header still ------------------------------------------------
+//
+// Everything below re-renders on every tick, and a digit coming or going
+// changes how wide it is - which in a flex row re-measures the whole header, so
+// the OHLC list and the position chip slide sideways once a second.
+//
+// `tabular-nums` equalises digit widths but not digit counts, so each figure
+// also gets a floor on its box, sized to the widest value it carries.
+// `text-align: end` is the other half: without it a value sits at the left of
+// its box and the right edge still moves.
+.current-price {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ig-gray-900);
+  line-height: 1.1;
+}
+
+.price-change {
+  min-width: 7.25rem;
+  text-align: end;
+}
+
+.ohlc-stats {
+  display: flex;
+  gap: 10px;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ohlc-stats__label {
+  font-size: 11px;
+  color: var(--ig-gray-700);
+}
+
+.stat-item {
+  display: grid;
+  gap: 4px;
+  font-size: 14px;
+  justify-items: end;
+
+  // One width for the whole row, as in the command bar: every cell matches its
+  // neighbours and a tick can only move a value inside its own box.
+  .mono {
+    min-width: 4rem;
+    text-align: end;
+  }
+}
+
+.position-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 4px 9px;
+  border-radius: 4px;
+  border: 1px solid currentcolor;
+  line-height: 1.25;
+}
+
+// The held position is a P&L figure like any in the grids, so in the light
+// theme it takes the same tinted cell - see `tinted-figures` in `_desk-shared`.
+// Lighter than the grids' 10% because this one keeps its border as well, and
+// the two together would otherwise read heavier than the price beside it.
+:host-context(.light-theme) {
+  .position-chip.pos {
+    background: color-mix(in srgb, var(--ig-success-500) 7%, var(--ig-gray-50));
+  }
+
+  .position-chip.neg {
+    background: color-mix(in srgb, var(--ig-error-500) 7%, var(--ig-gray-50));
+  }
+}
+
+.chip-qty {
+  font-size: 10px;
+  opacity: 0.85;
+}
+
+.chip-pl {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.chart-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px;
+  border-bottom: 1px solid var(--ig-gray-200);
+  background: var(--ig-gray-100);
+
+  .igx-button span {
+     text-box: cap alphabetic;
+  }
+}
+
+.chart-group {
+  --ig-size: var(--ig-size-small);
+
+  flex-grow: 1;
+  align-self: flex-start;
+
+  igx-icon {
+    --ig-size: var(--ig-size-small);
+  }
+}
+
+.chart-area {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
