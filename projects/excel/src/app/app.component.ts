@@ -28,11 +28,16 @@ export class AppComponent {
 
   constructor() {
     afterNextRender(() => {
-      import('./excel-sample/excel-sample.component').then(
-        (m) => this.sample.set(m.ExcelSampleComponent),
-        // For example a stale page whose chunk is gone after a redeploy.
-        (error: unknown) => console.error('Could not load the workbook sample.', error)
-      );
+      // `ngServerMode` is a build-time constant (`true` in the server bundle), so the server build drops
+      // this import and leaves the spreadsheet stack, which the server never uses (`afterNextRender` does
+      // not run there), out of its bundle. That is about a third of the server build's input.
+      if (typeof ngServerMode === 'undefined' || !ngServerMode) {
+        import('./excel-sample/excel-sample.component').then(
+          (m) => this.sample.set(m.ExcelSampleComponent),
+          // For example a stale page whose chunk is gone after a redeploy.
+          (error: unknown) => console.error('Could not load the workbook sample.', error)
+        );
+      }
     });
   }
 }

@@ -128,6 +128,10 @@ stages:
 
       - task: Npm@1
         displayName: 'npm run build:ci'
+        env:
+          # Same soft limit as the GitHub workflow (.github/workflows/node.js.yml): it keeps the heap of the
+          # Go-based bundler (esbuild) near 10 GiB.
+          GOMEMLIMIT: 10GiB
         inputs:
           command: custom
           workingDir: '$(Build.SourcesDirectory)'
