@@ -36,7 +36,7 @@ stages:
         displayName: 'Install Node'
         inputs:
           versionSource: 'spec'
-          versionSpec: '24.x'
+          versionSpec: '26.x'
 
       - task: Bash@3
         displayName: 'Create download artifact per sample (Shell)'
@@ -127,12 +127,15 @@ stages:
             npx --userconfig=$(Build.SourcesDirectory)/.npmrc --legacy-peer-deps ng g @igniteui/angular-schematics:upgrade-packages
 
       - task: Npm@1
-        displayName: 'npm run build:ci'
+        displayName: 'npm run build:ci (browser only)'
+        env:
+          NG_BUILD_MAX_WORKERS: '2'
+          NG_BUILD_PARALLEL_TS: 'false'
         inputs:
           command: custom
           workingDir: '$(Build.SourcesDirectory)'
           verbose: ${{ parameters.isVerbose }}
-          customCommand: 'run build:ci'
+          customCommand: 'run build:ci -- --configuration browser-only'
 
       - task: PublishPipelineArtifact@1
 
