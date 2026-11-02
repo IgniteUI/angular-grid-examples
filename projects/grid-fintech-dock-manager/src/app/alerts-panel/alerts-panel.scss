@@ -1,0 +1,33 @@
+@use '../desk-shared' as desk;
+
+@include desk.figures;
+@include desk.feed-list;
+
+:host {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+}
+
+.clear-btn {
+  --ig-size: var(--ig-size-medium);
+
+  align-self: flex-end;
+  margin-block-end: 1rem;
+}
+
+@mixin alert-tone($family) {
+    border-inline-start-color: var(--ig-#{$family}-500);
+
+    .alert-icon {
+        color: var(--ig-#{$family}-500);
+    }
+}
+
+@each $tone in (success, warn, error, info) {
+    .tone-#{$tone} {
+        @include alert-tone($tone);
+    }
+}

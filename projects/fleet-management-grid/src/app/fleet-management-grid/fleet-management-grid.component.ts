@@ -1,10 +1,10 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { check, delivery, gitIssue, wrench } from '@igniteui/material-icons-extended';
 import { CloseScrollStrategy, DefaultSortingStrategy, IgxOverlayService, RelativePosition, RelativePositionStrategy, SortingDirection, THEME_TOKEN, ThemeToken } from 'igniteui-angular/core';
 import { IgxAvatarComponent } from 'igniteui-angular/avatar';
 import { IgxBadgeComponent } from 'igniteui-angular/badge';
-import { IgxButtonDirective, IgxButtonModule, IgxDividerDirective } from 'igniteui-angular/directives';
+import { IgxButtonDirective, IgxButtonModule, IgxDividerComponent } from 'igniteui-angular/directives';
 import { IgxCardActionsComponent, IgxCardComponent, IgxCardContentDirective, IgxCardHeaderComponent } from 'igniteui-angular/card';
 import { IgxCarouselComponent, IgxSlideComponent } from 'igniteui-angular/carousel';
 import { IgxCellTemplateDirective, IgxColumnComponent, IgxGridDetailTemplateDirective, IgxGridToolbarActionsComponent, IgxGridToolbarAdvancedFilteringComponent, IgxGridToolbarComponent, IgxGridToolbarHidingComponent, IgxGridToolbarPinningComponent, IgxGridToolbarTitleComponent } from 'igniteui-angular/grids/core';
@@ -60,7 +60,7 @@ import { BehaviorSubject } from 'rxjs';
     IgxSlideComponent,
     IgxBadgeComponent,
     IgxCellTemplateDirective,
-    IgxDividerDirective,
+    IgxDividerComponent,
     IgxIconComponent,
     IgxButtonDirective,
     IgxButtonModule,
@@ -78,6 +78,7 @@ import { BehaviorSubject } from 'rxjs';
     IgxLabelDirective
   ],
   templateUrl: './fleet-management-grid.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './fleet-management-grid.component.scss'
 })
 export class FleetManagementGridComponent implements OnInit {

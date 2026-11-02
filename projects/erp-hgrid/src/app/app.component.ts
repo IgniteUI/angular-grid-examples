@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 
 import { ErpHGridSampleComponent } from './erp-hgrid-sample/erp-hgrid-sample.component';
 
@@ -8,6 +8,7 @@ import { ErpHGridSampleComponent } from './erp-hgrid-sample/erp-hgrid-sample.com
   imports: [ErpHGridSampleComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent {

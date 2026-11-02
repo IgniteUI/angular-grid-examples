@@ -3,9 +3,10 @@ import {
   Component,
   OnDestroy,
   OnInit,
-  ViewChild
+  ViewChild,
+  ChangeDetectionStrategy
 } from '@angular/core';
-import { FilteringExpressionsTree, FilteringLogic, IgxStringFilteringOperand, THEME_TOKEN, ThemeToken } from 'igniteui-angular/core';
+import { FilteringExpressionsTree, FilteringLogic, IColumnPipeArgs, IgxStringFilteringOperand, THEME_TOKEN, ThemeToken } from 'igniteui-angular/core';
 import { IgxAvatarComponent } from 'igniteui-angular/avatar';
 import { IgxCellTemplateDirective, IgxColumnComponent, IgxGridToolbarActionsComponent, IgxGridToolbarComponent, IgxGridToolbarExporterComponent, IgxGridToolbarHidingComponent, IgxGridToolbarPinningComponent, IgxGridToolbarTitleComponent } from 'igniteui-angular/grids/core';
 import { IgxGridComponent } from 'igniteui-angular/grids/grid';
@@ -47,15 +48,19 @@ import { FormsModule } from '@angular/forms';
     IgxGridToolbarActionsComponent,
     IgxGridToolbarHidingComponent,
     IgxGridToolbarPinningComponent,
-    IgxGridToolbarExporterComponent,
-  ],
+    IgxGridToolbarExporterComponent
+],
   templateUrl: './finance-grid.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './finance-grid.component.scss',
 })
 export class FinanceGridComponent implements OnInit, OnDestroy {
   @ViewChild(IgxGridComponent, { static: true }) public grid!: IgxGridComponent;
   public data$: BehaviorSubject<any> = new BehaviorSubject([]);
   public isLoading = true;
+  public currencyDigitsFormat: IColumnPipeArgs = {
+    digitsInfo: '1.2-2'
+  };
 
   public profitLossValueClasses = {
     profitCondition: this.profitConditionHandler,

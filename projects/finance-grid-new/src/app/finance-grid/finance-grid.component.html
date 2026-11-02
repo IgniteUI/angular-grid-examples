@@ -1,0 +1,179 @@
+<!-- The theme class sits on the shell rather than on the host, so both palettes
+     stay inside the component's own subtree and everything the grid renders -
+     toolbar overlays included - resolves against the live one. -->
+<section class="finance-shell" [class.dark-theme]="vm.isDark()" aria-label="Financial portfolio">
+  <header class="finance-topbar">
+    <div class="finance-title-wrap">
+      <div class="sample-logo">
+        <igx-icon class="finance-title-icon" aria-hidden="true">account_balance</igx-icon>
+      </div>
+      <h1>Financial Portfolio</h1>
+    </div>
+
+    <div class="finance-topbar-actions">
+      <!-- The feed's state in words, for anyone who cannot see the pulsing dot. -->
+      <span class="finance-feed-status" [class.is-paused]="!vm.isLive()" role="status">
+        <span class="finance-feed-dot" aria-hidden="true"></span>
+        {{ vm.isLive() ? 'Live' : 'Paused' }}
+      </span>
+
+      <button
+        igxIconButton="flat"
+        type="button"
+        [title]="vm.isLive() ? 'Pause live market updates' : 'Resume live market updates'"
+        [attr.aria-label]="vm.isLive() ? 'Pause live market updates' : 'Resume live market updates'"
+        (click)="vm.toggleLive()"
+      >
+        <igx-icon>{{ vm.isLive() ? 'pause' : 'play_arrow' }}</igx-icon>
+      </button>
+
+      <button
+        igxIconButton="flat"
+        type="button"
+        [title]="vm.isDark() ? 'Switch to light theme' : 'Switch to dark theme'"
+        [attr.aria-label]="vm.isDark() ? 'Switch to light theme' : 'Switch to dark theme'"
+        (click)="vm.toggleTheme()"
+      >
+        <igx-icon>{{ vm.isDark() ? 'light_mode' : 'dark_mode' }}</igx-icon>
+      </button>
+    </div>
+  </header>
+
+  <!-- `rowHeight` is stated because three columns (Asset, Holding Period and
+       Allocation) stack two rows of content, which the 50px `--ig-size-large`
+       row crowds against the cell's own padding. 60px carries them with room to
+       breathe and leaves the single-line columns comfortable rather than cramped. -->
+  <igx-grid #financeGrid class="finance-grid" [data]="vm.filteredFinanceRows()" [autoGenerate]="false"
+    [showGroupArea]="true" [rowSelection]="'none'" [primaryKey]="'ticker'" height="100%" [rowHeight]="60"
+    [isLoading]="vm.prerendering">
+    <igx-grid-toolbar>
+      <igx-grid-toolbar-title>Holdings</igx-grid-toolbar-title>
+      <igx-input-group class="finance-toolbar-search" type="search">
+        <igx-prefix>
+          <igx-icon>search</igx-icon>
+        </igx-prefix>
+        <!-- Placeholder rather than a floating label, so the field stays one line
+             high in the toolbar. `aria-label` carries the accessible name a
+             placeholder cannot. -->
+        <input igxInput id="finance-asset-filter" type="search" placeholder="Filter by asset"
+          aria-label="Filter by asset" [value]="vm.financeAssetFilter()"
+          (input)="vm.onFinanceAssetSearch($event)" />
+      </igx-input-group>
+      <igx-grid-toolbar-actions>
+        <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
+        <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+        <igx-grid-toolbar-exporter></igx-grid-toolbar-exporter>
+      </igx-grid-toolbar-actions>
+    </igx-grid-toolbar>
+
+    <igx-column field="ticker" header="Asset" [sortable]="true" [filterable]="false" minWidth="260px">
+      <ng-template igxCell let-cell="cell">
+        <div class="ticker-cell">
+          <igx-avatar [class]="'ticker-logo tone-' + cell.row.data.tone" [size]="'small'" [shape]="'circle'"
+            [initials]="vm.financeAvatarInitials(cell.row.data.ticker)"></igx-avatar>
+          <div class="ticker-meta">
+            <span class="ticker-symbol">
+              <app-highlighted-text [text]="cell.row.data.ticker" [query]="vm.financeAssetFilter()" />
+            </span>
+            <span class="ticker-name">
+              <app-highlighted-text [text]="cell.row.data.company" [query]="vm.financeAssetFilter()" />
+            </span>
+          </div>
+        </div>
+      </ng-template>
+    </igx-column>
+
+    <igx-column field="priceTrend" header="Price Trend" [sortable]="false" [filterable]="false" minWidth="200px"
+      [hidden]="vm.hideMostColumns()">
+      <ng-template igxCell let-cell="cell">
+        <igx-sparkline class="price-trend-spark" width="100%" height="20px" [dataSource]="cell.value"
+          valueMemberPath="value" displayType="line" [lineThickness]="1.8"
+          [brush]="vm.sparklineBrush(cell.row.data.changePct)"
+          [negativeBrush]="vm.sparklineNegativeBrush()"></igx-sparkline>
+      </ng-template>
+    </igx-column>
+
+    <igx-column field="lastPrice" header="Price (Change)" [sortable]="true" [filterable]="false" minWidth="200px"
+      headerClasses="finance-col-sep" cellClasses="finance-col-sep" [dataType]="'number'">
+      <ng-template igxCell let-cell="cell">
+        <!-- Percentage first in the DOM as well as on screen, so the reading
+             order a screen reader takes is the order the cell is laid out in. -->
+        <div class="price-combined-cell">
+          <igx-chip class="finance-chip finance-delta-chip" [outlined]="true"
+                    [class.is-up]="vm.isTickUp(cell.row.data)" [class.is-down]="vm.isTickDown(cell.row.data)"
+                    [variant]="vm.chipVariant(cell.row.data.changePct)" [tabIndex]="-1" [selectable]="false"
+                    [draggable]="false" aria-hidden="true">{{ vm.badgeLabel(cell.row.data.changePct) }}</igx-chip>
+          <span class="numeric-cell price-combined-price">{{ vm.formatCurrency(cell.row.data.lastPrice) }}</span>
+        </div>
+      </ng-template>
+    </igx-column>
+
+    <igx-column field="holdingPeriodDays" header="Holding Period" [sortable]="true" [filterable]="false"
+      minWidth="230px" [hidden]="vm.hideMostColumns()">
+      <ng-template igxCell let-cell="cell">
+        @let term = vm.holdingTerm(cell.value);
+        <div class="holding-cell">
+          <div class="holding-head">
+            <igx-chip class="finance-chip finance-term-chip" [outlined]="true" [variant]="term.variant"
+              [tabIndex]="-1" [selectable]="false" [draggable]="false"
+              aria-hidden="true">{{ term.label }}</igx-chip>
+            <span class="holding-elapsed">{{ term.elapsed }}</span>
+          </div>
+          <igx-linear-bar
+            class="holding-bar"
+            [value]="term.progressValue"
+            [max]="100"
+            [type]="term.barType"
+            [textVisibility]="false"
+            [striped]="false"
+            [animate]="false"
+            aria-hidden="true"
+          />
+          <span class="sr-only">{{ term.hint }}</span>
+        </div>
+      </ng-template>
+    </igx-column>
+
+    <igx-column field="marketValue" header="Market Value" [sortable]="true" [filterable]="false" minWidth="180px"
+      [hidden]="vm.hideMostColumns()" [dataType]="'number'">
+      <ng-template igxCell let-cell="cell">
+        <span class="numeric-cell">{{ vm.formatCurrency(cell.value) }}</span>
+      </ng-template>
+    </igx-column>
+
+    <igx-column field="netProfit" header="Total Revenue" [sortable]="true" [filterable]="false" minWidth="200px"
+      [dataType]="'number'">
+      <ng-template igxCell let-cell="cell">
+        <div class="net-profit-combined-cell">
+          <igx-chip class="finance-chip finance-delta-chip" [outlined]="true"
+                    [class.is-up]="vm.isTickUp(cell.row.data)" [class.is-down]="vm.isTickDown(cell.row.data)"
+                    [variant]="vm.chipVariant(cell.row.data.netProfitPct)" [tabIndex]="-1" [selectable]="false"
+                    [draggable]="false" aria-hidden="true">{{ vm.badgeLabel(cell.row.data.netProfitPct) }}</igx-chip>
+          <span
+            [tabIndex]="-1"
+            [draggable]="false" aria-hidden="true">{{ vm.formatCurrency(cell.row.data.netProfit) }}</span>
+        </div>
+      </ng-template>
+    </igx-column>
+
+    <igx-column field="allocationPct" header="Allocation" [sortable]="true" [filterable]="false" minWidth="170px">
+      <ng-template igxCell let-cell="cell">
+        <div class="allocation-cell">
+          <span class="allocation-value">{{ vm.formatPercent(cell.value) }}</span>
+          <!-- Hidden for the same reason as the Holding Period bar: the value it
+               would announce is the share of the *largest* holding, not the
+               4.38% printed directly above it. -->
+          <igx-linear-bar
+            class="allocation-bar"
+            [value]="vm.allocationBarValue(cell.value)"
+            [max]="100"
+            [textVisibility]="false"
+            [striped]="false"
+            [animate]="false"
+            aria-hidden="true"
+          />
+        </div>
+      </ng-template>
+    </igx-column>
+  </igx-grid>
+</section>

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, PLATFORM_ID, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { IgxTreeGridComponent } from 'igniteui-angular/grids/tree-grid';
 import { IgxCellTemplateDirective, IgxColumnComponent, IgxGridToolbarActionsComponent, IgxGridToolbarAdvancedFilteringComponent, IgxGridToolbarComponent, IgxGridToolbarExporterComponent, IgxGridToolbarHidingComponent, IgxGridToolbarPinningComponent, IgxGridToolbarTitleComponent } from 'igniteui-angular/grids/core';
 import { IgxAvatarComponent } from 'igniteui-angular/avatar';
@@ -22,6 +22,7 @@ import { DataService } from '../services/data.service';
       },
     },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     IgxTreeGridComponent,
     IgxColumnComponent,

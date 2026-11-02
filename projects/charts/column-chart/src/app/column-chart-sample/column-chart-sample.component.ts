@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy } from '@angular/core';
 
 import { THEME_TOKEN, ThemeToken } from 'igniteui-angular/core';
 import { IgxCategoryChartModule } from 'igniteui-angular-charts';
@@ -19,6 +19,7 @@ import { IgxCategoryChartModule } from 'igniteui-angular-charts';
 ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './column-chart-sample.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './column-chart-sample.component.scss'
 })
 export class ColumnChartDemoComponent {

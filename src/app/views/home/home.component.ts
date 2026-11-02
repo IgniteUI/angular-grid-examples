@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, ViewChild, ViewEncapsulation, Inject, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, ViewChild, ViewEncapsulation, Inject, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLinkActive, RouterModule, Router, NavigationEnd } from '@angular/router';
 import { IgxButtonDirective, IgxTooltipModule } from 'igniteui-angular/directives';
@@ -21,6 +21,7 @@ interface TabInfo {
   imports: [CommonModule, RouterModule, RouterLinkActive, IgxIconComponent, IgxButtonDirective, IgxTabsModule, IgxTooltipModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None
 })
 export class HomeComponent {
@@ -31,8 +32,14 @@ export class HomeComponent {
     { key: 'inventory' },
     { key: 'hr-portal' },
     { key: 'finance' },
+    { key: 'finance-grid-new' },
+    { key: 'grid-fintech-100k' },
     { key: 'sales' },
-    { key: 'fleet' }
+    { key: 'sales-dashboard' },
+    { key: 'fleet' },
+    { key: 'fleet-management-new' },
+    { key: 'grid-fintech-dock-manager' },
+    { key: 'excel' }
   ];
   public tabsCharts = [
     { key: 'column-chart' },
@@ -97,6 +104,22 @@ export class HomeComponent {
       moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/grid/grid",
       downloadLink: "https://www.infragistics.com/resources/sample-applications/financial-portfolio-sample-app"
     }],
+    ['finance-grid-new', {
+      title: "New Financial Portfolio",
+      theme: "Fluent",
+      themeMode: 'Light',
+      content: "Asset tracking, profit and loss analysis, featuring interactive dynamic charts.",
+      moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/grid/grid",
+      downloadLink: "https://www.infragistics.com/resources/sample-applications"
+    }],
+    ['grid-fintech-100k', {
+      title: "FinTech 100K",
+      theme: "Fluent",
+      themeMode: 'Light',
+      content: "A 100,000-row, 41-column instrument grid with Excel-style filtering, editing, sizing and export.",
+      moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/grid/grid",
+      downloadLink: "https://www.infragistics.com/resources/sample-applications"
+    }],
     ['sales', {
       title: "Sales Dashboard",
       theme: "Indigo",
@@ -105,6 +128,14 @@ export class HomeComponent {
       moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/pivotGrid/pivot-grid",
       downloadLink: "https://www.infragistics.com/resources/sample-applications/sales-grid-sample-app"
     }],
+    ['sales-dashboard', {
+      title: "Sales KPI Dashboard",
+      theme: "Fluent",
+      themeMode: 'Light',
+      content: "KPI cards, revenue and deals charts, revenue by region, recent activity and a leaderboard.",
+      moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/grid/grid",
+      downloadLink: "https://www.infragistics.com/resources/sample-applications"
+    }],
     ['fleet', {
       title: "Fleet Management",
       theme: "Material",
@@ -112,6 +143,30 @@ export class HomeComponent {
       content: "A master-detail grid for managing vehicle acquisition, operations, and maintenance.",
       moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/grid/master-detail",
       downloadLink: "https://www.infragistics.com/resources/sample-applications/fleet-management-sample-app"
+    }],
+    ['fleet-management-new', {
+      title: "New Fleet Management",
+      theme: "Fluent",
+      themeMode: 'Dark',
+      content: "A master-detail grid for managing vehicle acquisition, operations, and maintenance.",
+      moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/grid/master-detail",
+      downloadLink: "https://www.infragistics.com/resources/sample-applications"
+    }],
+    ['grid-fintech-dock-manager', {
+      title: "FinTech Dock Manager",
+      theme: "Fluent",
+      themeMode: 'Dark',
+      content: "A trading desk in a Dock Manager: watchlist, positions and order grids, financial charts and a live market feed.",
+      moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/dock-manager",
+      downloadLink: "https://www.infragistics.com/resources/sample-applications"
+    }],
+    ['excel', {
+      title: "Budget Planning Workbook",
+      theme: "Fluent",
+      themeMode: 'Light',
+      content: "A retail budget planning workbook in the Spreadsheet, with formulas, filterable tables and charts.",
+      moreLink: "https://www.infragistics.com/products/ignite-ui-angular/angular/components/spreadsheet-overview",
+      downloadLink: "https://www.infragistics.com/resources/sample-applications"
     }],
   ]);
 
@@ -168,6 +223,16 @@ export class HomeComponent {
 
   public tabInfo = this.tabInfoGrids;
   public activeTabs = this.tabsGrids;
+
+  /**
+   * Whether the current route is the tab's route. The last path segment must equal the key, so
+   * tabs whose keys share a prefix (finance and finance-grid-new, sales and sales-dashboard,
+   * fleet and fleet-management-new) never show their info panels at the same time.
+   */
+  public isActiveTab(tabKey: string): boolean {
+    const path = this.router.url.split(/[?#]/)[0];
+    return path.endsWith(`/${tabKey}`);
+  }
 
   public onDownloadClick(event: MouseEvent, tabName: string) {
     event.preventDefault();

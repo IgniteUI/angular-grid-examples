@@ -31,7 +31,6 @@
               }
             ],
             "styles": ["src/styles.scss"],
-            "scripts": ["./node_modules/hammerjs/hammer.min.js"],
             "server": "src/main.server.ts",
             "prerender": true,
             "ssr": {
@@ -94,7 +93,6 @@
               }
             ],
             "styles": ["src/styles.scss"],
-            "scripts": ["./node_modules/hammerjs/hammer.min.js"],
             "stylePreprocessorOptions": {
               "includePaths": ["node_modules"]
             }

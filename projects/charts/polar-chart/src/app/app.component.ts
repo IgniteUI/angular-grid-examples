@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 
 import { PolarChartDemoComponent } from './polar-chart-sample/polar-chart-sample.component';
 
@@ -8,6 +8,7 @@ import { PolarChartDemoComponent } from './polar-chart-sample/polar-chart-sample
   imports: [PolarChartDemoComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent {

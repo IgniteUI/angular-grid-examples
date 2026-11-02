@@ -1,0 +1,51 @@
+@use 'igniteui-angular/theming' as *;
+
+// Primary/secondary/gray are the Fluent light seeds, matching the globally
+// shipped igniteui-fluent-light.css.
+//
+// $success and $error keep the sample's original hues (147deg, 337deg) but drop
+// lightness: at #1dbf63 and #ef2d77 no derived shade cleared WCAG AA against the
+// grid background - the green topped out at 3.64:1.
+$finjs-palette: palette(
+  $primary: #0078d4,
+  $secondary: #2b88d8,
+  $surface: #fff,
+  $gray: #201f1e,
+  $info: #1377d5,
+  $success: #0b8f47,
+  $warn: #f0a14a,
+  $error: #d1226b,
+  $variant: light
+);
+
+// Dark appearance, emitted again under `.dark-theme`.
+//
+// Primary/secondary are Fluent's own dark brand blue; `$gray` is a light seed
+// because `palette()` inverts the gray ramp off the surface's luminance, so the
+// same component schemas read correctly on either appearance.
+//
+// $success and $error move in the opposite direction from the light set, and for
+// the same reason it moved: the deep #0b8f47 and #d1226b were picked to clear AA
+// against white and sit at 1.5-2:1 on a near-black surface. These are light
+// enough that shade 700 - the one the aliases below read - still clears AA
+// without the alias needing to know which appearance it is in.
+$finjs-dark-palette: palette(
+  $primary: #479ef5,
+  $secondary: #6cb8f6,
+  $surface: #1b1a19,
+  $gray: #f3f2f1,
+  $info: #479ef5,
+  $success: #6bd68a,
+  $warn: #f0a14a,
+  $error: #ff8fa3,
+  $variant: dark
+);
+
+// Shade 700 carries both the arrows and the bars, and carries them on both
+// appearances: 5.05:1 / 6.10:1 on the light surface, 9.43:1 / 5.17:1 on the
+// dark one. That is why this is one declaration and not a `light-dark()` pair -
+// both palettes were seeded so the same shade lands in range.
+@mixin finjs-aliases() {
+  --finjs-pos: var(--ig-success-700);
+  --finjs-neg: var(--ig-error-700);
+}

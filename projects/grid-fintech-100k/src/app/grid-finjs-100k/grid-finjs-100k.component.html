@@ -1,0 +1,156 @@
+<div class="finjs-grid-wrapper">
+  <igx-grid #grid class="finjs-grid" width="100%" height="100%" hiddenColumnsText="Hidden" primaryKey="id"
+    [autoGenerate]="false" [data]="rows" [rowSelection]="'multiple'" [allowFiltering]="true" [moving]="true"
+    [filterMode]="'excelStyleFilter'" [isLoading]="prerendering" (rowSelectionChanging)="rowSelectionChanged()">
+    <igx-grid-toolbar>
+      <igx-grid-toolbar-title>
+        <span class="finjs-title">
+          <h1>FinTech Trading</h1>
+          <span class="finjs-row-count">{{ rowCountLabel() }}</span>
+        </span>
+      </igx-grid-toolbar-title>
+      <igx-grid-toolbar-actions>
+        <igx-buttongroup
+          class="finjs-size-group"
+          selectionMode="singleRequired"
+          aria-label="Component size"
+          (selected)="onFinjsSizeSelected($event)"
+        >
+          @for (size of finjsSizes; track size) {
+            <button igxButton [selected]="finjsSize() === size" [title]="'Render the sample at ' + size + ' size'">
+              <span>{{ size }}</span>
+            </button>
+          }
+        </igx-buttongroup>
+
+        <button
+          igxIconButton="outlined"
+          type="button"
+          class="finjs-theme-toggle"
+          [title]="isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+          [attr.aria-label]="isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+          (click)="toggleTheme()"
+        >
+          <igx-icon>{{ isDark() ? 'light_mode' : 'dark_mode' }}</igx-icon>
+        </button>
+
+        <!--
+          `columnsAreaMaxHeight` is stated rather than left to the toolbar's own
+          default because of *when* that default is applied. The toolbar assigns it
+          from the `opening` event, but the overlay has already measured the panel by
+          then: the toggle unhides it, `attach()` captures its size, and only after
+          that does `opening` fire. Left at its `100%` default the column list has no
+          definite parent height to resolve against, so the first measurement is of a
+          37-column list at full natural height and the position strategy flips the
+          panel out of place. It corrects itself on the next open only because the
+          max-height has landed in the DOM by then. Giving it a real value up front
+          means the first measurement is already the constrained one.
+        -->
+        <igx-grid-toolbar-hiding
+          title="Indicators"
+          columnsAreaMaxHeight="clamp(200px, 40vh, 420px)"
+        ></igx-grid-toolbar-hiding>
+        <igx-grid-toolbar-pinning
+          columnsAreaMaxHeight="clamp(200px, 40vh, 420px)"
+        ></igx-grid-toolbar-pinning>
+        <igx-grid-toolbar-exporter [exportCSV]="false" (exportStarted)="exportStarted($event)">
+          <span excelText>Export to Excel</span>
+          <span pdfText>Export to PDF</span>
+        </igx-grid-toolbar-exporter>
+      </igx-grid-toolbar-actions>
+    </igx-grid-toolbar>
+
+    <igx-column field="id" header="Id" [sortable]="true" [hidden]="true"></igx-column>
+    <igx-column field="category" header="Category" width="fit-content" [sortable]="true"></igx-column>
+    <igx-column field="type" header="Type" width="fit-content" [sortable]="true" [filterable]="false"></igx-column>
+    <igx-column field="contract" header="Contract" width="fit-content" [sortable]="true" [editable]="true">
+      <ng-template igxCellEditor let-cell="cell" let-value>
+        <igx-select [overlaySettings]="overlaySettings" [placeholder]="value" [(ngModel)]="cell.editValue"
+          [igxFocus]="true">
+          @for (contract of contracts; track contract) {
+            <igx-select-item [value]="contract">{{ contract }}</igx-select-item>
+          }
+        </igx-select>
+      </ng-template>
+    </igx-column>
+    <igx-column field="settlement" header="Settlement" width="fit-content" [sortable]="true"></igx-column>
+    <igx-column field="country" header="Country" width="fit-content" [sortable]="true" [editable]="true"></igx-column>
+    <igx-column field="region" header="Region" width="fit-content" [sortable]="true" [editable]="true">
+      <ng-template igxCellEditor let-cell="cell" let-value>
+        <igx-select [overlaySettings]="overlaySettings" [placeholder]="value" [(ngModel)]="cell.editValue"
+          [igxFocus]="true">
+          @for (region of regions; track region.name) {
+            <igx-select-item [value]="region.name">{{ region.name }}</igx-select-item>
+          }
+        </igx-select>
+      </ng-template>
+    </igx-column>
+    <igx-column field="lastUpdated" header="Last Update" width="fit-content" dataType="date"
+      [editable]="true"></igx-column>
+    <igx-column field="openPrice" header="Open Price" width="fit-content" dataType="currency"
+      [pipeArgs]="columnFormat" [sortable]="true"></igx-column>
+    <igx-column field="price" header="Price" width="fit-content" [cellClasses]="trends"
+      [sortable]="true">
+      <ng-template igxCell let-cell="cell">
+        <div class="finjs-icons">
+          @if (trends.positive(cell.row.data)) {
+            <igx-icon>arrow_upward</igx-icon>
+          }
+          @if (trends.negative(cell.row.data)) {
+            <igx-icon>arrow_downward</igx-icon>
+          }
+          <span>{{ cell.value | currency:'USD':'symbol':'1.4-4' }}</span>
+        </div>
+      </ng-template>
+    </igx-column>
+    <igx-column field="change" header="Change" width="fit-content" [sortable]="true"
+      [cellClasses]="trends"></igx-column>
+    <igx-column field="changeP" header="Change %" width="fit-content" dataType="percent"
+      [pipeArgs]="columnFormatChangeP" [sortable]="true" [cellClasses]="trends"></igx-column>
+    <igx-column field="buy" header="Buy" width="fit-content" dataType="currency" [pipeArgs]="columnFormat"
+      [sortable]="true"></igx-column>
+    <igx-column field="sell" header="Sell" width="fit-content" dataType="currency" [pipeArgs]="columnFormat"
+      [sortable]="true"></igx-column>
+    <igx-column field="spread" header="Spread" width="fit-content"
+      [pipeArgs]="columnFormat"></igx-column>
+    <igx-column field="volume" header="Volume" width="fit-content" [pipeArgs]="columnFormat"
+      [sortable]="true"></igx-column>
+    <igx-column field="highD" header="High (Day)" width="fit-content" dataType="currency" [pipeArgs]="columnFormat"
+      [sortable]="true"></igx-column>
+    <igx-column field="lowD" header="Low (Day)" width="fit-content" dataType="currency" [pipeArgs]="columnFormat"
+      [sortable]="true"></igx-column>
+    <igx-column field="highY" header="High (Year)" width="fit-content" dataType="currency" [pipeArgs]="columnFormat"
+      [sortable]="true"></igx-column>
+    <igx-column field="lowY" header="Low (Year)" width="fit-content" dataType="currency" [pipeArgs]="columnFormat"
+      [sortable]="true"></igx-column>
+    <igx-column field="startY" header="Start (Year)" width="fit-content" dataType="currency"
+      [pipeArgs]="columnFormat" [sortable]="true"></igx-column>
+
+    <igx-column field="indGroup" header="Industry Group" width="fit-content" [filterable]="false"></igx-column>
+    <igx-column field="indSector" header="Industry Sector" width="fit-content" [filterable]="false"
+      [resizable]="true"></igx-column>
+    <igx-column field="indSubgroup" header="Industry Subgroup" width="fit-content"
+      [filterable]="false"></igx-column>
+    <igx-column field="secType" header="Security Type" width="fit-content" [filterable]="false"></igx-column>
+    <igx-column field="issuerName" header="Issuer" width="fit-content" [filterable]="false"
+      [resizable]="true"></igx-column>
+    <igx-column field="moodys" header="Moody's" width="fit-content" [filterable]="false"></igx-column>
+    <igx-column field="fitch" header="Fitch" width="fit-content" [filterable]="false"></igx-column>
+    <igx-column field="dbrs" header="DBRS" width="fit-content" [filterable]="false"></igx-column>
+    <igx-column field="collateralType" header="Collateral Type" width="fit-content"
+      [filterable]="false"></igx-column>
+    <igx-column field="currency" header="Currency" width="fit-content" [filterable]="false"></igx-column>
+    <igx-column field="security" header="Security" width="fit-content" [filterable]="false"></igx-column>
+    <igx-column field="sector" header="Sector" width="fit-content" [filterable]="false"></igx-column>
+    <igx-column field="cusip" header="CUSIP" width="fit-content" [filterable]="false"></igx-column>
+    <igx-column field="ticker" header="Ticker" width="fit-content" [filterable]="false"></igx-column>
+    <igx-column field="coupon" header="Coupon" width="fit-content" [filterable]="false"></igx-column>
+    <igx-column field="maturity" header="Maturity" width="fit-content" [filterable]="false"></igx-column>
+    <igx-column field="krd3Yr" header="KRD 3YR" width="fit-content" [filterable]="false"></igx-column>
+    <igx-column field="zSpread" header="Z-Spread" width="fit-content" [filterable]="false"></igx-column>
+    <igx-column field="krd5Yr" header="KRD 5YR" width="fit-content" [filterable]="false"></igx-column>
+    <igx-column field="krd1Yr" header="KRD 1YR" width="fit-content" [filterable]="false"></igx-column>
+  </igx-grid>
+</div>
+
+<div igxOverlayOutlet #outlet="overlay-outlet"></div>

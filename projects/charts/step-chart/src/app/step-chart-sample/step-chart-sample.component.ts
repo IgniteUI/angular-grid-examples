@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy } from '@angular/core';
 
 import { THEME_TOKEN, ThemeToken } from 'igniteui-angular/core';
 import { IgxCategoryChartModule, IgxDataChartInteractivityModule, IgxLegendModule} from 'igniteui-angular-charts';
@@ -22,6 +22,7 @@ import { IgxCategoryChartModule, IgxDataChartInteractivityModule, IgxLegendModul
 ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './step-chart-sample.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './step-chart-sample.component.scss'
 })
 export class StepChartDemoComponent {

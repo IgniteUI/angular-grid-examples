@@ -12,6 +12,15 @@ import { PieChartViewComponent } from './views/charts/pie-chart/pie-chart-view.c
 import { PolarChartViewComponent } from './views/charts/polar-chart/polar-chart-view.component';
 import { StepChartViewComponent } from './views/charts/step-chart/step-chart-view.component';
 
+// These samples bring large libraries (spreadsheet, dock manager, live market feeds), so each one is
+// loaded on demand in its own chunk instead of growing the main bundle that every tab downloads.
+const loadFinanceGridNew = () => import('./views/finance-grid-new/finance-grid-new-view.component').then((m) => m.FinanceGridNewViewComponent);
+const loadGridFintech100k = () => import('./views/grid-fintech-100k/grid-fintech-100k-view.component').then((m) => m.GridFintech100kViewComponent);
+const loadSalesDashboard = () => import('./views/sales-dashboard/sales-dashboard-view.component').then((m) => m.SalesDashboardViewComponent);
+const loadFleetManagementNew = () => import('./views/fleet-management-new/fleet-management-new-view.component').then((m) => m.FleetManagementNewViewComponent);
+const loadGridFintechDockManager = () => import('./views/grid-fintech-dock-manager/grid-fintech-dock-manager-view.component').then((m) => m.GridFintechDockManagerViewComponent);
+const loadExcel = () => import('./views/excel/excel-view.component').then((m) => m.ExcelViewComponent);
+
 export const routes: Routes = [
   {
     path: '',
@@ -44,14 +53,44 @@ export const routes: Routes = [
         component: FinanceViewComponent
       },
       {
+        path: 'finance-grid-new',
+        title: "New Financial Portfolio",
+        loadComponent: loadFinanceGridNew
+      },
+      {
+        path: 'grid-fintech-100k',
+        title: "FinTech 100K",
+        loadComponent: loadGridFintech100k
+      },
+      {
         path: 'sales',
         title: "Sales",
         component: SalesViewComponent
       },
       {
+        path: 'sales-dashboard',
+        title: "Sales KPI Dashboard",
+        loadComponent: loadSalesDashboard
+      },
+      {
         path: 'fleet',
         title: "Fleet Management",
         component: FleetManagementViewComponent
+      },
+      {
+        path: 'fleet-management-new',
+        title: "New Fleet Management",
+        loadComponent: loadFleetManagementNew
+      },
+      {
+        path: 'grid-fintech-dock-manager',
+        title: "FinTech Dock Manager",
+        loadComponent: loadGridFintechDockManager
+      },
+      {
+        path: 'excel',
+        title: "Budget Planning Workbook",
+        loadComponent: loadExcel
       },
       {
         path: 'charts',
@@ -111,14 +150,44 @@ export const routes: Routes = [
     component: FinanceViewComponent
   },
   {
+    path: 'finance-grid-new',
+    title: "New Financial Portfolio",
+    loadComponent: loadFinanceGridNew
+  },
+  {
+    path: 'grid-fintech-100k',
+    title: "FinTech 100K",
+    loadComponent: loadGridFintech100k
+  },
+  {
     path: 'sales',
     title: "Sales",
     component: SalesViewComponent
   },
   {
+    path: 'sales-dashboard',
+    title: "Sales KPI Dashboard",
+    loadComponent: loadSalesDashboard
+  },
+  {
     path: 'fleet',
     title: "Fleet Management",
     component: FleetManagementViewComponent
+  },
+  {
+    path: 'fleet-management-new',
+    title: "New Fleet Management",
+    loadComponent: loadFleetManagementNew
+  },
+  {
+    path: 'grid-fintech-dock-manager',
+    title: "FinTech Dock Manager",
+    loadComponent: loadGridFintechDockManager
+  },
+  {
+    path: 'excel',
+    title: "Budget Planning Workbook",
+    loadComponent: loadExcel
   },
   {
     path: 'charts',

@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 
 import { StepChartDemoComponent } from './step-chart-sample/step-chart-sample.component';
 
@@ -8,6 +8,7 @@ import { StepChartDemoComponent } from './step-chart-sample/step-chart-sample.co
   imports: [StepChartDemoComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent {

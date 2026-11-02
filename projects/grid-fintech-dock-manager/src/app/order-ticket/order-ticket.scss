@@ -1,0 +1,293 @@
+@use 'igniteui-angular/theming' as *;
+@use '../desk-shared' as desk;
+
+@include desk.pane;
+@include desk.figures;
+@include desk.directional;
+
+.ticket {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  height: 100%;
+  padding: 10px;
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+.ticket-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.ticket-id {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  min-width: 0;
+}
+
+.ticket-symbol {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ig-info-500);
+}
+
+.ticket-name {
+  font-size: 11px;
+  color: var(--ig-gray-700);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.held-badge {
+  display: flex;
+  align-items: center;
+  gap: rem(4px);
+  padding: 0 rem(4px);
+  border-radius: rem(4px);
+  background: hsl(from var(--ig-info-500) h s l / 0.14);
+  font-size: rem(12px);
+  font-weight: 600;
+  border: rem(1px) dashed var(--ig-info-500);
+  color: var(--ig-info-500);
+}
+
+// Price ladder
+
+.ladder {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: rem(1px);
+  border: rem(1px) solid var(--ig-gray-200);
+  border-radius: rem(4px);
+  background: var(--ig-gray-200);
+}
+
+// Shape only - shared by all three cells so the ladder reads as one control.
+.ladder-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: rem(2px);
+  padding: rem(5px) rem(4px);
+  border: none;
+  background: var(--ig-gray-100);
+  font: inherit;
+  color: inherit;
+}
+
+/// Affordances belong to the two cells that actually do something.
+///
+/// Bid and Ask copy their price into the limit field. That is a one-shot action,
+/// not a selection, which is why they are plain buttons rather than an
+/// `igx-buttongroup`: nothing stays pressed afterwards, and Last - the readout
+/// between them - has nothing to select.
+///
+/// Scoped to `button` so `.last`, a `div`, does not advertise a click it cannot
+/// answer.
+button.ladder-cell {
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: hsl(from var(--ig-primary-500) h s l / 0.12);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ig-primary-500);
+    outline-offset: -2px;
+  }
+
+  // Market orders have no limit field to fill, so these are disabled - and a
+  // disabled control should look it rather than just stop responding.
+  &:disabled {
+    cursor: default;
+    opacity: 0.55;
+  }
+}
+
+.ladder-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--ig-gray-700);
+}
+
+.ladder-value {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ig-gray-900);
+}
+
+.ladder-cell.bid .ladder-value {
+  color: var(--ig-error-500);
+}
+
+.ladder-cell.ask .ladder-value {
+  color: var(--ig-success-500);
+}
+
+// Side toggle
+
+.bs-toggle {
+  --ig-size: var(--ig-size-small);
+
+  width: 100%;
+}
+
+.bs-btn {
+  // Equal halves whatever the labels measure.
+  flex: 1 1 0;
+  min-width: 0;
+  font-weight: 700;
+}
+
+.bs-buy {
+  --item-selected-background: var(--ig-success-500);
+  --item-selected-border-color: var(--ig-success-500);
+  --item-selected-text-color: var(--ig-success-500-contrast);
+  --item-selected-hover-background: var(--ig-success-600);
+  --item-selected-hover-border-color: var(--ig-success-600);
+  --item-selected-hover-text-color: var(--ig-success-600-contrast);
+}
+
+.bs-sell {
+  --item-selected-background: var(--ig-error-500);
+  --item-selected-border-color: var(--ig-error-500);
+  --item-selected-text-color: var(--ig-error-500-contrast);
+  --item-selected-hover-background: var(--ig-error-500);
+  --item-selected-hover-border-color: var(--ig-error-500);
+  --item-selected-hover-text-color: var(--ig-error-600-contrast);
+}
+
+// Form
+
+.ticket-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inline-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1 1 110px;
+  min-width: 0;
+}
+
+.tif-row {
+  flex: 0 0 84px;
+}
+
+.field-label {
+  @include desk.section-label;
+}
+
+.form-field {
+  --ig-size: var(--ig-size-small);
+
+  width: 100%;
+  font-size: 12px;
+}
+
+// A segmented control now, so the group owns the layout the way `.bs-toggle`
+// does - its own flex container joins the buttons, and a `gap` here would break
+// the row back into five separate ones.
+.quick-qty {
+  --ig-size: var(--ig-size-small);
+
+  width: 100%;
+}
+
+.qty-chip {
+  // Five equal segments whatever the labels measure - 'Max' is the widest and
+  // '25' the narrowest, and without this the row divides by text width.
+  flex: 1 1 0;
+  min-width: 0;
+  font-size: 10px;
+}
+
+.qty-max {
+  font-weight: 700;
+}
+
+// Estimate
+
+.estimate {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0;
+  padding: 8px 9px;
+  border: 1px solid var(--ig-gray-200);
+  border-radius: 4px;
+  background: var(--ig-gray-100);
+}
+
+.estimate-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+
+  dt {
+    font-size: 10px;
+    color: var(--ig-gray-700);
+  }
+
+  dd {
+    margin: 0;
+    font-size: 12px;
+    color: var(--ig-gray-900);
+  }
+}
+
+.estimate-row.total dd {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.estimate-row.muted {
+  padding-top: 3px;
+  border-top: 1px solid var(--ig-gray-200);
+
+  dd {
+    color: var(--ig-gray-700);
+  }
+}
+
+.ticket-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 6px 8px;
+  border-radius: 4px;
+  background: hsl(from var(--ig-error-500) h s l / 0.14);
+  color: var(--ig-error-500);
+  font-size: 11px;
+  line-height: 1.3;
+
+  igx-icon {
+    --ig-size: var(--ig-size-small);
+
+    flex-shrink: 0;
+  }
+}
+
+.place-btn {
+  --ig-size: var(--ig-size-small);
+
+  width: 100%;
+  font-weight: 700;
+}

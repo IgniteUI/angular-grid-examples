@@ -1,0 +1,66 @@
+// News wire pane.
+
+@use '../desk-shared' as desk;
+
+@include desk.pane;
+@include desk.figures;
+@include desk.feed-list;
+
+// A filter belongs at the leading edge, not tucked right like a row action.
+.panel-actions {
+    justify-content: flex-start;
+}
+
+.news-filter {
+    --ig-size: var(--ig-size-small);
+
+    width: 100%;
+    font-size: 11px;
+}
+
+.news-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+}
+
+.news-headline {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--ig-gray-900);
+    font: inherit;
+    font-size: 12px;
+    line-height: 1.35;
+    text-align: left;
+    cursor: pointer;
+
+    &:disabled {
+        cursor: default;
+    }
+
+    &:hover:not(:disabled) {
+        color: var(--ig-primary-500);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--ig-primary-500);
+        outline-offset: 2px;
+    }
+}
+
+.news-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    color: var(--ig-gray-700);
+}
+
+.news-symbol {
+    color: var(--ig-info-500);
+    font-weight: 700;
+}

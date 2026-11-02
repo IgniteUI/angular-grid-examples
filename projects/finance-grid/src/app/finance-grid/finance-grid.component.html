@@ -19,12 +19,12 @@
       </div>
     </ng-template>
   </igx-column>
-  <igx-column field="value.currentPrice" header="Last Price" [dataType]="'currency'" [width]="'7%'" [minWidth]="'80px'"></igx-column>
+  <igx-column field="value.currentPrice" header="Last Price" [dataType]="'currency'" [width]="'7%'" [minWidth]="'80px'" [pipeArgs]="currencyDigitsFormat"></igx-column>
   <igx-column field="dailyPercentageChange" header="Change %" dataType="percent" [cellClasses]="profitLossValueClasses" [width]="'10%'" [minWidth]="'85px'">
     <ng-template igxCell let-val>
       <div class="assets-container">
         <div>
-          {{ val | percent : "1.0-2" }}
+          {{ val | percent : "1.2-2" }}
         </div>
 
         @if (val >= 0) {
@@ -35,12 +35,12 @@
       </div>
     </ng-template>
   </igx-column>
-  <igx-column field="marketValue" header="Market Value" [dataType]="'currency'" [width]="'5%'" [minWidth]="'100px'"></igx-column>
-  <igx-column field="profitLossValue" header="NET Profit" dataType="currency" [width]="'10%'" [minWidth]="'90px'" [cellClasses]="profitLossValueClasses">
+  <igx-column field="marketValue" header="Market Value" [dataType]="'currency'" [width]="'5%'" [minWidth]="'100px'" [pipeArgs]="currencyDigitsFormat"></igx-column>
+  <igx-column field="profitLossValue" header="NET Profit" [dataType]="'currency'" [width]="'10%'" [minWidth]="'90px'" [cellClasses]="profitLossValueClasses">
     <ng-template igxCell let-val>
       <div class="assets-container">
         <div>
-          {{ val | currency }}
+          {{ val | currency : 'USD' : 'symbol' : '1.2-2' }}
         </div>
 
         @if (val >= 0) {
@@ -55,7 +55,7 @@
     <ng-template igxCell let-val>
       <div class="assets-container">
         <div>
-          {{ val | percent : "1.0-2" }}
+          {{ val | percent : "1.2-2" }}
         </div>
 
         @if (val >= 0) {
@@ -70,15 +70,15 @@
     <ng-template igxCell let-val>
       <div class="progress-container">
         <div style="width: 42px;">
-          {{ val | percent : "1.0-2" }}
+          {{ val | percent : "1.2-2" }}
         </div>
         <igx-linear-bar [value]="val * 100" [animate]="false" textVisibility="false"></igx-linear-bar>
       </div>
     </ng-template>
   </igx-column>
-  <igx-column field="value.boughtPrice" header="Average Cost" dataType="currency" [width]="'10%'" [minWidth]="'100px'"></igx-column>
+  <igx-column field="value.boughtPrice" header="Average Cost" dataType="currency" [width]="'10%'" [minWidth]="'100px'" [pipeArgs]="currencyDigitsFormat"></igx-column>
   <igx-column field="positions" header="Position" [dataType]="'number'" [width]="'6%'" [minWidth]="'80px'"></igx-column>
-  <igx-column field="holdingPeriod" header="Holding Period" [width]="'8%'" [minWidth]="'50px'">
+  <igx-column field="holdingPeriod" header="Holding Period" [minWidth]="'50px'">
     <ng-template igxCell let-val> {{ val }} days </ng-template>
   </igx-column>
 </igx-grid>

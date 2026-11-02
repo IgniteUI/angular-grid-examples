@@ -1,0 +1,16 @@
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+
+  // Needed because of routing animations keeping both views in DOM even after OnDestroy (https://github.com/angular/angular/issues/19742)
+  // This is a fix for a bug with horizontal flickering due display: flex of the container positions each view next to each other
+  // causing their height or width be incorrect (https://github.com/IgniteUI/angular-grid-examples/issues/60)
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  // The dashboard is as tall as its content, which is taller than the tab's area below the tab
+  // bar, and the router container clips its overflow, so the view scrolls the dashboard itself.
+  overflow: auto;
+}

@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import {
   IgxCategoryXAxisComponent,
   IgxCategoryXAxisModule,
@@ -14,6 +14,7 @@ import {
     selector: 'sales-trends-chart',
     styleUrls: ['./sales-trends-chart.component.scss'],
     templateUrl: './sales-trends-chart.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
       IgxDataChartCoreModule,
       IgxCategoryXAxisModule,

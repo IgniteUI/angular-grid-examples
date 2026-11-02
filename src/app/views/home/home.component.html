@@ -21,7 +21,7 @@
 
 
     @for (tab of activeTabs; track tab) {
-      @if (router.url.includes(tab.key)) {
+      @if (isActiveTab(tab.key)) {
         <ng-container
           [ngTemplateOutlet]="tabItemInfoTemplate"
           [ngTemplateOutletContext]="{ tabName: isChartsSection ? 'charts/' + tab.key : tab.key }"

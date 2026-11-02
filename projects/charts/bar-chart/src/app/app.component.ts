@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 
 import { BarChartDemoComponent } from './bar-chart-sample/bar-chart-sample.component';
 
@@ -8,6 +8,7 @@ import { BarChartDemoComponent } from './bar-chart-sample/bar-chart-sample.compo
   imports: [BarChartDemoComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent {
