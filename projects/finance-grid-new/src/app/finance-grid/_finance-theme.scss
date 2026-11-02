@@ -1,0 +1,208 @@
+@use 'igniteui-angular/theming' as *;
+
+////
+/// Financial Portfolio - palettes and component themes.
+///
+/// Two palettes plus one mixin of component themes. Colour lives here; the
+/// component stylesheet next door is layout only.
+///
+/// Both palettes go through `palette()` rather than being written out by hand.
+/// The gray ramp is derived from the `$surface` luminance - a light surface
+/// gives `gray-50` ~ near-white through `gray-900` ~ near-black, a dark surface
+/// reverses it - so a single set of `var(--ig-gray-*)` references reads
+/// correctly in both appearances and nothing below needs a light/dark branch.
+////
+
+/// Light palette - the sample's default appearance. `#5f46cf` is the accent
+/// colour, and `#068458`/`#c41375` are the positive and negative figures.
+$fin-light-palette: palette(
+  $primary: #5f46cf,
+  $secondary: #d97b23,
+  $surface: #f4f6fa,
+  $gray: #263446,
+  $info: #2f74c0,
+  $success: #068458,
+  $warn: #d97b23,
+  $error: #c41375,
+  $variant: light
+);
+
+/// Dark palette - applied when the shell carries `.dark-theme`.
+///
+/// The seeds are lifted, not inverted: `palette()` never flips a chromatic ramp,
+/// so a dark theme needs colours that are already bright enough to clear AA
+/// against a near-black surface. `#068458` at 2.4:1 on `#14161d` would not.
+$fin-dark-palette: palette(
+  $primary: #8b74ff,
+  $secondary: #e5a067,
+  $surface: #14161d,
+  $gray: #e8eaef,
+  $info: #63a4e8,
+  $success: #2fbe7e,
+  $warn: #f0a14a,
+  $error: #ff5c9a,
+  $variant: dark
+);
+
+/// Per-ticker avatar hues.
+///
+/// These are brand-ish accents that sit outside the palette - a ticker's colour
+/// should not move when the theme does. The initials on top are `adaptive-contrast()`
+/// rather than a flat `#fff`, so each tone gets whichever text colour reads on it.
+$fin-tones: (
+  'blue': #2f74c0,
+  'orange': #7c4804,
+  'green': #2f8449,
+  'slate': #4d6288,
+  'gold': #8a6f14,
+  'red': #b03b3b,
+);
+
+/// Semantic aliases for the light appearance.
+///
+/// Everything the sample needs beyond the palette itself: the raised (grid)
+/// surface, the rule colour and the directional text colours. Component themes
+/// below reference these, so the light/dark split is confined to these two
+/// mixins - nothing is declared here that nothing reads.
+@mixin fin-light-aliases() {
+  --fin-surface-raised: #fff;
+  --fin-line: var(--ig-gray-300);
+  --fin-scrollbar-thumb: var(--ig-gray-300);
+  --fin-scrollbar-thumb-hover: var(--ig-gray-400);
+  --fin-pos-text: var(--ig-success-700);
+  --fin-neg-text: var(--ig-error-700);
+  --fin-neutral-text: var(--ig-gray-700);
+  --fin-search-hit-bg: color-mix(in srgb, var(--ig-warn-500) 45%, #fff);
+}
+
+/// Semantic aliases for the dark appearance.
+@mixin fin-dark-aliases() {
+  --fin-surface-raised: var(--ig-gray-50);
+  --fin-line: var(--ig-gray-100);
+  --fin-scrollbar-thumb: var(--ig-gray-200);
+  --fin-scrollbar-thumb-hover: var(--ig-gray-300);
+  --fin-pos-text: var(--ig-success-500);
+  --fin-neg-text: var(--ig-error-500);
+  --fin-neutral-text: var(--ig-gray-700);
+  --fin-search-hit-bg: color-mix(in srgb, var(--ig-warn-500) 40%, var(--ig-gray-50));
+}
+
+/// Component themes.
+///
+/// Emitted once, outside the light/dark split: every value is a `var(--ig-*)`
+/// or `var(--fin-*)` reference, and each block lands on an element inside the
+/// themed subtree, so the tokens resolve against whichever palette is live.
+/// (A `var()` inside a custom property is substituted where the property is
+/// *declared* - declaring these on the host would bake the light values in.)
+@mixin fin-component-themes() {
+  $fin-grid: grid-theme(
+    $background: var(--fin-surface-raised),
+    $accent-color: var(--ig-primary-500),
+    $header-background: var(--fin-surface-raised),
+  );
+
+  $fin-grid-toolbar: grid-toolbar-theme(
+    $border-color: var(--fin-line),
+  );
+
+  $fin-input-group: input-group-theme(
+    $search-background: var(--fin-surface-raised),
+    $box-background: var(--fin-surface-raised),
+    $border-color: var(--ig-gray-300),
+    $hover-border-color: var(--ig-primary-500),
+    $focused-border-color: var(--ig-primary-500),
+    $idle-text-color: var(--ig-gray-700),
+    $filled-text-color: var(--ig-gray-900),
+    $focused-text-color: var(--ig-gray-900),
+    $placeholder-color: var(--ig-gray-700),
+    $input-prefix-color: var(--ig-gray-700),
+    $input-prefix-background: transparent,
+    $input-suffix-color: var(--ig-gray-700),
+    $input-suffix-background: transparent,
+    $border-border-radius: #{rem(8px)},
+  );
+
+  $fin-chip: chip-theme(
+    $outlined-text-color: var(--fin-neutral-text),
+    $border-color: var(--fin-line),
+    $hover-outlined-text-color: var(--fin-neutral-text),
+    $hover-border-color: var(--fin-line),
+    $focus-outlined-text-color: var(--fin-neutral-text),
+    $focus-border-color: var(--fin-line),
+  );
+
+  $fin-icon-button: flat-icon-button-theme(
+    $foreground: var(--ig-gray-700),
+    $hover-foreground: var(--ig-gray-900),
+    $hover-background: color-mix(in srgb, var(--ig-primary-500) 12%, transparent),
+    $focus-foreground: var(--ig-gray-900),
+    $focus-background: color-mix(in srgb, var(--ig-primary-500) 12%, transparent)
+  );
+
+  // The two bar columns, Allocation and Holding Period.
+  //
+  // Both draw a 10px rounded track, and the fills read the same directional
+  // aliases as the figures beside them.
+  //
+  // `info` and `default` land on the same primary: Holding Period's bar is a
+  // deadline, and a short-term holding is mid-progress rather than a lesser
+  // state - grey would read as disabled. `success` is what it becomes once the
+  // position is past the one-year line, matching its own tag.
+  $fin-progress: progress-linear-theme(
+    $track-color: var(--ig-gray-200),
+    $track-height: rem(10px),
+    $track-border-radius: rem(8px),
+    $fill-color-default: var(--ig-primary-500),
+    $fill-color-info: var(--ig-primary-500),
+    $fill-color-success: var(--fin-pos-text),
+    $text-color: var(--fin-neutral-text)
+  );
+
+  $fin-scrollbar: scrollbar-theme(
+    $sb-size: rem(12px),
+    $sb-thumb-min-height: rem(32px),
+    $sb-thumb-bg-color: var(--fin-scrollbar-thumb),
+    $sb-thumb-bg-color-hover: var(--fin-scrollbar-thumb-hover),
+    $sb-track-bg-color: var(--fin-surface-raised),
+    $sb-track-bg-color-hover: var(--fin-surface-raised),
+    $sb-corner-bg: var(--fin-surface-raised)
+  );
+
+  igx-grid {
+    @include tokens($fin-grid);
+    @include tokens($fin-scrollbar);
+    @include tokens($fin-grid-toolbar);
+
+    scrollbar-color: var(--fin-scrollbar-thumb) var(--fin-surface-raised);
+    border-radius: rem(8px);
+  }
+
+  igx-input-group {
+    @include tokens($fin-input-group);
+  }
+
+  .igx-button {
+    --border-radius: #{rem(8px)};
+  }
+
+  igx-chip {
+    @include tokens($fin-chip);
+  }
+
+  igx-linear-bar {
+    @include tokens($fin-progress);
+  }
+
+  [igxIconButton] {
+    @include tokens($fin-icon-button);
+  }
+
+  // Per-ticker avatars. Set as avatar tokens rather than as plain
+  // `background`/`color` so the component's own rules pick them up.
+  @each $name, $color in $fin-tones {
+    .tone-#{$name} {
+      --ig-avatar-background: #{$color};
+      --ig-avatar-color: #{adaptive-contrast($color)};
+    }
+  }
+}

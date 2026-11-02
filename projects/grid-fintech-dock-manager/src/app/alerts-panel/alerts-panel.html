@@ -1,0 +1,25 @@
+<button
+  class="clear-btn"
+  igxButton="outlined"
+  type="button"
+  [disabled]="alerts().length === 0"
+  title="Clear alerts"
+  (click)="clearAlerts()"
+>
+  <igx-icon aria-hidden="true">clear_all</igx-icon>
+  Clear
+</button>
+
+<igx-list class="item-list">
+  @for (alert of alerts(); track alert.id) {
+    <igx-list-item [isHeader]="false" [class]="'tone-' + alert.tone">
+      <igx-icon igxListThumbnail class="alert-icon" aria-hidden="true">{{ alert.icon }}</igx-icon>
+      <div igxListLineTitle>{{ alert.title }}</div>
+      <div igxListLineSubTitle>{{ alert.detail }}</div>
+      <small igxListAction><time class="alert-time">{{ alert.at | since: now() }}</time></small>
+    </igx-list-item>
+  }
+  <ng-template igxEmptyList>
+    <p class="list-empty">No alerts. Fills and unusual moves will land here.</p>
+  </ng-template>
+</igx-list>

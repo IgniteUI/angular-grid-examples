@@ -28,3 +28,8 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run build --if-present
+      env:
+        # The Angular build runs close to the runner's 16 GB. Its bundler (esbuild, a Go program) lets its heap
+        # grow far beyond its live data on a 4-vCPU runner; this soft limit makes the Go garbage collector
+        # keep it near 10 GiB. Only esbuild reads GOMEMLIMIT.
+        GOMEMLIMIT: 10GiB

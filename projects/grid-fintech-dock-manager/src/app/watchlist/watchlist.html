@@ -1,0 +1,196 @@
+<div class="wl-toolbar">
+  <!-- Scoped to this pane: the query filters the grid below and the movers
+       tabs, and nothing outside the watchlist reads it. -->
+  <igx-input-group type="search" class="wl-search">
+    <igx-prefix><igx-icon aria-hidden="true">filter_alt</igx-icon></igx-prefix>
+    <input
+      igxInput
+      id="watchlist-search-input"
+      type="search"
+      placeholder="Filter &mdash; Enter opens a chart"
+      aria-label="Filter the watchlist. Press Enter to open a chart for the first match."
+      [value]="searchQuery()"
+      (input)="updateSearchQuery($event)"
+      (keydown.enter)="submitSearch()"
+    />
+  </igx-input-group>
+
+  <igx-simple-combo
+    #addCombo
+    class="wl-add"
+    [data]="symbolOptions()"
+    valueKey="symbol"
+    displayKey="symbol"
+    placeholder="Add symbol"
+    searchPlaceholder="Search the universe&hellip;"
+    (selectionChanging)="addSymbol($event)"
+  >
+    <igx-prefix><igx-icon aria-hidden="true">add</igx-icon></igx-prefix>
+
+    <!-- Symbols already on the list stay visible so the universe reads the same
+         every time; they are just marked and inert. -->
+    <ng-template igxComboItem let-item>
+      <div class="wl-option" [class.wl-option-added]="item.added" [attr.aria-disabled]="item.added">
+        <span>{{ item.symbol }}</span>
+        @if (item.added) {
+          <span class="wl-option-tag">Added</span>
+        }
+      </div>
+    </ng-template>
+  </igx-simple-combo>
+</div>
+
+<div class="watchlist-grid-wrap">
+  <igx-grid
+    #watchlistGrid
+    [data]="rows()"
+    primaryKey="symbol"
+    [autoGenerate]="false"
+    [allowFiltering]="true"
+    filterMode="excelStyleFilter"
+    [allowAdvancedFiltering]="true"
+    [moving]="true"
+    rowSelection="single"
+    [hideRowSelectors]="true"
+    [selectedRows]="selectedRows()"
+    [rowHeight]="38"
+    width="100%"
+    height="100%"
+    class="watchlist-grid"
+    (rowClick)="focusSymbol($event.row.key)"
+  >
+    <igx-grid-toolbar>
+      <igx-grid-toolbar-actions>
+        <igx-grid-toolbar-advanced-filtering />
+        <igx-grid-toolbar-pinning />
+        <igx-grid-toolbar-hiding />
+        <igx-grid-toolbar-exporter [exportCSV]="true" [exportExcel]="true" filename="watchlist" />
+      </igx-grid-toolbar-actions>
+    </igx-grid-toolbar>
+
+    <igx-column field="symbol" header="Symbol" [sortable]="true" [pinned]="true" [disableHiding]="true" width="90px">
+      <ng-template igxCell let-cell="cell">
+        <span class="symbol-cell">{{ cell.value }}</span>
+      </ng-template>
+    </igx-column>
+
+    <igx-column field="lastPrice" header="Last" dataType="number" [sortable]="true" width="100px">
+      <ng-template igxCell let-value>
+        <span>{{ value | price }}</span>
+      </ng-template>
+    </igx-column>
+
+    <igx-column field="changePct" header="Change %" dataType="number" [sortable]="true" width="105px">
+      <ng-template igxCell let-value>
+        <span [class.pos]="value >= 0" [class.neg]="value < 0">{{ value | signed: 'pct' }}</span>
+      </ng-template>
+    </igx-column>
+
+    <igx-column field="change" header="Change" dataType="number" [sortable]="true" width="95px">
+      <ng-template igxCell let-value>
+        <span [class.pos]="value >= 0" [class.neg]="value < 0">{{ value | signed }}</span>
+      </ng-template>
+    </igx-column>
+
+    <igx-column field="bid" header="Bid" dataType="number" [sortable]="true" [hidden]="true" width="95px">
+      <ng-template igxCell let-value><span>{{ value | price }}</span></ng-template>
+    </igx-column>
+
+    <igx-column field="ask" header="Ask" dataType="number" [sortable]="true" [hidden]="true" width="95px">
+      <ng-template igxCell let-value><span>{{ value | price }}</span></ng-template>
+    </igx-column>
+
+    <igx-column field="sector" header="Sector" [sortable]="true" width="120px"></igx-column>
+    <igx-column field="marketTime" header="Market Time" [sortable]="true" width="120px"></igx-column>
+
+    <igx-column field="volume" header="Volume" dataType="number" [sortable]="true" width="105px">
+      <ng-template igxCell let-value><span>{{ value | compact }}</span></ng-template>
+    </igx-column>
+
+    <igx-column field="avgVol3M" header="Avg Vol 3M" dataType="number" [sortable]="true" [hidden]="true" width="110px">
+      <ng-template igxCell let-value><span>{{ value | compact }}</span></ng-template>
+    </igx-column>
+
+    <igx-column field="dayHigh" header="Day Range" dataType="number" [sortable]="true" width="230px">
+      <ng-template igxCell let-cell="cell">
+        <div class="range-cell">
+          <span class="range-value">{{ cell.row.data.dayLow | price }}</span>
+          <div class="range-track" aria-hidden="true">
+            <div
+              class="range-marker"
+              [class.pos]="cell.row.data.positive"
+              [class.neg]="!cell.row.data.positive"
+              [style.left.%]="rangePosition(cell.row.data.lastPrice, cell.row.data.dayLow, cell.row.data.dayHigh)">
+            </div>
+          </div>
+          <span class="range-value">{{ cell.row.data.dayHigh | price }}</span>
+        </div>
+      </ng-template>
+    </igx-column>
+
+    <igx-column field="week52High" header="52-Wk Range" dataType="number" [sortable]="true" width="230px">
+      <ng-template igxCell let-cell="cell">
+        <div class="range-cell">
+          <span class="range-value">{{ cell.row.data.week52Low | price }}</span>
+          <div class="range-track" aria-hidden="true">
+            <div
+              class="range-marker"
+              [class.pos]="cell.row.data.positive"
+              [class.neg]="!cell.row.data.positive"
+              [style.left.%]="rangePosition(cell.row.data.lastPrice, cell.row.data.week52Low, cell.row.data.week52High)"
+            ></div>
+          </div>
+          <span class="range-value">{{ cell.row.data.week52High | price }}</span>
+        </div>
+      </ng-template>
+    </igx-column>
+
+    <igx-column field="marketCap" header="Market Cap" dataType="number" [sortable]="true" width="110px">
+      <ng-template igxCell let-value><span>{{ value | compact }}</span></ng-template>
+    </igx-column>
+
+    <!-- Removing the symbol is the only thing left that a row click cannot do
+         for you: the click already opens the chart and narrows the wire. -->
+    <igx-action-strip #rowActions>
+      <button
+        igxIconButton="flat"
+        type="button"
+        title="Remove from watchlist"
+        aria-label="Remove from watchlist"
+        (click)="removeFromWatchlist(symbolOf(rowActions.context))"
+      >
+        <igx-icon>playlist_remove</igx-icon>
+      </button>
+    </igx-action-strip>
+  </igx-grid>
+</div>
+
+<section class="movers-panel" aria-label="Market movers">
+  <igx-tabs [(selectedIndex)]="activeMoverIndex" tabAlignment="justify" class="movers-tabs">
+    @for (tab of moverTabs; track tab) {
+      <igx-tab-item>
+        <igx-tab-header>
+          <span igxTabHeaderLabel>{{ tab }}</span>
+        </igx-tab-header>
+        <igx-tab-content>
+          <igx-list class="movers-list">
+            @for (mover of movers(); track mover.symbol) {
+              <igx-list-item [isHeader]="false" (click)="focusSymbol(mover.symbol)">
+                <div class="mover-row">
+                  <span class="mover-symbol">{{ mover.symbol }}</span>
+                  <span class="mover-last">{{ mover.lastPrice | price }}</span>
+                  <span class="mover-change" [class.pos]="mover.changePct >= 0" [class.neg]="mover.changePct < 0">
+                    {{ mover.changePct | signed: 'pct' }}
+                  </span>
+                </div>
+              </igx-list-item>
+            }
+            <ng-template igxEmptyList>
+              <p class="movers-empty">No symbols match the current search.</p>
+            </ng-template>
+          </igx-list>
+        </igx-tab-content>
+      </igx-tab-item>
+    }
+  </igx-tabs>
+</section>

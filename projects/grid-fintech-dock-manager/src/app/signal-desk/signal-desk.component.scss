@@ -1,0 +1,581 @@
+// -----------------------------------------------------------------------------
+// Signal Desk - trading application shell
+//
+// Colour comes exclusively from the two palettes in `_signal-desk-theme.scss`,
+// which the app root declares on its host together with the component themes
+// (`app.component.scss`). This file contains layout only, plus the wiring of
+// that palette into what the component themes do not reach.
+// -----------------------------------------------------------------------------
+
+app-signal-desk {
+  display: block;
+  height: 100%;
+
+  // `igx-badge` colours its warning and error types itself, but leaves info and
+  // success on the base text colour - `--ig-primary-900-contrast`, the contrast
+  // of the *primary* ramp rather than of the badge's own background. That holds
+  // up only while a badge is primary-coloured: in fluent a success badge is
+  // `--ig-success-500`, so the feed's "live" chip came out white on bright mint
+  // at 1.75:1. Deriving each from the background it actually paints is what the
+  // library already does for the other two types.
+  igx-badge.igx-badge--success {
+    --text-color: var(--ig-success-500-contrast);
+    --icon-color: var(--ig-success-500-contrast);
+  }
+
+  igx-badge.igx-badge--info {
+    --text-color: var(--ig-info-700-contrast);
+    --icon-color: var(--ig-info-700-contrast);
+  }
+
+  // -- Dock Manager --------------------------------------------------------
+  // The Dock Manager is a web component with its own `--igc-*` variables
+  // rather than Ignite UI design tokens, so they are mapped onto the palette
+  // by hand. Declared once; the values follow the active palette.
+  igc-dockmanager {
+    --igc-background-color: var(--ig-surface-500);
+    --igc-accent-color: var(--ig-primary-500);
+    --igc-text-color: var(--ig-gray-900);
+    --igc-border-color: var(--ig-gray-200);
+    --igc-pane-content-background: var(--ig-surface-500);
+    --igc-tab-background-active: var(--ig-gray-100);
+    // Deliberately the border step, and deliberately below 1.4.11's 3:1 (1.3:1
+    // dark, 1.2:1 light). It was tried at a shade that clears the bar and the
+    // result is not worth it: the splitter is 4px thick and frames every pane on
+    // all four sides, so at 3:1 the desk reads as a wireframe of bright rules
+    // instead of a set of panes. What identifies a splitter here is the change
+    // in background across it plus the resize cursor, not the fill's own value.
+    //
+    // If this has to clear 3:1 for an audit, drop `--igc-splitter-thickness` to
+    // 1-2px in the same change - the objection is the area, not the contrast.
+    --igc-splitter-background: var(--ig-gray-200);
+    --igc-splitter-thickness: 4px;
+    --igc-floating-pane-border-color: var(--ig-gray-200);
+    --igc-joystick-border-color: var(--ig-gray-200);
+
+    // The joystick that appears while a pane is being dragged.
+    //
+    // Every fill in that family falls back to `--igc-accent-color`, which is
+    // pointed at `--ig-primary-500` above - so a joystick is a blue chip, and
+    // the icon on it has to contrast *the chip*, not the desk behind it. Left
+    // alone the icon colour falls back to `--igc-text-color`, gray-900, which
+    // is near-black in the light theme: black on blue, all but invisible.
+    //
+    // `-contrast` is the palette's own answer to that question - the shade
+    // carries an `adaptive-contrast()` that resolves to black or white against
+    // itself - so one declaration reads correctly in both themes instead of a
+    // hand-picked colour per theme. It also improves the dark theme, where a
+    // gray-900 icon on violet was only 3.1:1.
+    --igc-joystick-icon-color: var(--ig-primary-500-contrast);
+
+    // The active joystick had the same fault twice over: no fill of its own, so
+    // it resolved to the accent as well, under an icon explicitly set to
+    // `--ig-primary-500` - primary on primary, invisible in *both* themes. A
+    // deeper fill separates the targeted joystick from its neighbours, and
+    // takes its own contrast for the icon.
+    --igc-joystick-background-active: var(--ig-primary-600);
+    --igc-joystick-icon-color-active: var(--ig-primary-600-contrast);
+
+    --igc-context-menu-color-active: var(--ig-primary-500);
+    --igc-flyout-shadow-color: hsl(from var(--ig-gray-50) h s l / 0.7);
+    // Scrollbars. The Dock Manager scrolls pane content inside its own shadow
+    // root, where the library's `.ig-scrollbar` rules cannot reach - a descendant
+    // selector stops at the boundary - so it styles those itself off this
+    // `--igc-sb-*` family. These mirror `$sd-scrollbar` in the theme file value
+    // for value; the two have to move together or the desk goes back to having
+    // two kinds of scrollbar. Size and min-height are part of that: the
+    // `--igc-sb-*` defaults are 12px/32px against the 1rem/2rem used elsewhere.
+    --igc-sb-size: 1rem;
+    --igc-sb-thumb-min-height: 2rem;
+    --igc-sb-track-bg-color: var(--ig-gray-100);
+    --igc-sb-track-bg-color-hover: var(--ig-gray-100);
+    --igc-sb-thumb-bg-color: var(--ig-gray-300);
+    --igc-sb-thumb-bg-color-hover: var(--ig-gray-500);
+    --igc-sb-corner-bg: var(--ig-gray-100);
+
+    // Docked tab groups render their tab strip underneath the content - the
+    // Dock Manager hardcodes `isInDocumentHost ? 'top' : 'bottom'`, so there is
+    // no API for it. Reversing the flex direction of that one group lifts the
+    // Positions / Blotter strip above the grid, where a tab strip is expected.
+    // The tabs element carries `part="tabs-container <contentIds>"`, so naming
+    // a content id keeps this off every other tab group.
+    &::part(tabs-container positions) {
+      flex-direction: column-reverse;
+    }
+
+    &::part(pane-header) {
+      background: var(--ig-gray-100);
+      color: var(--ig-gray-900);
+    }
+
+    &::part(pane-header-content) {
+      color: var(--ig-gray-900);
+    }
+
+    &::part(pane-header-close-button),
+    &::part(pane-header-maximize-button),
+    &::part(pane-header-minimize-button),
+    &::part(pane-header-pin-button),
+    &::part(pane-header-unpin-button),
+    &::part(tab-header-close-button),
+    &::part(tab-header-more-options) {
+      color: var(--ig-gray-900);
+      opacity: 0.9;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    &::part(pane-header-close-button):hover,
+    &::part(pane-header-maximize-button):hover,
+    &::part(pane-header-minimize-button):hover,
+    &::part(pane-header-pin-button):hover,
+    &::part(pane-header-unpin-button):hover,
+    &::part(tab-header-close-button):hover,
+    &::part(tab-header-more-options):hover {
+      opacity: 1;
+      background: transparent;
+    }
+  }
+
+  // -- App shell -----------------------------------------------------------
+  .app-shell {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    background: radial-gradient(circle at 35% 20%, hsl(from var(--ig-primary-500) h s l / 0.13), transparent 40%),
+    radial-gradient(circle at 80% 80%, hsl(from var(--ig-success-500) h s l / 0.08), transparent 45%),
+    var(--ig-surface-500);
+  }
+
+  // -- Pane rail (Navigation Drawer) ---------------------------------------
+  // Colour comes from `navdrawer-theme()`; only layout lives here.
+  .platform-rail {
+    igx-nav-drawer-item,
+    .rail-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      border: none;
+      background: transparent;
+      text-align: start;
+      cursor: pointer;
+    }
+
+    .rail-label {
+      color: var(--ig-gray-900);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    // Pinned right, and transparent to the pointer: the row owns the click, and
+    // the switch's inherited host listener would otherwise fire alongside it.
+    .rail-switch {
+      margin-inline-start: auto;
+      flex-shrink: 0;
+      pointer-events: none;
+    }
+  }
+
+  .rail-head {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px;
+    border-bottom: 1px solid var(--ig-gray-200);
+  }
+
+  // The collapse toggle is the only thing left in the head, so it sits at the
+  // trailing edge when expanded - pointing at the panel it closes - and centres
+  // in the mini rail where there is nothing to align against.
+  .rail-head-expanded {
+    justify-content: flex-end;
+    padding-inline: 10px;
+  }
+
+  .rail-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 6px;
+    flex: 1;
+  }
+
+  .rail-footer {
+    padding: 8px 6px;
+    border-top: 1px solid hsl(from var(--ig-gray-300) h s l / 0.5);
+  }
+
+  .workspace {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .command-bar {
+    display: flex;
+    align-items: stretch;
+    height: 46px;
+    padding-inline: 12px;
+    overflow: hidden;
+    background: linear-gradient(180deg, var(--ig-gray-100) 0%, var(--ig-surface-500) 100%);
+    border-bottom: 1px solid var(--ig-gray-200);
+    flex-shrink: 0;
+    container: command-bar / inline-size;
+  }
+
+  .bar-zone {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-inline: 14px;
+    min-width: 0;
+    justify-content: end;
+
+    & + .bar-zone {
+      border-inline-start: 1px solid var(--ig-gray-200);
+    }
+
+    &:first-child {
+      padding-inline-start: 0;
+    }
+
+    &:last-child {
+      padding-inline-end: 0;
+    }
+  }
+
+  .bar-lead {
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .bar-ticker {
+    --ticker-gap: 16px;
+    --ticker-runs: 4;
+    --ticker-duration: 30s;
+
+    flex: 1 1 auto;
+    overflow: hidden;
+    padding-inline: 0;
+    justify-content: start;
+    mask-image: linear-gradient(
+      90deg,
+      transparent,
+      #000 24px,
+      #000 calc(100% - 24px),
+      transparent
+    );
+  }
+
+  .ticker-track {
+    display: flex;
+    flex: 0 0 auto;
+    width: max-content;
+    animation: ticker-slide var(--ticker-duration) linear infinite;
+  }
+
+  .bar-ticker:hover .ticker-track,
+  .bar-ticker:focus-within .ticker-track {
+    animation-play-state: paused;
+  }
+
+  .bar-ticker:focus-visible {
+    outline: 2px solid var(--ig-primary-500);
+    outline-offset: -2px;
+  }
+
+  .ticker-run {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    gap: var(--ticker-gap);
+    padding-inline-end: var(--ticker-gap);
+  }
+
+  .ticker-account {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    gap: var(--ticker-gap);
+    margin: 0;
+    padding-inline-start: var(--ticker-gap);
+    border-inline-start: 1px solid var(--ig-gray-200);
+  }
+
+  .bar-ticker .stat {
+    min-width: 7.25rem;
+  }
+
+  @keyframes ticker-slide {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+
+    to {
+      transform: translate3d(calc(-100% / var(--ticker-runs)), 0, 0);
+    }
+  }
+
+  // Nothing moves on its own here. The copies were only ever there to cover the
+  // seam, so they go, and the ribbon becomes a scroller instead - which is what
+  // the zone's `tabindex` now buys: arrow keys reach the figures off-screen.
+  @media (prefers-reduced-motion: reduce) {
+    .ticker-track {
+      animation: none;
+    }
+
+    .ticker-run + .ticker-run {
+      display: none;
+    }
+
+    .bar-ticker {
+      overflow-x: auto;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+  }
+
+  .bar-actions {
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  // -- Stats -----------------------------------------------------------------
+  //
+  // One block for every figure in the bar - indices and account alike - so every
+  // label sits on one line and every value on the next.
+  .stat {
+    display: grid;
+    grid-template-rows: auto auto;
+    gap: 2px;
+    white-space: nowrap;
+
+    // Label and value share a trailing edge. Right-aligning the value alone has
+    // no effect wherever the label is the wider of the two.
+    justify-items: end;
+  }
+
+  .stat-label {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--ig-gray-700);
+  }
+
+  // Baseline, not centre: the value and its smaller delta sit on one writing
+  // line instead of floating against each other.
+  .stat-line {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    gap: 6px;
+    margin: 0;
+  }
+
+  .stat-value {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ig-gray-900);
+    text-align: end;
+  }
+
+  .stat-delta {
+    font-size: 10px;
+    font-weight: 600;
+    text-align: end;
+  }
+
+  .brand {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ig-gray-900);
+    letter-spacing: -0.3px;
+    white-space: nowrap;
+  }
+
+  // -- Feed controls -------------------------------------------------------
+  .feed-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  // Icon buttons, badges and the avatar are themed centrally; these rules only
+  // place them.
+  .command-bar [igxIconButton] {
+    --ig-size: var(--ig-size-small);
+
+    flex-shrink: 0;
+  }
+
+  .notification-controls {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+
+  .alert-bell {
+    position: relative;
+    overflow: visible;
+  }
+
+  .bell-badge {
+    position: absolute;
+    top: -4px;
+    inset-inline-end: -4px;
+    pointer-events: none;
+  }
+
+  .speed-group {
+    --ig-size: var(--ig-size-small);
+
+    flex-shrink: 0;
+  }
+
+  .user-avatar {
+    --ig-avatar-size: 1.5rem;
+
+    flex-shrink: 0;
+  }
+
+  // The command bar carries a lot, so it sheds the least critical groups first
+  // rather than overflowing on a laptop screen.
+  //
+  // These are container queries, not media queries: the bar is not the viewport
+  // wide - the pane rail sits beside it and the shell around it - so the
+  // viewport width was never the number that decided whether a group fits.
+  //
+  // Only the controls shed now: the figures are on a loop, so a narrower bar
+  // costs them room to move through rather than a figure. The order is by how
+  // much each is worth - the feed speeds first, the brand last.
+  @container command-bar (width < 1240px) {
+    .speed-group {
+      display: none;
+    }
+  }
+
+  @container command-bar (width < 840px) {
+    .brand {
+      display: none;
+    }
+  }
+
+  .main-area {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .dock-area {
+    width: 100%;
+    height: 100%;
+  }
+
+  // Zero-sized and out of flow: it only exists to give the dialog an overlay
+  // outlet inside the palette scope. `position` keeps it out of `.app-shell`'s
+  // grid; the overlay's own wrapper is `position: fixed`, so it still covers
+  // the viewport rather than this element.
+  .desk-overlay-host {
+    position: absolute;
+    width: 0;
+    height: 0;
+  }
+
+  // These two are matched at the top level, not under `igx-dialog`: the overlay
+  // moves the dialog's projected content out of the host element, so a
+  // descendant selector rooted at the dialog would stop matching once open.
+  .notifications-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .notifications-body {
+    width: min(560px, 82vw);
+    height: min(460px, 60vh);
+    display: flex;
+    min-height: 0;
+
+    // Sizing only - the panel's own `:host` rule owns its display and height.
+    app-alerts-panel {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  // Tooltips, part two - the volume and RSI panes.
+  //
+  // A financial chart is several charts stacked: the price pane is the one
+  // `toolTipType` and the `dataToolTip*` inputs reach, and its tooltip is drawn
+  // on a canvas (themed in `chart-panel.ts`). The volume and indicator panes are
+  // separate internal charts with no input surface of their own, and they keep
+  // the package's DOM tooltip - `IgxTooltipContainerComponent`, a white box with
+  // dark text, a hole punched in the dark desk.
+  //
+  // That box is authored against the custom properties below, so declaring them
+  // on the element re-themes it, and palette tokens mean the light variant
+  // follows for free.
+  //
+  // It lives here rather than in `chart-panel.scss` because this is the only
+  // stylesheet that can reach the element: the tooltip is not in the chart
+  // pane's template, so that component's emulated encapsulation never matches
+  // it, while this one is unencapsulated and the tooltip renders inside it.
+  //
+  // Declared *on* the element, not inherited from the chart host: the charts
+  // package sets `--tooltip-container-background-color: transparent` inline on
+  // its pointer-tooltip wrapper, and an inherited value would lose to that.
+  //
+  // `border-color` is the one thing no property can carry - the template binds
+  // it inline to a hardcoded `#666`, and only `!important` outranks that.
+  .ig-tooltip-container-background {
+    --tooltip-container-background-color: var(--ig-gray-100);
+    --tooltip-container-text-color: var(--ig-gray-900);
+    --tooltip-container-padding: 8px;
+    --tooltip-container-font: 11px 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+
+    border-color: var(--ig-gray-300) !important;
+    border-radius: 4px;
+  }
+
+  .pane-host {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .pos {
+    color: var(--ig-success-500);
+  }
+
+  .neg {
+    color: var(--ig-error-500);
+  }
+
+  .igx-grid-toolbar__actions {
+    padding: .2rem;
+    gap: .2rem;
+
+    .igx-button {
+      min-width: 0;
+    }
+  }
+
+  .igx-tab-header {
+    min-height: auto;
+  }
+}

@@ -1,0 +1,201 @@
+// Watchlist pane. Grid colours come from the shell's `grid-theme()`; this file
+// covers layout only, on top of the shared pane primitives.
+
+@use '../desk-shared' as desk;
+
+@include desk.pane;
+@include desk.quote-primitives;
+
+.wl-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--ig-gray-200);
+  flex-shrink: 0;
+
+  > * {
+    flex: 1;
+  }
+}
+
+.wl-search {
+  --ig-size: var(--ig-size-small);
+
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 12px;
+}
+
+:host {
+  ::ng-deep {
+    .igx-drop-down__inner {
+      margin: 0;
+      width: 100%;
+    }
+  }
+}
+
+.wl-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+}
+
+// Present for context, not for picking.
+.wl-option-added {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.wl-option-tag {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--ig-gray-700);
+}
+
+.wl-add {
+  --ig-size: var(--ig-size-small);
+
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 12px;
+}
+
+.watchlist-grid-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  border-bottom: 1px solid var(--ig-gray-400);
+}
+
+.watchlist-grid {
+  @include desk.desk-grid;
+}
+
+.range-cell {
+  display: grid;
+  grid-template-columns: 8ch 1fr 8ch;
+  align-items: center;
+  gap: 8px;
+
+  .range-value {
+    text-align: right;
+    display: inline-block;
+
+    &:first-of-type {
+      margin-inline-end: 8px;
+    }
+  }
+}
+
+// The rail the marker travels along. Neutral, so the only colour in the cell is
+// the marker's.
+//
+// Opaque on purpose: this renders inside a zebra-striped grid, so a translucent
+// fill would pick up whichever row colour sits behind it and read differently on
+// alternating rows.
+// The track is a graphical object the reader has to be able to see to read the
+// marker's position off it, so it is held to 1.4.11's 3:1 against the pane
+// rather than to the border step. gray-300 measured 1.5:1 in both appearances -
+// the rail was very nearly invisible. gray-600 is the shade that clears 3:1 on
+// both (4.1:1 dark, 3.3:1 light) without becoming a second row rule.
+.range-track {
+  position: relative;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--ig-gray-200);
+  min-width: 40px;
+}
+
+// The current price inside the band. `left` is a percentage from
+// `rangePosition()`, and the translate centres the dot on that point rather than
+// hanging it off the right of it.
+.range-marker {
+  position: absolute;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  // One step off the track would leave the neutral marker sitting in it; the
+  // ring below separates the two, but only 900 keeps the dot legible where it
+  // overlaps (3.3:1 dark, 4.2:1 light against the track).
+  background: var(--ig-gray-900);
+  transform: translate(-50%, -50%);
+  // A ring in the rail's own backdrop, so the dot stays readable where it
+  // crosses the rail.
+  box-shadow: 0 0 0 1px var(--ig-gray-100);
+}
+
+// Same green/red the change columns use, so the dot says direction as well as
+// position: low in the band and green is a stock recovering, high and red is one
+// coming off its high.
+.range-marker.pos {
+  background: var(--ig-success-500);
+}
+
+.range-marker.neg {
+  background: var(--ig-error-500);
+}
+
+// -- Movers strip ------------------------------------------------------------
+// Tabs and list colours come from `tabs-theme()` / `list-theme()` in the shell;
+// only sizing and the row grid live here.
+
+.movers-panel {
+  flex: 0 0 168px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--ig-gray-100);
+  border-top: 1px solid var(--ig-gray-200);
+}
+
+.movers-tabs {
+  --ig-size: var(--ig-size-small);
+
+  flex: 1;
+  min-height: 0;
+  font-size: 11px;
+}
+
+.movers-list {
+  --ig-size: var(--ig-size-small);
+
+  height: 100%;
+  border: none;
+  font-size: 11px;
+}
+
+.mover-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+}
+
+.movers-empty {
+  margin: 0;
+  padding: 16px 10px;
+  text-align: center;
+  color: var(--ig-gray-700);
+  font-size: 11px;
+}
+
+.mover-symbol {
+  color: var(--ig-gray-900);
+  font-weight: 700;
+}
+
+.mover-last {
+  color: var(--ig-gray-700);
+}
+
+.mover-change {
+  font-weight: 600;
+}

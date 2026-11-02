@@ -1,0 +1,49 @@
+@use 'igniteui-angular/theming' as *;
+@use './sales-palette' as p;
+
+// Emitted inside the themed subtree, not on the host: a var() inside a custom
+// property is substituted where that property is declared.
+@mixin sd-component-themes() {
+  // grid-theme() is composed - header, zebra rows, hover, borders and the
+  // active-cell ring all derive from these three.
+  $sd-grid: grid-theme(
+    $schema: $light-fluent-schema,
+    $background: var(--sd-surface-raised),
+    $foreground: var(--ig-gray-800),
+    $accent-color: var(--ig-primary-500)
+  );
+
+  $sd-card: card-theme(
+    $schema: $light-fluent-schema,
+    $background: var(--sd-surface-raised),
+    $outline-color: var(--sd-line),
+    $resting-shadow: none,
+    $border-radius: 0
+  );
+
+  $sd-list: list-theme(
+    $schema: $light-fluent-schema,
+    $background: var(--sd-surface-raised),
+    $item-background: var(--sd-surface-raised),
+    $item-text-color: var(--ig-gray-900)
+  );
+
+  igx-grid {
+    @include tokens($sd-grid);
+
+    // Nothing in the grid's cell chain sets font-size, so this inherits down to
+    // every header and cell.
+    --ig-size: 2;
+
+    font-family: p.$sd-font;
+    font-size: p.$sd-text-sm;
+  }
+
+  igx-card {
+    @include tokens($sd-card);
+  }
+
+  igx-list {
+    @include tokens($sd-list);
+  }
+}

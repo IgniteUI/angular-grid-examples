@@ -1,0 +1,43 @@
+<div class="panel-body">
+  <div class="panel-actions">
+    <igx-select
+      class="news-filter"
+      [value]="symbolFilter()"
+      (selectionChanging)="onFilterChange($event)"
+      aria-label="Filter the wire by symbol"
+    >
+      <igx-prefix><igx-icon aria-hidden="true">filter_alt</igx-icon></igx-prefix>
+
+      <igx-select-item [value]="allSymbols">All symbols</igx-select-item>
+      @for (symbol of wireSymbols(); track symbol) {
+        <igx-select-item [value]="symbol">{{ symbol }}</igx-select-item>
+      }
+    </igx-select>
+  </div>
+
+  <igx-list class="item-list">
+    @for (article of articles(); track article.id) {
+      <igx-list-item [isHeader]="false">
+        <div class="news-item">
+          <button
+            type="button"
+            class="news-headline"
+            [disabled]="!article.symbol"
+            (click)="selectSymbol(article.symbol)"
+          >{{ article.headline }}</button>
+          <div class="news-meta">
+            @if (article.symbol) {
+              <span class="news-symbol">{{ article.symbol }}</span>
+            }
+            <span>{{ article.source }}</span>
+            <span aria-hidden="true">&middot;</span>
+            <time>{{ article.at | since: now() }}</time>
+          </div>
+        </div>
+      </igx-list-item>
+    }
+    <ng-template igxEmptyList>
+      <p class="list-empty">Nothing on the wire{{ symbolFilter() ? ' for ' + symbolFilter() : '' }} yet.</p>
+    </ng-template>
+  </igx-list>
+</div>

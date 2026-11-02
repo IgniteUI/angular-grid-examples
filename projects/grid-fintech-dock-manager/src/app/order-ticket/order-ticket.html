@@ -1,0 +1,171 @@
+<div class="ticket">
+  <header class="ticket-header">
+    <div class="ticket-id">
+      <span class="ticket-symbol">{{ symbol() }}</span>
+      <span class="ticket-name">{{ quote()?.name }}</span>
+    </div>
+    @if (heldQuantity() > 0) {
+      <div
+        class="held-badge"
+        [attr.aria-label]="heldQuantity() + ' shares currently held'"
+      >{{heldQuantity() + ' held'}}</div>
+    }
+  </header>
+
+  <div class="ladder" role="group" aria-label="Market prices">
+    <button
+      type="button"
+      class="ladder-cell bid"
+      [disabled]="!needsLimitPrice()"
+      (click)="usePrice(quote()?.bid)"
+    >
+      <span class="ladder-label">Bid</span>
+      <span class="ladder-value mono">{{ quote()?.bid | price }}</span>
+    </button>
+    <div class="ladder-cell last">
+      <span class="ladder-label">Last</span>
+      <span class="ladder-value mono" [class.pos]="quote()?.positive" [class.neg]="quote() && !quote()?.positive">
+        {{ quote()?.lastPrice | price }}
+      </span>
+    </div>
+    <button
+      type="button"
+      class="ladder-cell ask"
+      [disabled]="!needsLimitPrice()"
+      (click)="usePrice(quote()?.ask)"
+    >
+      <span class="ladder-label">Ask</span>
+      <span class="ladder-value mono">{{ quote()?.ask | price }}</span>
+    </button>
+  </div>
+
+  <!-- A single-choice group, not two toggles: the ticket always has a side, and
+       the group gives it the radio semantics and arrow-key navigation to match. -->
+  <igx-buttongroup
+    class="bs-toggle"
+    selectionMode="singleRequired"
+    aria-label="Order side"
+    (selected)="onSideSelected($event)"
+  >
+    @for (option of sideOptions; track option.value) {
+      <button
+        igxButton
+        class="bs-btn"
+        [class.bs-buy]="option.value === 'BUY'"
+        [class.bs-sell]="option.value === 'SELL'"
+        [selected]="side() === option.value"
+      >{{ option.label }}</button>
+    }
+  </igx-buttongroup>
+
+  <form [formGroup]="form" class="ticket-form" (ngSubmit)="submit()">
+    <div class="inline-row">
+      <div class="form-row">
+        <label class="field-label" for="ticket-quantity">Quantity</label>
+        <igx-input-group type="border" class="form-field">
+          <input igxInput id="ticket-quantity" formControlName="quantity" type="number" min="1" step="1" />
+        </igx-input-group>
+      </div>
+
+      <div class="form-row">
+        <span class="field-label" id="ticket-type-label">Order type</span>
+        <igx-select formControlName="type" class="form-field" placeholder="Select type" aria-labelledby="ticket-type-label">
+          @for (type of orderTypes; track type) {
+            <igx-select-item [value]="type">{{ type }}</igx-select-item>
+          }
+        </igx-select>
+      </div>
+    </div>
+
+    <!-- Sizes are one choice, not five actions: the field holds one quantity, so
+         the group shows which size that is and gives the row arrow-key
+         navigation. `single` rather than the side toggle's `singleRequired` -
+         a hand-typed size belongs to none of these and has to be able to say so
+         by leaving every button unlit. -->
+    <igx-buttongroup
+      class="quick-qty"
+      selectionMode="single"
+      aria-label="Quick quantities"
+      (selected)="onQuickSizeSelected($event)"
+    >
+      @for (size of quickSizes(); track size.label) {
+        <button
+          igxButton
+          class="qty-chip"
+          [class.qty-max]="size.label === 'Max'"
+          [disabled]="size.disabled"
+          [selected]="selectedQuickSize() === $index"
+          [attr.title]="size.hint ?? null"
+        ><span>{{ size.label }}</span></button>
+      }
+    </igx-buttongroup>
+
+    <div class="inline-row">
+      @if (needsLimitPrice()) {
+        <div class="form-row">
+          <label class="field-label" for="ticket-limit">Limit price</label>
+          <igx-input-group type="border" class="form-field">
+            <igx-prefix>$</igx-prefix>
+            <input igxInput id="ticket-limit" formControlName="limitPrice" type="number" step="0.01" min="0.01" />
+          </igx-input-group>
+        </div>
+      }
+
+      @if (needsStopPrice()) {
+        <div class="form-row">
+          <label class="field-label" for="ticket-stop">{{ isTrailing() ? 'Trail amount' : 'Stop price' }}</label>
+          <igx-input-group type="border" class="form-field">
+            <igx-prefix>$</igx-prefix>
+            <input igxInput id="ticket-stop" formControlName="stopPrice" type="number" step="0.01" min="0.01" />
+          </igx-input-group>
+        </div>
+      }
+
+      <div class="form-row tif-row">
+        <span class="field-label" id="ticket-tif-label">Time in force</span>
+        <igx-select formControlName="timeInForce" class="form-field" placeholder="TIF" aria-labelledby="ticket-tif-label">
+          @for (tif of timesInForce; track tif) {
+            <igx-select-item [value]="tif">{{ tif }}</igx-select-item>
+          }
+        </igx-select>
+      </div>
+    </div>
+
+    <dl class="estimate">
+      <div class="estimate-row">
+        <dt>Notional</dt>
+        <dd class="mono">{{ estimate().notional | money }}</dd>
+      </div>
+      <div class="estimate-row">
+        <dt>Commission</dt>
+        <dd class="mono">{{ estimate().commission | money }}</dd>
+      </div>
+      <div class="estimate-row total">
+        <dt>Est. total</dt>
+        <dd class="mono">{{ estimate().total | money }}</dd>
+      </div>
+      <div class="estimate-row muted">
+        <dt>Buying power</dt>
+        <dd class="mono">{{ buyingPower() | money }}</dd>
+      </div>
+    </dl>
+
+    @if (rejection(); as reason) {
+      <p class="ticket-error" role="alert">
+        <igx-icon aria-hidden="true">error_outline</igx-icon>
+        {{ reason }}
+      </p>
+    }
+
+    <button
+      igxButton="contained"
+      type="submit"
+      class="place-btn"
+      [class.buy-action]="side() === 'BUY'"
+      [class.sell-action]="side() === 'SELL'"
+      [disabled]="!canSubmit()"
+    >{{ submitLabel() }}</button>
+  </form>
+
+  <igx-snackbar #ticketSnackbar [displayTime]="3200" [autoHide]="true" />
+</div>

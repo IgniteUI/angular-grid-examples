@@ -1,0 +1,77 @@
+@use 'igniteui-angular/theming' as *;
+
+// $warn and $success were #f0a12c and #2ab184, which drew chart series at 2.13:1
+// and 2.72:1 on the white panels. Same hues, lower lightness: 4.15:1 and 4.72:1.
+//
+// $info is new - the Qualified stage pill used to borrow the negative pink.
+$sd-palette: palette(
+  $primary: #7f4cf6,
+  $secondary: #ec64ae,
+  $surface: #f0f3f7,
+  $gray: #263446,
+  $info: #2f74c0,
+  $success: #29b083,
+  $warn: #e0a33c,
+  $error: #be4e47,
+  $variant: light
+);
+
+// Dark appearance, applied under `.dark-theme` on the host.
+//
+// The hues are the light set's, lifted in lightness rather than swapped: the
+// dashboard should read as the same product after a toggle. They have to go
+// *up* because a chromatic ramp does not invert - shade 500 is the same value
+// in both palettes - so the deep #17835f that clears AA on a white panel is
+// 1.6:1 on a dark one and every chart series would disappear.
+//
+// `$gray` is a light seed, which is what flips the grey ramp: `palette()` reads
+// it against the surface's luminance, so 900 becomes the lightest step and the
+// component schemas keep working without a second set of overrides.
+$sd-dark-palette: palette(
+  $primary: #a78bfa,
+  $secondary: #f07cb8,
+  $surface: #101825,
+  $gray: #dbe4ef,
+  $info: #6aa9e9,
+  $success: #35c48c,
+  $warn: #e0a33c,
+  $error: #ef8279,
+  $variant: dark
+);
+
+$sd-text-xs: rem(12px);
+$sd-text-sm: rem(14px);
+$sd-text-base: rem(16px);
+$sd-text-lg: rem(22px);
+
+$sd-font: 'Barlow', 'Segoe UI', sans-serif;
+$sd-font-condensed: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+
+$sd-gap: rem(12px);
+$sd-pad: rem(16px);
+
+// The panels sit above --ig-surface-500; not a palette entry.
+$sd-white: #fff;
+// The dark theme's equivalent: one step up from its #101825 surface, so a panel
+// still reads as raised without a border doing all the work.
+$sd-raised-dark: #1b2432;
+
+@mixin sd-aliases() {
+  --sd-surface-raised: #{$sd-white};
+  --sd-line: var(--ig-gray-300);
+  --sd-muted: var(--ig-gray-700);
+
+  // The chart colours do NOT live here.
+  //
+  // They used to - as `--chart-1` through `--chart-4`, read back through
+  // getComputedStyle - and that cannot survive a theme toggle. Two reasons: the
+  // engine reads its tooltip styling table once at chart construction, so the
+  // fill behind a tooltip has to be in place before the chart exists rather
+  // than after a class lands; and only shade 500 resolves to a plain hex, so
+  // the axis ink and gridlines (700 and 300) came back as `hsl(from ...)` the
+  // engine cannot parse. `SALES_CHART_THEMES` in the component carries both
+  // appearances instead, with a table tying each value back to a shade here.
+  //
+  // The DOM half of the tooltip is still styled in CSS - see
+  // `.ig-tooltip-container-background` in _sales-widgets.scss.
+}

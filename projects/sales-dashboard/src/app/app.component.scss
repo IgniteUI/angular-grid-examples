@@ -1,0 +1,20 @@
+@use "igniteui-angular/theming" as *;
+
+// The light Fluent theme underneath the sample. The sample re-declares its own
+// palette on its host, light by default and dark on demand, so this only
+// supplies the component styles, the typography and the defaults that palette
+// does not cover.
+@include core();
+@include typography(
+  $font-family: $fluent-typeface,
+  $type-scale: $fluent-type-scale
+);
+@include theme(
+  $palette: $light-fluent-palette,
+  $schema: $light-fluent-schema
+);
+
+app-sales-dashboard {
+  display: block;
+  height: 100%;
+}

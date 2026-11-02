@@ -1,0 +1,55 @@
+@use 'igniteui-angular/theming' as *;
+@use './palette' as *;
+
+// Three tokens carry the grid and every child it derives: toolbar, column
+// actions, filtering, checkboxes, inputs, chips, buttons and the paginator.
+$fleet-grid: grid-theme(
+  $schema: $fleet-schema,
+  $background: var(--ig-surface-400),
+  $accent-color: var(--ig-primary-500),
+);
+
+$fleet-tabs: tabs-theme(
+  $schema: $fleet-schema,
+  $item-active-color: var(--ig-primary-500),
+);
+
+// Schema only: the filter row sits outside the grid, so these three carry the
+// sample's own fluent-dark defaults instead of inheriting the app theme.
+$fleet-btn-group: button-group-theme(
+  $schema: $fleet-schema,
+  $item-selected-background: var(--ig-primary-500),
+  $item-selected-text-color: var(--ig-primary-500-contrast),
+  $item-selected-border-color: var(--ig-primary-500),
+  $item-selected-hover-border-color: var(--ig-primary-500),
+);
+
+// The reset button renders as `igxButton="outlined"`, so it takes the outlined
+// variant's schema rather than the deprecated catch-all button-theme().
+$fleet-btn: outlined-button-theme(
+  $schema: $fleet-schema
+);
+
+$fleet-chip: chip-theme(
+  $schema: $fleet-schema
+);
+
+// The two toolbar dropdowns. Overlays no longer move to the body - they stay
+// where they are declared and open through the Popover API - so the column
+// actions panel renders inside the grid and inherits the grid's own derived
+// theme, which is exactly why it needs saying: `$background` is the primary
+// token, and foreground and accent derive their own contrast from it.
+$fleet-column-actions: column-actions-theme(
+  $schema: $fleet-schema,
+  $background: $fleet-overlay-background
+);
+
+// The advanced filtering dialog is an `igx-query-builder` in a draggable frame,
+// and the grid theme does not reach into it. Two tokens carry the whole dialog:
+// the body and the header bar it is dragged by. Everything else - the subquery
+// blocks, their borders and the separators - derives from the header.
+$fleet-query-builder: query-builder-theme(
+  $schema: $fleet-schema,
+  $background: $fleet-overlay-background,
+  $accent-color: var(--ig-primary-500)
+);

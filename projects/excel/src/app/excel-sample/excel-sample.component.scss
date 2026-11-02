@@ -1,0 +1,29 @@
+app-excel-sample {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+.excel-sample {
+  // The spreadsheet has no height of its own: `igx-spreadsheet height="100%"` resolves against
+  // this container, which resolves against the host. Every element in that chain has to pass the
+  // height down, so this section needs to be a flex column too - leaving it a plain block breaks
+  // the chain and collapses the whole sample to zero height.
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.excel-status {
+  margin: 0;
+  padding: 0.5rem 1rem;
+  color: var(--ig-gray-700);
+}
+
+.excel-spreadsheet-container {
+  flex: 1;
+  min-height: 0;
+}

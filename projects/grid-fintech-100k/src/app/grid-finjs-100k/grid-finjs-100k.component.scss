@@ -1,0 +1,132 @@
+@use 'igniteui-angular/theming' as *;
+@use './finjs-palette' as p;
+@use './finjs-theme' as t;
+@use './finjs-trends' as tr;
+
+// Layout only; colour lives in _finjs-palette.scss.
+//
+// Nested under the element selector because the component runs with
+// ViewEncapsulation.None.
+app-grid-finjs-100k {
+  // Light is the default appearance.
+  @include palette(p.$finjs-palette);
+  @include p.finjs-aliases();
+  @include t.finjs-component-themes();
+  @include tr.finjs-trends();
+
+  color-scheme: light;
+  display: block;
+  height: 100%;
+  width: 100%;
+
+  // Sample-wide density, driven by the size selector in the grid toolbar.
+  --ig-size: var(--ig-size-medium);
+
+  &.finjs-size-small {
+    --ig-size: var(--ig-size-small);
+  }
+
+  &.finjs-size-large {
+    --ig-size: var(--ig-size-large);
+  }
+
+  // Dark appearance. Only the palette is re-emitted - every colour in the
+  // sample and every component theme is a palette reference, so they follow.
+  // It sits on the host beside the size classes so the host's own background
+  // switches with it, and so the excel-style filter overlays the grid opens
+  // inside itself are covered too.
+  &.dark-theme {
+    @include palette(p.$finjs-dark-palette);
+
+    color-scheme: dark;
+  }
+
+  .finjs-grid-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    padding: rem(15px);
+    box-sizing: border-box;
+    background: var(--ig-gray-100);
+  }
+
+  .finjs-grid {
+    flex: 1 0 0%;
+  }
+
+  .finjs-title {
+    display: inline-flex;
+    align-items: baseline;
+    gap: rem(8px);
+    user-select: none;
+
+    h1 {
+      @include type-style('h6') {
+        margin: 0;
+      }
+
+      color: var(--ig-gray-900);
+    }
+  }
+
+  // The row count, subordinate to the name it follows.
+  .finjs-row-count {
+    @include type-style('caption');
+
+    color: var(--ig-gray-700);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .finjs-size-group,
+  .finjs-theme-toggle {
+    flex-shrink: 0;
+  }
+
+  // The button group renders its labels lowercase from the size names; the cap
+  // trim keeps them centred against the icon button beside them.
+  .finjs-size-group {
+
+    .igx-button {
+      --ig-button-font-size: 12px;
+      --ig-button-font-weight: 500;
+      --ig-button-text-transform: uppercase;
+      --ig-button-margin-top: 0;
+      --ig-button-margin-bottom: 0;
+    }
+
+    span {
+      text-box: cap alphabetic;
+    }
+  }
+
+  .finjs-icons {
+    display: flex;
+    align-items: center;
+    gap: rem(4px);
+
+    // A step below the icon's smallest preset (1.125rem).
+    igx-icon {
+      --ig-icon-size: #{rem(16px)};
+    }
+  }
+
+  .igx-grid__grouparea {
+    height: auto;
+    max-height: 100%;
+  }
+
+  .igx-excel-filter {
+    span,
+    header,
+    input {
+      font-size: rem(13px);
+    }
+  }
+
+  .igx-grid__td--number {
+    text-align: start;
+    justify-content: flex-start;
+  }
+}

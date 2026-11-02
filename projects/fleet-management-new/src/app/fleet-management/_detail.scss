@@ -1,0 +1,383 @@
+@use 'sass:list';
+@use 'igniteui-angular/theming' as *;
+@use './palette' as *;
+@use './themes' as *;
+
+/// Right-aligns the given 1-indexed columns and gives them tabular figures.
+@mixin numeric-columns($columns...) {
+  @each $column in $columns {
+    th:nth-child(#{$column}),
+    td:nth-child(#{$column}) {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+  }
+
+  .status-cell {
+    text-align: center;
+  }
+}
+
+/// Fixed column shares, in order. They must total 100%.
+@mixin column-widths($widths...) {
+  @for $i from 1 through list.length($widths) {
+    th:nth-child(#{$i}) {
+      width: list.nth($widths, $i);
+    }
+  }
+}
+
+/// Everything inside an expanded grid row.
+@mixin fleet-detail-row {
+  .fleet-detail-wrap {
+    width: 100%;
+    background: light-dark(var(--ig-surface-500), var(--ig-surface-900));
+    border-radius: rem(4px);
+    overflow: hidden;
+  }
+
+  .fleet-detail-tabs {
+    @include tokens($fleet-tabs);
+
+    width: 100%;
+
+    .igx-tabs-header {
+      background: var(--ig-surface-500);
+    }
+  }
+
+  .fleet-detail-content {
+    display: grid;
+    grid-template-columns: minmax(rem(240px), rem(280px)) minmax(0, 1fr);
+    gap: rem(32px);
+    padding: sizable(rem(16px), rem(24px), rem(32px));
+    align-items: start;
+  }
+
+  .fleet-vehicle-card {
+    margin: 0;
+    border: 0;
+    background: none;
+
+    .igx-card-content {
+      padding: 0;
+    }
+  }
+
+  .fleet-vehicle-illustration {
+    display: grid;
+    gap: rem(9px);
+    min-height: rem(180px);
+    text-align: center;
+    color: var(--ig-gray-800);
+  }
+
+  .fleet-vehicle-photo {
+    display: block;
+    width: 100%;
+    height: rem(180px);
+    object-fit: cover;
+    border: 1px solid $fleet-border;
+    border-radius: rem(6px);
+    background: var(--ig-surface-400);
+  }
+
+  /// Stands in when the pinned photo folder has nothing to show. A neutral box
+  /// is the honest answer here: any other car would misstate the paint colour.
+  .fleet-vehicle-photo-empty {
+    display: grid;
+    place-content: center;
+    gap: rem(4px);
+    border-style: dashed;
+    color: var(--ig-gray-600);
+
+    igx-icon {
+      justify-self: center;
+    }
+  }
+
+  .fleet-spec-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: rem(16px);
+    align-self: start;
+  }
+
+  .fleet-spec-item {
+    display: grid;
+    gap: rem(3px);
+    padding-bottom: rem(6px);
+    border-bottom: 1px dashed $fleet-border;
+
+    span {
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--ig-gray-700);
+    }
+
+    strong {
+      font-weight: 500;
+      color: var(--ig-gray-800);
+    }
+
+    .fleet-spec-color {
+      display: flex;
+      align-items: center;
+      gap: rem(6px);
+    }
+
+    /// Sized off the text so it tracks `--ig-size` with the rest of the sample.
+    .fleet-color-swatch {
+      flex: 0 0 auto;
+      width: 1em;
+      height: 1em;
+      border: rem(1px) solid $fleet-border;
+      border-radius: 50%;
+    }
+  }
+
+  // Tab panels
+  .fleet-tab-panel {
+    display: grid;
+    gap: rem(24px);
+    padding: sizable(rem(16px), rem(24px), rem(32px));
+  }
+
+  .fleet-tab-kpis {
+    display: grid;
+    gap: rem(24px);
+  }
+
+  .fleet-tab-kpis-3up {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .fleet-tab-kpis-4up {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .fleet-tab-kpi {
+    display: grid;
+    gap: rem(4px);
+    padding: sizable(rem(4px), rem(8px), rem(16px));
+    border: rem(1px) dashed $fleet-border;
+
+    strong {
+      font-size: rem(16px);
+      font-weight: 700;
+      color: var(--ig-gray-800);
+    }
+  }
+
+  .fleet-tab-kpi span,
+  .fleet-utilization-title,
+  .fleet-detail-table th,
+  .fleet-cost-panel-title {
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ig-primary-500);
+  }
+
+  .fleet-cost-panel-title {
+    color: var(--ig-primary-500);
+  }
+
+  .fleet-accent-value {
+    color: var(--ig-primary-500);
+  }
+
+  .fleet-detail-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+
+    th,
+    td {
+      padding: rem(11px) 0;
+      text-align: left;
+      border-bottom: 1px solid $fleet-border;
+    }
+
+    td {
+      color: var(--ig-gray-700);
+    }
+
+    // The detail template renders inside the grid, so these tables can hover on
+    // the grid's own row tokens and stay in step with the theme.
+    tbody tr:hover > td {
+      background: var(--ig-grid-row-hover-background);
+      color: var(--ig-grid-row-hover-text-color);
+    }
+  }
+
+  // Date and the two locations read as text; the four measures as numbers.
+  .fleet-trip-table {
+    @include numeric-columns(4, 5, 6, 7);
+  }
+
+  // Fixed shares stop Service stretching and leaving a gap before Odometer on a
+  // wide monitor.
+  .fleet-maintenance-table {
+    @include column-widths(16%, 34%, 18%, 14%, 18%);
+    @include numeric-columns(3, 4);
+  }
+
+  .fleet-maintenance-alert {
+    display: flex;
+    align-items: center;
+    gap: rem(11px);
+    padding: rem(13px) rem(16px);
+    border: 1px solid hsl(from var(--ig-warn-500) h s l / 0.45);
+    border-radius: rem(9px);
+    background: hsl(from var(--ig-warn-500) h s l / 0.14);
+    color: var(--ig-warn-500);
+
+    igx-icon {
+      color: inherit;
+      font-size: rem(16px);
+    }
+  }
+
+  .fleet-detail-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: rem(3px) rem(11px);
+    border-radius: 999px;
+    font-size: rem(12px);
+    font-weight: 600;
+  }
+
+  .fleet-detail-pill-success {
+    color: var(--ig-success-500);
+    background: hsl(from var(--ig-success-500) h s l / 0.22);
+  }
+
+  .fleet-detail-pill-warn {
+    color: var(--ig-warn-500);
+    background: hsl(from var(--ig-warn-500) h s l / 0.22);
+  }
+
+  // Costs
+  .fleet-cost-charts {
+    display: grid;
+    grid-template-columns: minmax(rem(320px), 0.9fr) minmax(0, 1.35fr);
+    gap: rem(32px);
+    align-items: start;
+  }
+
+  .fleet-cost-panel {
+    display: grid;
+    gap: rem(14px);
+    align-content: start;
+    min-width: 0;
+  }
+
+  // The legend sizes to its content; the donut takes what is left, otherwise
+  // its 100% width resolves against an auto track and collapses.
+  .fleet-cost-donut-layout {
+    display: grid;
+    grid-template-columns: minmax(0, auto) minmax(rem(180px), 1fr);
+    gap: rem(24px);
+    align-items: center;
+  }
+
+  .fleet-cost-donut-legend {
+    display: grid;
+    gap: rem(14px);
+    align-self: center;
+  }
+
+  .fleet-cost-donut-legend-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: rem(16px);
+    color: var(--ig-gray-700);
+
+    strong {
+      font-weight: 700;
+      color: var(--ig-gray-800);
+    }
+  }
+
+  .fleet-cost-donut-legend-main {
+    display: inline-flex;
+    align-items: center;
+    gap: rem(10px);
+  }
+
+  .fleet-cost-dot {
+    display: inline-block;
+    flex: 0 0 auto;
+    width: rem(12px);
+    height: rem(12px);
+    border-radius: 999px;
+  }
+
+  // The order and the families are the donut's slice order and its brush list -
+  // see `FLEET_CHART_THEMES.cost`. A legend that named a different family from
+  // the slice it labels would be worse than no legend at all, so the two lists
+  // have to be read together. `info` is deliberately not among them; the note
+  // there says why.
+  @each $name, $family in (fuel: primary, maintenance: warn, insurance: success, tolls: error) {
+    .fleet-cost-tone-#{$name} {
+      background: var(--ig-#{$family}-500);
+    }
+  }
+
+  // Utilization
+  .fleet-utilization-wrap {
+    display: grid;
+    gap: rem(14px);
+  }
+
+  .fleet-utilization-legend {
+    display: flex;
+    align-items: center;
+    gap: rem(16px);
+    color: var(--ig-gray-700);
+  }
+
+  .fleet-utilization-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: rem(7px);
+  }
+
+  .fleet-utilization-legend-swatch {
+    display: inline-block;
+    width: rem(12px);
+    height: rem(12px);
+    border-radius: rem(2px);
+  }
+
+  // The years are read off the clock, so the swatches are named for the series
+  // rather than for a year - these two carry the comparison chart's brush list,
+  // in its order. See `FLEET_CHART_THEMES.utilization`.
+  .fleet-utilization-legend-swatch-current {
+    background: var(--ig-primary-500);
+  }
+
+  .fleet-utilization-legend-swatch-prior {
+    background: var(--ig-success-500);
+  }
+
+  .fleet-cost-donut,
+  .fleet-cost-column-chart,
+  .fleet-utilization-comparison-chart {
+    display: block;
+    width: 100%;
+    border: 0;
+    background: transparent;
+  }
+
+  .fleet-cost-donut,
+  .fleet-cost-column-chart {
+    min-height: rem(280px);
+  }
+
+  .fleet-utilization-comparison-chart {
+    min-height: rem(320px);
+  }
+}

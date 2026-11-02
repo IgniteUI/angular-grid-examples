@@ -1,0 +1,556 @@
+@use 'igniteui-angular/theming' as *;
+
+/// Dark palette - the sample's default appearance.
+///
+/// The gray ramp is written out rather than seeded, which is the one thing
+/// `palette()` cannot express: it derives the whole family from a single colour,
+/// and the desk wants ten hand-picked blue-tinted steps. Everything else goes
+/// through `shades()` over `$IColorShades` - the engine's own shade list, so the
+/// families carry exactly the variants `palette()` would have given them.
+///
+/// `-raw` is not a duplicate of the line above it. `shades()` emits one per step
+/// and `color()` reads it to hand back an `rgba()` a Sass function can compute
+/// with, where the plain key resolves to a `var(--ig-*)` reference. Written ramps
+/// have to supply it themselves or `color($palette, 'gray', 500)` degrades.
+$sd-dark-palette: (
+    'primary': shades('primary', #5486cf, $IColorShades),
+    'secondary': shades('secondary', #5486cf, $IColorShades),
+    'surface': shades('surface', #12121a, $IColorShades),
+    'info': shades('info', #5486cf, $IColorShades),
+    'success': shades('success', #34d399, $IColorShades),
+    'warn': shades('warn', #fbbf24, $IColorShades),
+    'error': shades('error', #ce0e2f, $IColorShades),
+    'gray': (
+        '50': #0a0d14,
+        '50-contrast': adaptive-contrast(#0a0d14),
+        '50-raw': #0a0d14,
+        '100': #141e2e,
+        '100-contrast': adaptive-contrast(#141e2e),
+        '100-raw': #141e2e,
+        '200': #1e2d44,
+        '200-contrast': adaptive-contrast(#1e2d44),
+        '200-raw': #1e2d44,
+        '300': #273d58,
+        '300-contrast': adaptive-contrast(#273d58),
+        '300-raw': #273d58,
+        '400': #34506f,
+        '400-contrast': adaptive-contrast(#34506f),
+        '400-raw': #34506f,
+        '500': #47688c,
+        '500-contrast': adaptive-contrast(#47688c),
+        '500-raw': #47688c,
+        '600': #5f80a5,
+        '600-contrast': adaptive-contrast(#5f80a5),
+        '600-raw': #5f80a5,
+        '700': #7a93b5,
+        '700-contrast': adaptive-contrast(#7a93b5),
+        '700-raw': #7a93b5,
+        '800': #a3bcd4,
+        '800-contrast': adaptive-contrast(#a3bcd4),
+        '800-raw': #a3bcd4,
+        '900': #e2e8f0,
+        '900-contrast': adaptive-contrast(#e2e8f0),
+        '900-raw': #e2e8f0,
+    ),
+    '_meta': (
+        'variant': dark,
+    ),
+);
+
+/// Light palette - applied when the shell carries `.light-theme`.
+///
+/// Not the dark palette inverted. The desk's colour lives in its figures, so
+/// the light theme takes the opposite bet from the dark one: the chrome goes
+/// almost colourless - a white field, a near-neutral gray ramp, hairline rules
+/// - and every P&L figure sits in a tinted cell instead, which turns each table
+/// into a heat map that can be read by shape before it is read by number.
+/// It costs the quiet grid and buys the shape of the book at a glance.
+///
+/// Three rules keep that from becoming a second, unrelated product:
+///
+/// **The hues do not move.** `success` sits at the dark mint's 158 degrees and `error`
+/// at the coral's 350 degrees; only lightness and saturation change. The green and the
+/// red are the same two colours in both themes, deepened for a white ground
+/// rather than swapped for different ones.
+///
+/// **The value asymmetry survives.** Up has to read lighter than down in *both*
+/// themes, so that a candle field separates by value and not by hue alone. This
+/// pair holds that: 0.132 against 0.084, 1.58x - and the dark set now sits at
+/// 1.66x, so the two appearances carry the same asymmetry rather than two
+/// different ones. The dark coral was lifted from #ff4d6a to reach it: at the
+/// old value it measured 4.3:1 on the selected-and-hovered row fill, the one
+/// ground in the desk where a P&L figure and the deepest fill meet. The palette this replaces had
+/// the two within a hair of each other and, worse, the wrong way round - its red
+/// was lighter than its green, so the field flattened out exactly where it
+/// mattered.
+///
+/// The green is deeper than the ratio alone would ask for, and that is the
+/// binding constraint rather than a preference. `success` is painted as *text*
+/// on five different grounds - the white cell, the zebra step, the neutral
+/// selection fill, and its own 7% and 10% tints - and the selection fill is the
+/// darkest of them. A mint that clears AA on white can still miss it there; the
+/// value that clears all five is what fixes the lightness, and 1.58x is what
+/// falls out of it.
+///
+/// **Two accents, not three.** Blue is confined to text, borders, indicators
+/// and focus rings; every *fill* that used to carry it - row and cell
+/// selection, chip and tab and button-group selection, the nav rail's active
+/// item - is a neutral gray step (see `$sd-fill-*` below), so nothing competes
+/// with the P&L pair on the data itself. `info` folds into the same blue rather
+/// than standing up a third accent of its own, which is what the old teal was.
+///
+/// Every value here clears WCAG AA on the surfaces it actually lands on,
+/// including the tinted cells and the neutral selection fill: `success` measures
+/// 5.8:1 on white, 5.5:1 on the zebra step, 4.9:1 on the selection fill and
+/// 5.0:1 on its own 10% tint; `error` 6.5:1 on its. `warn` is a deep amber for
+/// the same reason - the mock's #fba524 is 1.9:1 against the pane and is the one
+/// value in the set that was never readable as text at all.
+$sd-light-palette: (
+    'primary': shades('primary', #5486cf, $IColorShades),
+    'secondary': shades('secondary', #5486cf, $IColorShades),
+    'surface': shades('surface', #fbfbfc, $IColorShades),
+    'info': shades('info', #5486cf, $IColorShades),
+    'success': shades('success', rgb(6, 117, 71), $IColorShades),
+    'warn': shades('warn', #9a5b00, $IColorShades),
+    'error': shades('error', #a60722, $IColorShades),
+
+    // Near-neutral rather than the blue-tinted ramp the dark theme runs: at
+    // 8-15% saturation the greys carry no accent of their own, which is what
+    // lets the figures be the only colour on the field. The three steps the
+    // desk leans on hardest are fixed points - 100 the pane and header fill,
+    // 200 every hairline and rule, 700 the label ink over both - and 300-600
+    // interpolate between them.
+    //
+    // 700 is three points darker than the mock's #6c727f, which is the one
+    // concession the ramp makes. The mock's value is 4.16:1 on the neutral
+    // selection fill below, and the blotter puts 11px gray-700 text - its note
+    // and price-kind cells - inside rows that can be selected. At 43% lightness
+    // the same ink clears 4.6:1 there and stays the same colour to look at.
+    'gray': (
+        '50': #ffffff,
+        '50-contrast': adaptive-contrast(#ffffff),
+        '50-raw': #ffffff,
+        '100': #f8f9fb,
+        '100-contrast': adaptive-contrast(#f8f9fb),
+        '100-raw': #f8f9fb,
+        '200': #e2e5e9,
+        '200-contrast': adaptive-contrast(#e2e5e9),
+        '200-raw': #e2e5e9,
+        '300': #cad0d8,
+        '300-contrast': adaptive-contrast(#cad0d8),
+        '300-raw': #cad0d8,
+        '400': #b2b8c2,
+        '400-contrast': adaptive-contrast(#b2b8c2),
+        '400-raw': #b2b8c2,
+        '500': #99a1ad,
+        '500-contrast': adaptive-contrast(#99a1ad),
+        '500-raw': #99a1ad,
+        '600': #828997,
+        '600-contrast': adaptive-contrast(#828997),
+        '600-raw': #828997,
+        '700': #646a78,
+        '700-contrast': adaptive-contrast(#646a78),
+        '700-raw': #646a78,
+        '800': #434b5b,
+        '800-contrast': adaptive-contrast(#434b5b),
+        '800-raw': #434b5b,
+        '900': #212936,
+        '900-contrast': adaptive-contrast(#212936),
+        '900-raw': #212936,
+    ),
+    '_meta': (
+        'variant': light,
+    ),
+);
+
+/// The neutral fill ladder, and the hairline.
+///
+/// `palette()` gives ten grey steps but the desk needs four values *between*
+/// them: three interactive fills for every selectable thing, and one rule
+/// colour lighter than the 200 step the borders use.
+///
+/// They are `color-mix()` over palette references rather than literals, so both
+/// palettes derive their own ladder from their own greys - the dark theme's
+/// selection lands on a blue-black step the same way the light theme's lands on
+/// a near-white one. Held here as Sass variables purely so the theme functions
+/// below read as a list of decisions instead of a wall of `color-mix()`.
+///
+/// The 60% is a look, not a contrast floor. It used to be described as one -
+/// the claim was that `--ig-primary-500` is the text on a selected chip and the
+/// mix percentage is what lets it clear 4.5:1 - but that never held on the dark
+/// palette, where the accent measures 3.6:1 on this fill and 3.4:1 on the step
+/// above it. Nor can the percentage fix it: at 20% the fill is as dark as it can
+/// get before the selection stops reading as selected, and the accent still only
+/// reaches 3.9:1. The fill is fine; the *shade* of the accent was the problem.
+$sd-hairline: color-mix(in srgb, var(--ig-gray-200) 60%, var(--ig-gray-50));
+$sd-fill-hover: color-mix(in srgb, var(--ig-gray-100) 30%, var(--ig-gray-50));
+$sd-fill-selected: color-mix(in srgb, var(--ig-gray-200) 60%, var(--ig-gray-100));
+$sd-fill-selected-hover: var(--ig-gray-200);
+
+/// The accent, as *text on a neutral fill* - selected chips and tabs, the active
+/// nav item, the selected button-group item, the snackbar's action.
+///
+/// A separate token from `--ig-primary-500` because the two appearances need
+/// different shades and a chromatic ramp does not invert: 500 is the darker end
+/// in both, which is right over a white fill and too dark over a blue-black one.
+/// Light keeps 500 (5.0:1 on the selection fill, 4.7:1 on the step above it);
+/// dark takes 400 (4.9:1 and 4.6:1).
+///
+/// This is only for the accent as a *filled-in glyph or word*. Where the accent
+/// is a line - the focus ring, the row-drag marker, the tab indicator, the sort
+/// icons - it stays `--ig-primary-500`, which clears 1.4.11's 3:1 on every
+/// ground in the desk and keeps the brand violet at full strength.
+$sd-accent-on-fill: light-dark(var(--ig-primary-500), var(--ig-primary-600));
+
+/// Component themes for the desk.
+///
+/// Emitted once, outside the light/dark split: every colour is a `var(--ig-*)`
+/// palette reference, so these follow the active palette automatically - but
+/// only because each block lands on an element inside that palette's scope. A
+/// token declared where a *different* palette is in scope bakes that palette's
+/// colour in; see `.desk-overlay-host` below.
+@mixin sd-component-themes() {
+    // The grid carries the two decisions the palette comment calls "two accents,
+    // not three" and "gridlines drop to a tint".
+    //
+    // `$accent-color` alone would have covered every state below - it is what
+    // the grid derives selection, hover and the active-cell ring from - but it
+    // derives them all as tints of *one* colour, and the accent has to stay
+    // blue for the ring and the sort icons. So the states are stated: the
+    // interactive fills come off the neutral ladder and blue is left holding
+    // only the things that are a line or a glyph rather than a field.
+    //
+    // The rules are `$sd-hairline`, a tint of the border step rather than the
+    // step itself. Four grids' worth of row and column rules at full border
+    // weight is most of the line noise on a white field, and the row fills
+    // already say where a row begins.
+    $sd-grid: grid-theme(
+        $background: var(--ig-gray-50),
+        $foreground: var(--ig-gray-900),
+        $accent-color: var(--ig-primary-500),
+
+        $header-background: var(--ig-gray-100),
+        $header-text-color: var(--ig-gray-700),
+        $header-border-color: var(--ig-gray-200),
+        $grid-border-color: var(--ig-gray-200),
+        $summaries-border-color: var(--ig-gray-200),
+
+        $row-odd-background: var(--ig-gray-50),
+        $row-even-background: var(--sd-zebra),
+        $row-odd-text-color: var(--ig-gray-900),
+        $row-even-text-color: var(--ig-gray-900),
+        $row-border-color: $sd-hairline,
+
+        $row-hover-background: $sd-fill-hover,
+        $row-hover-text-color: var(--ig-gray-900),
+        $row-selected-background: $sd-fill-selected,
+        $row-selected-text-color: var(--ig-gray-900),
+        $row-selected-hover-background: $sd-fill-selected-hover,
+        $row-selected-hover-text-color: var(--ig-gray-900),
+        $cell-selected-background: $sd-fill-selected,
+        $cell-selected-text-color: var(--ig-gray-900),
+        $cell-selected-within-background: $sd-fill-selected-hover,
+        $cell-selected-within-text-color: var(--ig-gray-900),
+        $group-row-background: var(--ig-gray-100),
+        $group-row-selected-background: $sd-fill-selected,
+
+        // Blue keeps the focus ring, the row-drag marker and the sort glyphs -
+        // a line and two icons, none of them a fill.
+        $cell-active-border-color: var(--ig-primary-500),
+        $row-highlight: var(--ig-primary-500),
+        $sorted-header-icon-color: var(--ig-primary-500),
+        $sortable-header-icon-hover-color: var(--ig-primary-500),
+
+        $filtering-header-background: var(--ig-gray-100),
+        $filtering-header-text-color: var(--ig-gray-900),
+        $filtering-row-background: var(--ig-gray-100),
+        $filtering-row-text-color: var(--ig-gray-900),
+        $pinned-border-color: var(--ig-gray-300),
+    );
+
+    $sd-dialog: dialog-theme(
+        $background: var(--ig-gray-100),
+    );
+
+    $sd-toast: toast-theme(
+        $background: var(--ig-gray-200),
+    );
+
+    $sd-snackbar: snackbar-theme(
+        $background: var(--ig-gray-200),
+        $text-color: var(--ig-gray-900),
+        $button-color: $sd-accent-on-fill,
+    );
+
+    $sd-buy-button: contained-button-theme(
+        $background: var(--ig-success-500),
+    );
+
+    $sd-sell-button: contained-button-theme(
+        $background: var(--ig-error-500),
+    );
+
+    $sd-navdrawer: navdrawer-theme(
+        $background: linear-gradient( 180deg, var(--ig-gray-100) 0%, var(--ig-surface-500) 100%),
+        $border-color: var(--ig-gray-200),
+        $item-text-color: var(--ig-gray-700),
+        $item-icon-color: var(--ig-gray-700),
+        $item-hover-background: $sd-fill-hover,
+        $item-hover-text-color: var(--ig-gray-900),
+        $item-hover-icon-color: var(--ig-gray-900),
+        $item-active-background: $sd-fill-selected,
+        $item-active-text-color: $sd-accent-on-fill,
+        $item-active-icon-color: $sd-accent-on-fill,
+        $item-header-text-color: var(--ig-gray-700),
+    );
+
+    $sd-input-group: input-group-theme(
+        $search-background: var(--ig-gray-50),
+        $border-color: var(--ig-gray-300),
+        $hover-border-color: var(--ig-primary-500),
+        $focused-border-color: var(--ig-primary-500),
+        $border-background: var(--ig-gray-50),
+        $idle-text-color: var(--ig-gray-700),
+        $filled-text-color: var(--ig-gray-900),
+        $focused-text-color: var(--ig-gray-900),
+        $placeholder-color: var(--ig-gray-700),
+        $input-prefix-color: var(--ig-gray-700),
+        $input-prefix-background: transparent,
+        $input-suffix-color: var(--ig-gray-700),
+        $input-suffix-background: transparent,
+    );
+
+    $sd-avatar: avatar-theme(
+        $background: var(--ig-gray-200),
+        $color: var(--ig-gray-900),
+    );
+
+    $sd-button-group: button-group-theme(
+        $shadow: none,
+        $item-background: var(--ig-gray-50),
+        $item-text-color: var(--ig-gray-700),
+        $item-border-color: var(--ig-gray-200),
+        $item-hover-border-color: var(--ig-gray-200),
+        $item-hover-background: $sd-fill-hover,
+        $item-hover-text-color: var(--ig-gray-900),
+        $item-selected-background: var(--ig-gray-50),
+        $item-selected-text-color: $sd-accent-on-fill,
+        $item-selected-border-color: var(--ig-gray-200),
+        $item-selected-hover-border-color: var(--ig-gray-200),
+        $item-selected-hover-background: $sd-fill-hover,
+        $item-selected-active-background: var(--ig-gray-200),
+        $item-active-background: var(--ig-gray-200),
+        $disabled-text-color: var(--ig-gray-500),
+        $disabled-background-color: var(--ig-gray-100),
+    );
+
+    $sd-chip: chip-theme(
+        $background: var(--ig-gray-100),
+        $text-color: var(--ig-gray-700),
+        $border-color: var(--ig-gray-200),
+        $hover-background: $sd-fill-hover,
+        $hover-text-color: var(--ig-gray-900),
+        $selected-background: $sd-fill-selected,
+        $selected-text-color: $sd-accent-on-fill,
+        $selected-border-color: var(--ig-primary-500),
+        $hover-selected-background: $sd-fill-selected-hover,
+        $hover-selected-text-color: $sd-accent-on-fill,
+    );
+
+    $sd-tabs: tabs-theme(
+        $item-background: var(--ig-gray-100),
+        $item-text-color: var(--ig-gray-700),
+        $item-icon-color: var(--ig-gray-700),
+        $item-hover-background: $sd-fill-hover,
+        $item-hover-color: var(--ig-gray-900),
+        $item-active-color: $sd-accent-on-fill,
+        $item-active-icon-color: $sd-accent-on-fill,
+        $item-active-background: $sd-fill-selected,
+        $indicator-color: var(--ig-primary-500),
+        $border-color: var(--ig-gray-200),
+    );
+
+    $sd-list: list-theme(
+        $background: var(--ig-gray-100),
+        $item-background: var(--ig-gray-100),
+        $item-background-hover: $sd-fill-hover,
+        $item-background-active: $sd-fill-selected,
+        $item-text-color: var(--ig-gray-900),
+        $item-title-color: var(--ig-gray-900),
+        $item-subtitle-color: var(--ig-gray-700),
+        $header-background: var(--ig-gray-100),
+        $header-text-color: var(--ig-gray-700),
+        $border-color: var(--ig-gray-200),
+    );
+
+    $sd-progress: progress-linear-theme(
+        $track-color: var(--ig-gray-200),
+        $fill-color-default: var(--ig-primary-500),
+        $fill-color-success: var(--ig-success-500),
+        $fill-color-warning: var(--ig-warn-500),
+        $fill-color-danger: var(--ig-error-500),
+        $text-color: var(--ig-gray-700),
+    );
+
+    $sd-badge: badge-theme(
+      $shadow: none,
+    );
+
+    // Borderless outlined buttons: the toolbar's actions read as a row of icons
+    // rather than four boxed controls, and the toolbar's own bottom rule is
+    // already saying where the strip ends.
+    //
+    // Every state has to be named. The library derives each border from that
+    // state's foreground, so anything left out keeps a border and the row
+    // flickers a box on hover or focus. `disabled` is in the list because the
+    // exporter disables itself while an export runs - the one state that
+    // arrives on its own rather than under the pointer.
+    $sd-outline-button: outlined-button-theme(
+      $border-color: transparent,
+      $hover-border-color: transparent,
+      $focus-border-color: transparent,
+      $focus-visible-border-color: transparent,
+      $active-border-color: transparent,
+      $disabled-border-color: transparent,
+      $foreground: var(--ig-gray-700),
+    );
+
+    igx-badge {
+      @include tokens($sd-badge);
+    }
+
+    // Scrollbars.
+    //
+    // Every `--sb-*` value the library ships is a three-deep fallback chain:
+    // `--igx-scrollbar-*`, then `--ig-scrollbar-*`, then a private default. In a
+    // plain `.ig-scrollbar` scope that default is gray-300 on gray-100 - the pair
+    // the Dock Manager's own `--igc-sb-*` are mapped to. But a grid redeclares
+    // the same tokens on itself, and inside a grid the private default becomes
+    // `color-mix(--_grid-foreground 50%, --_grid-background)` on a surface-500
+    // track: a mid grey on near-black. That is the two-kinds-of-scrollbar the
+    // desk had - dark blue in the Dock Manager, grey in every grid.
+    //
+    // Chrome only, which is what makes it easy to misread: Gecko implements none
+    // of the `::-webkit-scrollbar` pseudo-elements these tokens feed.
+    //
+    // Stating the theme fills the *second* link in that chain, which outranks the
+    // private default in every scope that has one - grid, column actions, Excel
+    // filtering, query builder - so one declaration covers all of them.
+    $sd-scrollbar: scrollbar-theme(
+        $sb-size: 1rem,
+        $sb-thumb-min-height: 2rem,
+        // The thumb sits at 1.5:1 against its track in both appearances, which
+        // is under 1.4.11's 3:1 and is a deliberate call. The tokens are 1rem
+        // wide, so a thumb that clears the bar is a solid bar down the edge of
+        // every scrolling pane - louder than any platform scrollbar and louder
+        // than the data beside it. The hover step is what makes it findable.
+        //
+        // Mirrored by `--igc-sb-thumb-bg-color` in the shell; the two have to
+        // move together or the desk goes back to having two kinds of scrollbar.
+        $sb-thumb-bg-color: var(--ig-gray-300),
+        $sb-thumb-bg-color-hover: var(--ig-gray-500),
+        $sb-track-bg-color: var(--ig-gray-100),
+        $sb-track-bg-color-hover: var(--ig-gray-100),
+        $sb-corner-bg: var(--ig-gray-100),
+    );
+
+    // On `.ig-scrollbar` rather than up here for the same reason as the dialog
+    // below: the values are `var(--ig-*)` references and have to be declared
+    // where the live palette is in scope.
+    //
+    // One `.ig-scrollbar` element is not enough to cover the desk, because
+    // `index.html` already put the class on `<body>` and these tokens inherit.
+    // A scroller only gets the desk's scrollbar if the class is on an element
+    // *above it* inside the palette scope; anywhere else it keeps the values
+    // the library declared on `<body>` against the page's own palette. So each
+    // subtree that scrolls carries the class - the Dock Manager for the panes,
+    // the overlay host for the dialogs - and both also carry the theme class,
+    // which is what makes these resolve light or dark with the desk.
+    .ig-scrollbar {
+        @include tokens($sd-scrollbar);
+    }
+
+    // The dialogs are the one component whose tokens cannot be declared up here.
+    //
+    // A `var()` inside a custom property is substituted where the property is
+    // *declared*, not where it is used. `--ig-dialog-background: var(--ig-gray-100)`
+    // written on the component host therefore resolves against the dark palette
+    // that sits on the host, and the light desk inherits that already-resolved
+    // dark colour - which is why the dialog stayed dark in the light theme no
+    // matter what the markup around it carried.
+    //
+    // `.desk-overlay-host` is where the overlay puts the dialog and it carries
+    // the theme class, so declaring them there resolves them against whichever
+    // palette is live. Every block below already lands on an element inside the
+    // themed subtree and gets that for free.
+    .desk-overlay-host {
+        @include tokens($sd-dialog);
+    }
+
+    igx-grid {
+        @include tokens($sd-grid);
+    }
+
+    .igx-grid-toolbar__actions {
+        @include tokens($sd-outline-button);
+    }
+
+    igx-nav-drawer {
+        @include tokens($sd-navdrawer);
+    }
+
+    igx-input-group {
+        @include tokens($sd-input-group);
+    }
+
+    igx-avatar {
+        @include tokens($sd-avatar);
+    }
+
+    igx-buttongroup {
+        @include tokens($sd-button-group);
+    }
+
+    // Every chip carries its block class on its host, so naming it twice
+    // matches exactly the same elements with one more class in the selector.
+    // That extra weight is what keeps these tokens in charge inside the
+    // samples browser this app also runs in, which sets the chip hover and
+    // focus fills on every chip under its page container
+    // (`.demo-container igx-chip`) - a selector a plain `igx-chip` here loses
+    // to.
+    igx-chip.igx-chip {
+        @include tokens($sd-chip);
+    }
+
+    igx-tabs {
+        @include tokens($sd-tabs);
+    }
+
+    igx-list {
+        @include tokens($sd-list);
+    }
+
+    igx-linear-bar {
+        @include tokens($sd-progress);
+    }
+
+    igx-toast {
+        @include tokens($sd-toast);
+    }
+
+    igx-snackbar {
+        @include tokens($sd-snackbar);
+    }
+
+    .buy-action {
+        @include tokens($sd-buy-button);
+    }
+
+    .sell-action {
+        @include tokens($sd-sell-button);
+    }
+
+    .igx-button span {
+      text-box: cap alphabetic;
+    }
+}

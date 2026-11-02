@@ -148,3 +148,191 @@ Angular sales app example for summaries by region, product, and time periods, wi
 - Filtering  
 - Resizing  
 - Super Compact Mode  
+
+---
+
+## New Financial Portfolio
+
+**Description:**  
+An updated Angular financial portfolio app for tracking assets with profit and loss analysis. Live prices flash as they change, sparklines show each asset's trend, and a search box highlights matches across the grid.
+
+**Components Used:**  
+- Data Grid  
+- Sparkline  
+- Avatar  
+- Chip  
+- Button  
+- Icon  
+- Linear Progress Bar  
+- Input Group  
+- Excel Exporter Service  
+- CSV Exporter Service  
+- PDF Exporter Service  
+
+**Features:**  
+- Live Data Updates  
+- Sorting  
+- Search Highlighting  
+- Column Hiding  
+- Column Pinning  
+- Exporting  
+- Conditional Cell Styling  
+- Light and Dark Themes  
+
+---
+
+## FinTech 100K
+
+**Description:**  
+A high-volume Angular trading grid that virtualizes 100,000 generated financial instruments across 41 columns, with Excel-style filtering, cell editing, three component sizes, light and dark themes, and Excel and PDF export.
+
+**Components Used:**  
+- Data Grid  
+- Select  
+- Date Picker  
+- Button Group  
+- Button  
+- Icon  
+- Excel Exporter Service  
+- PDF Exporter Service  
+
+**Features:**  
+- Virtualization (100,000 rows)  
+- Row Selection  
+- Sorting  
+- Excel Style Filtering  
+- Cell Editing  
+- Column Moving  
+- Column Resizing  
+- Column Hiding  
+- Column Pinning  
+- Exporting  
+- Conditional Cell Styling  
+- Small, Medium and Large Sizes  
+- Light and Dark Themes  
+
+---
+
+## Sales KPI Dashboard
+
+**Description:**  
+A sales dashboard with KPI cards, revenue and deals charts, revenue by region, recent activity and a leaderboard of top performers.
+
+**Components Used:**  
+- Data Grid  
+- Category Chart  
+- Doughnut Chart  
+- Card  
+- List  
+- Avatar  
+- Badge  
+- Button  
+- Icon  
+
+**Features:**  
+- KPI Cards  
+- Interactive Charts  
+- Responsive Layout  
+- Light and Dark Themes  
+
+---
+
+## New Fleet Management
+
+**Description:**  
+An updated fleet management app for vehicle acquisition, operations and maintenance. Each vehicle expands into a detail view with tabs for its details, trips, maintenance, costs and utilization charts.
+
+**Components Used:**  
+- Data Grid  
+- Category Chart  
+- Doughnut Chart  
+- Tabs  
+- Card  
+- Chip  
+- Badge  
+- Dialog  
+- Snackbar  
+- Action Strip  
+- Button Group  
+- Button  
+- Icon  
+- Input Group  
+
+**Features:**  
+- Master-Detail View  
+- Sorting  
+- Search Highlighting  
+- Column Moving  
+- Column Hiding  
+- Column Pinning  
+- Advanced Filtering  
+- State Persistence  
+- Row Actions  
+- Small, Medium and Large Sizes  
+- Light and Dark Themes  
+
+---
+
+## FinTech Dock Manager
+
+**Description:**  
+A trading desk built in a Dock Manager: a watchlist, positions and order grids, financial charts, an order ticket and a live market feed. The panes can be docked, floated and hidden, and the layout is saved between visits.
+
+**Components Used:**  
+- Dock Manager  
+- Data Grid  
+- Financial Chart  
+- Navigation Drawer  
+- Tabs  
+- List  
+- Dialog  
+- Snackbar  
+- Simple Combo  
+- Select  
+- Switch  
+- Button Group  
+- Action Strip  
+- Chip  
+- Badge  
+- Avatar  
+- Linear Progress Bar  
+- Button  
+- Icon  
+- Input Group  
+- Excel Exporter Service  
+- CSV Exporter Service  
+- PDF Exporter Service  
+
+**Features:**  
+- Live Data Updates (SignalR with a simulated fallback)  
+- Docking and Floating Panes  
+- Row Selection  
+- Sorting  
+- Filtering and Advanced Filtering  
+- Column Moving, Hiding and Pinning  
+- Summaries  
+- Exporting  
+- Layout Persistence  
+- Light and Dark Themes  
+
+---
+
+## Budget Planning Workbook
+
+**Description:**  
+A retail budget planning workbook in the Angular Spreadsheet: an .xlsx file with eight worksheets, loaded with the Excel library, with live formulas, conditional formatting, data validation, filterable tables and Excel charts.
+
+**Components Used:**  
+- Spreadsheet  
+- Spreadsheet Chart Adapter  
+- Excel Library  
+
+**Features:**  
+- Excel Workbook Loading  
+- Formulas  
+- Cell Editing  
+- Conditional Formatting  
+- Data Validation  
+- Table Filtering and Sorting  
+- Frozen Panes  
+- Excel Charts  

@@ -1,0 +1,168 @@
+////
+/// Shared pane primitives for the Signal Desk sample.
+///
+/// Only the things Ignite UI does not already provide live here: the pane shell,
+/// tabular-numeral figures, positive/negative colouring and the ticker badge.
+/// Anything with a component behind it - chips, tabs, lists, button groups,
+/// badges, progress bars - is themed centrally in `_signal-desk-theme.scss`
+/// instead, so each pane's stylesheet stays layout-only.
+///
+/// Colour is never hard-coded: everything resolves through the `--ig-*` palette
+/// tokens emitted by `_signal-desk-theme.scss`, so panes follow the theme swap.
+////
+
+/// Full-height flex column filling a dock pane.
+@mixin pane($direction: column) {
+    :host {
+        display: flex;
+        flex-direction: $direction;
+        height: 100%;
+        min-height: 0;
+        overflow: hidden;
+        background: var(--ig-surface-500);
+        box-sizing: border-box;
+    }
+}
+
+/// Monospaced, tabular figures - used for every price and quantity.
+@mixin figures {
+    .mono {
+        font-family: 'DM Mono', 'Courier New', monospace;
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+/// Directional colouring. `.pos`/`.neg` for quotes, `.pos-pnl`/`.neg-pnl` for P&L.
+@mixin directional {
+    .pos,
+    .pos-pnl {
+        color: var(--ig-success-500);
+    }
+
+    .neg,
+    .neg-pnl {
+        color: var(--ig-error-500);
+    }
+}
+
+/// The heat map: every directional figure inside a grid on a tinted cell.
+///
+/// The light theme's bet, and only the light theme's - the chrome there is
+/// almost colourless (see `$sd-light-palette`), so the tables are free to carry
+/// the book's shape in the cell fills and be scanned before they are read. The
+/// dark desk already separates by field colour and would only be flattened by
+/// this, which is why it is behind `:host-context(.light-theme)` - the theme
+/// class sits on `.app-shell`, outside every pane, so a plain descendant
+/// selector cannot reach it through emulated encapsulation.
+///
+/// Scoped to `igx-grid` on purpose: the same `.pos`/`.neg` classes colour the
+/// ticker deltas, the chart header, the order ticket's price ladder and the
+/// movers strip, and none of those is a table cell.
+///
+/// Fill only - no `display`, no border. `.pl-cell` is a flex column of two
+/// figures and an inline `.pos` span is an inline box, and both take padding
+/// and a background as they are; stating a `display` here would break one or
+/// the other. And 10% of the family over the row's own base is a fill the
+/// figure still clears 4.5:1 against, which is the whole constraint on how far
+/// the tint can go.
+@mixin tinted-figures {
+    :host-context(.light-theme) igx-grid {
+        // The day-range marker is a dot on a rail rather than a figure, and it
+        // takes `.pos`/`.neg` for the same directional reason. A pill would
+        // make it an 8px dot in a 20px box.
+        .pos:not(.range-marker),
+        .neg:not(.range-marker),
+        .pos-pnl,
+        .neg-pnl {
+            padding: 1px 6px;
+            border-radius: 3px;
+        }
+
+        .pos:not(.range-marker),
+        .pos-pnl {
+            background: color-mix(in srgb, var(--ig-success-500) 10%, var(--ig-gray-50));
+        }
+
+        .neg:not(.range-marker),
+        .neg-pnl {
+            background: color-mix(in srgb, var(--ig-error-500) 10%, var(--ig-gray-50));
+        }
+    }
+}
+
+/// Ticker badge shared by the grids.
+@mixin ticker {
+    .symbol-cell {
+        color: var(--ig-info-500);
+        font-weight: 700;
+        letter-spacing: 0.2px;
+    }
+}
+
+/// A pane's section label - "MARKET WATCHLIST", "TOTAL P&L" and friends.
+@mixin section-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--ig-gray-700);
+}
+
+/// Compact grid sizing shared by all four desk grids.
+@mixin desk-grid {
+    --ig-size: var(--ig-size-small);
+}
+
+/// Everything a pane that renders quotes needs, in one include.
+@mixin quote-primitives {
+    @include figures;
+    @include directional;
+    @include tinted-figures;
+    @include ticker;
+}
+
+/// Chrome shared by the news wire and the alerts list: a pinned action row
+/// above a scrolling `igx-list`.
+@mixin feed-list {
+    .panel-body {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        min-height: 0;
+    }
+
+    .panel-actions {
+        flex: 0 0 auto;
+        display: flex;
+        justify-content: flex-end;
+        padding: 5px 8px;
+        border-bottom: 1px solid var(--ig-gray-200);
+
+        [igxButton] {
+            --ig-size: var(--ig-size-small);
+
+            font-size: 10px;
+        }
+
+        igx-icon {
+            --ig-size: var(--ig-size-small);
+        }
+    }
+
+    .item-list {
+        --ig-size: var(--ig-size-small);
+
+        flex: 1 1 auto;
+        min-height: 0;
+        border: none;
+        overflow: auto;
+    }
+
+    .list-empty {
+        margin: 0;
+        padding: 18px 12px;
+        text-align: center;
+        color: var(--ig-gray-700);
+        font-size: 11px;
+    }
+}
