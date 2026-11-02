@@ -110,6 +110,10 @@
               ],
               "outputHashing": "all"
             },
+            "browser-only": {
+              "server": false,
+              "ssr": false
+            },
             "development": {
               "optimization": false,
               "extractLicenses": false,

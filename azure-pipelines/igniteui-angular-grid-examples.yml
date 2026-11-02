@@ -127,16 +127,25 @@ stages:
             npx --userconfig=$(Build.SourcesDirectory)/.npmrc --legacy-peer-deps ng g @igniteui/angular-schematics:upgrade-packages
 
       - task: Npm@1
-        displayName: 'npm run build:ci'
-        env:
-          # Same soft limit as the GitHub workflow (.github/workflows/node.js.yml): it keeps the heap of the
-          # Go-based bundler (esbuild) near 10 GiB.
-          GOMEMLIMIT: 10GiB
+        displayName: 'npm run build:ci (browser only)'
         inputs:
           command: custom
           workingDir: '$(Build.SourcesDirectory)'
           verbose: ${{ parameters.isVerbose }}
-          customCommand: 'run build:ci'
+          # IIS serves the static browser output only, so skip the server bundle and
+          # route prerendering. `production` must be listed explicitly - naming a
+          # configuration replaces the default one, which would drop output hashing.
+          customCommand: 'run build:ci -- --configuration production,browser-only'
+        env:
+          # The build exhausts the ~7.9GB Microsoft-hosted agent ("Free memory is lower
+          # than 5%") and intermittently stalls until Azure reports "We stopped hearing
+          # from agent" - see #171. esbuild runs as a separate Go process, so Node-side
+          # settings (worker count, heap size) do not bound its memory - GOMEMLIMIT/GOGC
+          # do. These values are reused from another Ignite UI pipeline where they keep
+          # a similar Angular build stable; they are not yet tuned for this agent size.
+          GOMEMLIMIT: '6GiB'
+          GOGC: '50'
+          NODE_OPTIONS: '--max_old_space_size=4096'
 
       - task: PublishPipelineArtifact@1
 
